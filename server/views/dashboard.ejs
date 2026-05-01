@@ -63,7 +63,7 @@
         <section class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
           <header class="card-header" style="padding: 16px 20px; margin: 0; border-bottom: 1px solid var(--border);">
             <h2 style="display: flex; align-items: center; gap: 8px;">📍 Last Known Location <span class="status-badge-inline">Live</span></h2>
-            <div class="muted small"><%= latest ? new Date(latest.timestamp).toLocaleString() : 'No location yet' %> ↻</div>
+            <div class="muted small"><span class="local-time-full" data-timestamp="<%= latest ? latest.timestamp : '' %>"><%= latest ? new Date(latest.timestamp).toLocaleString() : 'No location yet' %></span> ↻</div>
           </header>
           <div id="map" style="height: 250px; background: #222;"></div>
           <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card);">
@@ -134,7 +134,7 @@
             <a class="photo-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
               <img src="<%= p.filename.startsWith('mock') ? 'https://images.unsplash.com/photo-1493121516709-380d32bb5e33?auto=format&fit=crop&q=80&w=200&h=200' : '/api/intruders/' + p.filename %>" alt="intruder" loading="lazy" />
               <div class="photo-time" style="background: var(--card-2); text-align: left; padding: 10px;">
-                Today, <%= new Date(p.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                <span class="local-time-short" data-prefix="Today, " data-timestamp="<%= p.timestamp %>"></span>
               </div>
             </a>
           <% }); %>
@@ -161,7 +161,7 @@
                 <% if (alerts.length === 0) { %><tr><td colspan="3" class="empty">No SIM alerts</td></tr><% } %>
                 <% alerts.forEach(function(a){ %>
                   <tr>
-                    <td><%= new Date(a.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                    <td><span class="local-time-short" data-timestamp="<%= a.timestamp %>"></span></td>
                     <td><%= a.message || 'SIM Swapped' %></td>
                     <td><span class="status-badge-inline" style="color: #fbbf24; background: rgba(245,158,11,.15);"><%= a.status || 'SIM Changed' %></span></td>
                   </tr>
@@ -191,7 +191,7 @@
                   <tr>
                     <td style="font-weight: 500;"><%= c.type %></td>
                     <td><span class="status-badge-inline" style="<%= c.status === 'Success' ? '' : 'color: #f87171; background: rgba(239,68,68,.15)' %>"><%= c.status || 'Sent' %></span></td>
-                    <td>Today, <%= new Date(c.timestamp || c.queuedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                    <td><span class="local-time-short" data-prefix="Today, " data-timestamp="<%= c.timestamp || c.queuedAt %>"></span></td>
                   </tr>
                 <% }); %>
               </tbody>
@@ -219,6 +219,22 @@
     } else {
       document.getElementById('map').innerHTML = '<div style="color:#666; display:flex; align-items:center; justify-content:center; height:100%;">No Location Data</div>';
     }
+
+    // Client-side Timezone Fix
+    document.querySelectorAll('.local-time-full').forEach(el => {
+      const ts = el.getAttribute('data-timestamp');
+      if (ts && ts !== '') {
+        el.textContent = new Date(ts).toLocaleString();
+      }
+    });
+
+    document.querySelectorAll('.local-time-short').forEach(el => {
+      const ts = el.getAttribute('data-timestamp');
+      const prefix = el.getAttribute('data-prefix') || '';
+      if (ts && ts !== '') {
+        el.textContent = prefix + new Date(ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      }
+    });
   });
 </script>
 

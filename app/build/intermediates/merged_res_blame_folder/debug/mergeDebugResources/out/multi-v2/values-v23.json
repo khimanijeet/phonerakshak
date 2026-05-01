@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.phonerakshak.app-mergeDebugResources-37:/values-v23/values-v23.xml",
+            "outputFile": "com.example.phonerakshak.app-mergeDebugResources-2:/values-v23/values-v23.xml",
             "map": [
                 {
                     "source": "C:\\Users\\khima\\.gradle\\caches\\transforms-4\\9c8dab985631d4a52f84fe6b42666fb3\\transformed\\cardview-1.0.0\\res\\values-v23\\values-v23.xml",

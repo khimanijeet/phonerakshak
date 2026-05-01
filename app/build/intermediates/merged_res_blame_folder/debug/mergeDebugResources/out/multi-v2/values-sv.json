@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.phonerakshak.app-mergeDebugResources-37:/values-sv/values-sv.xml",
+            "outputFile": "com.example.phonerakshak.app-mergeDebugResources-2:/values-sv/values-sv.xml",
             "map": [
                 {
                     "source": "C:\\Users\\khima\\.gradle\\caches\\transforms-4\\b5dccbc66fa8c8f0bc15818d8abe9534\\transformed\\core-1.13.1\\res\\values-sv\\values-sv.xml",

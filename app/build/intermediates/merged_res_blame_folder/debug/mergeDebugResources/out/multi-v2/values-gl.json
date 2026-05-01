@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.phonerakshak.app-mergeDebugResources-37:/values-gl/values-gl.xml",
+            "outputFile": "com.example.phonerakshak.app-mergeDebugResources-2:/values-gl/values-gl.xml",
             "map": [
                 {
                     "source": "C:\\Users\\khima\\.gradle\\caches\\transforms-4\\b473a760f6f333fa6dc2c5f556a984a9\\transformed\\play-services-basement-18.4.0\\res\\values-gl\\values.xml",

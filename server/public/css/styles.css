@@ -1,10 +1,10 @@
 :root {
-  --bg: #0b1020;
-  --bg-2: #0f152b;
-  --card: #131a33;
-  --card-2: #182142;
-  --border: rgba(255,255,255,.06);
-  --text: #e2e8f0;
+  --bg: #090e17;
+  --bg-2: #0f172a;
+  --card: rgba(15, 23, 42, 0.6);
+  --card-2: rgba(30, 41, 59, 0.6);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f8fafc;
   --muted: #94a3b8;
   --accent: #6366f1;
   --purple: #8b5cf6;
@@ -12,13 +12,15 @@
   --green: #22c55e;
   --orange: #f59e0b;
   --red: #ef4444;
+  --glass-blur: blur(16px);
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  background: linear-gradient(180deg, #0a0f24 0%, #0b1020 100%);
+  background: radial-gradient(circle at top right, #1e1b4b 0%, #090e17 40%, #020617 100%);
+  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -34,7 +36,9 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .sidebar {
-  background: rgba(15, 21, 43, .75);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-right: 1px solid var(--border);
   padding: 22px 16px;
   position: sticky;
@@ -85,8 +89,9 @@ button { font-family: inherit; cursor: pointer; }
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 28px;
   border-bottom: 1px solid var(--border);
-  background: rgba(11, 16, 32, .6);
-  backdrop-filter: blur(8px);
+  background: rgba(9, 14, 23, 0.5);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   position: sticky; top: 0; z-index: 10;
 }
 .topbar-title { margin: 0; font-size: 18px; font-weight: 700; }
@@ -148,10 +153,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 .stat-card {
   background: var(--card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 18px;
   display: flex; gap: 14px; align-items: flex-start;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
 }
 .stat-icon {
   width: 44px; height: 44px;
@@ -175,9 +183,12 @@ button { font-family: inherit; cursor: pointer; }
 /* ===== Cards ===== */
 .card {
   background: var(--card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 .card-header {
   display: flex; justify-content: space-between; align-items: center;
