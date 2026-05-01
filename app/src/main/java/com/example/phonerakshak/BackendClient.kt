@@ -1,11 +1,11 @@
 package com.example.phonerakshak
 
+import android.os.Build
 import android.util.Log
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * Talks to the optional Node.js backend. All failures are logged but never
  * crash the app; the app works fully without a backend.
  */
-class BackendClient(private val baseUrl: String) {
+class BackendClient(private val prefs: Prefs) {
 
     data class PendingCommand(
         val id: String,
@@ -33,13 +33,49 @@ class BackendClient(private val baseUrl: String) {
 
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
     private val jpegMedia = "image/jpeg".toMediaType()
+    private val baseUrl: String get() = prefs.backendUrl
+
+    private fun buildRequest(url: String, method: String, body: okhttp3.RequestBody? = null): Request {
+        val builder = Request.Builder().url(url)
+        if (method == "POST") builder.post(body!!)
+        else if (method == "GET") builder.get()
+        
+        prefs.jwtToken?.let { token ->
+            builder.header("Authorization", "Bearer $token")
+        }
+        return builder.build()
+    }
+
+    private fun executeWithAuthRetry(requestFactory: () -> Request): okhttp3.Response {
+        var req = requestFactory()
+        var resp = client.newCall(req).execute()
+        
+        if (resp.code == 401 || resp.code == 403) {
+            resp.close()
+            Log.i(TAG, "JWT expired or invalid. Attempting silent re-registration...")
+            // Attempt silent re-registration
+            val newToken = registerDevice(
+                prefs.deviceId,
+                prefs.phoneNumber ?: "",
+                prefs.emergencyNumber ?: "",
+                Build.MODEL
+            )
+            if (newToken != null) {
+                prefs.jwtToken = newToken
+                // Retry request with new token
+                req = requestFactory()
+                resp = client.newCall(req).execute()
+            }
+        }
+        return resp
+    }
 
     fun registerDevice(
         deviceId: String,
         phone: String,
         emergency: String,
         model: String?
-    ): Boolean {
+    ): String? {
         return try {
             val body = JSONObject().apply {
                 put("deviceId", deviceId)
@@ -51,15 +87,20 @@ class BackendClient(private val baseUrl: String) {
             val req = Request.Builder()
                 .url("$baseUrl/api/devices")
                 .post(body.toRequestBody(jsonMedia))
-                .build()
+                .build() // Auth not required for registration
 
             client.newCall(req).execute().use { resp ->
                 Log.i(TAG, "registerDevice -> ${resp.code}")
-                resp.isSuccessful
+                if (!resp.isSuccessful) return null
+                val respBody = resp.body?.string() ?: return null
+                val obj = JSONObject(respBody)
+                val token = obj.optString("token", null)
+                if (token != null) prefs.jwtToken = token
+                return token
             }
         } catch (e: Exception) {
             Log.w(TAG, "registerDevice failed: ${e.message}")
-            false
+            null
         }
     }
 
@@ -77,14 +118,9 @@ class BackendClient(private val baseUrl: String) {
                 put("longitude", lng)
                 if (accuracy != null) put("accuracy", accuracy.toDouble())
                 put("trigger", trigger)
-            }.toString()
+            }.toString().toRequestBody(jsonMedia)
 
-            val req = Request.Builder()
-                .url("$baseUrl/api/locations")
-                .post(body.toRequestBody(jsonMedia))
-                .build()
-
-            client.newCall(req).execute().use { resp ->
+            executeWithAuthRetry { buildRequest("$baseUrl/api/locations", "POST", body) }.use { resp ->
                 Log.i(TAG, "postLocation -> ${resp.code}")
                 resp.isSuccessful
             }
@@ -101,14 +137,9 @@ class BackendClient(private val baseUrl: String) {
                 put("type", type)
                 put("message", message)
                 if (meta != null) put("meta", meta)
-            }.toString()
+            }.toString().toRequestBody(jsonMedia)
 
-            val req = Request.Builder()
-                .url("$baseUrl/api/alerts")
-                .post(body.toRequestBody(jsonMedia))
-                .build()
-
-            client.newCall(req).execute().use { resp ->
+            executeWithAuthRetry { buildRequest("$baseUrl/api/alerts", "POST", body) }.use { resp ->
                 Log.i(TAG, "postAlert($type) -> ${resp.code}")
                 resp.isSuccessful
             }
@@ -118,28 +149,22 @@ class BackendClient(private val baseUrl: String) {
         }
     }
 
-    /** Returns the list of pending commands. The server marks them delivered on this call. */
     fun pollCommands(deviceId: String): List<PendingCommand> {
         return try {
-            val req = Request.Builder()
-                .url("$baseUrl/api/devices/$deviceId/commands")
-                .get()
-                .build()
-
-            client.newCall(req).execute().use { resp ->
+            executeWithAuthRetry { buildRequest("$baseUrl/api/devices/$deviceId/commands", "GET") }.use { resp ->
                 if (!resp.isSuccessful) {
                     Log.w(TAG, "pollCommands -> ${resp.code}")
                     return emptyList()
                 }
-                val body = resp.body?.string() ?: return emptyList()
-                val obj = JSONObject(body)
+                val bodyStr = resp.body?.string() ?: return emptyList()
+                val obj = JSONObject(bodyStr)
                 val arr: JSONArray = obj.optJSONArray("commands") ?: return emptyList()
                 buildList {
                     for (i in 0 until arr.length()) {
                         val c = arr.getJSONObject(i)
                         add(
                             PendingCommand(
-                                id = c.getString("id"),
+                                id = c.optString("_id", c.optString("id")),
                                 type = c.getString("type"),
                                 params = c.optJSONObject("params")
                             )
@@ -157,14 +182,11 @@ class BackendClient(private val baseUrl: String) {
         return try {
             val body = JSONObject().apply {
                 if (result != null) put("result", result)
-            }.toString()
+            }.toString().toRequestBody(jsonMedia)
 
-            val req = Request.Builder()
-                .url("$baseUrl/api/devices/$deviceId/commands/$commandId/ack")
-                .post(body.toRequestBody(jsonMedia))
-                .build()
-
-            client.newCall(req).execute().use { resp -> resp.isSuccessful }
+            executeWithAuthRetry { buildRequest("$baseUrl/api/devices/$deviceId/commands/$commandId/ack", "POST", body) }.use { resp ->
+                resp.isSuccessful
+            }
         } catch (e: Exception) {
             Log.w(TAG, "ackCommand failed: ${e.message}")
             false
@@ -180,17 +202,24 @@ class BackendClient(private val baseUrl: String) {
                 .addFormDataPart("photo", file.name, file.asRequestBody(jpegMedia))
                 .build()
 
-            val req = Request.Builder()
-                .url("$baseUrl/api/intruders")
-                .post(body)
-                .build()
-
-            client.newCall(req).execute().use { resp ->
+            executeWithAuthRetry { buildRequest("$baseUrl/api/intruders", "POST", body) }.use { resp ->
                 Log.i(TAG, "uploadIntruderPhoto -> ${resp.code}")
                 resp.isSuccessful
             }
         } catch (e: Exception) {
             Log.w(TAG, "uploadIntruderPhoto failed: ${e.message}")
+            false
+        }
+    }
+
+    // New Ping function for Heartbeat
+    fun ping(deviceId: String): Boolean {
+        return try {
+            val body = JSONObject().apply { put("deviceId", deviceId) }.toString().toRequestBody(jsonMedia)
+            executeWithAuthRetry { buildRequest("$baseUrl/api/devices/$deviceId/ping", "POST", body) }.use { resp ->
+                resp.isSuccessful
+            }
+        } catch (e: Exception) {
             false
         }
     }

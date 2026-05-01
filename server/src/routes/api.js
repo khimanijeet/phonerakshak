@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const apiController = require('../controllers/apiController');
+const { verifyToken } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -23,13 +24,16 @@ const upload = multer({
   limits: { fileSize: 8 * 1024 * 1024 },
 });
 
+// Open route for registration/refresh (returns JWT)
 router.post('/devices', apiController.upsertDevice);
-router.post('/devices/:id/ping', apiController.pingDevice);
-router.post('/locations', apiController.addLocation);
-router.post('/alerts', apiController.addAlert);
-router.get('/devices/:id/commands', apiController.getCommands);
-router.post('/devices/:id/commands/:cid/ack', apiController.ackCommand);
-router.post('/intruders', upload.single('photo'), apiController.addIntruder);
+
+// Protected routes
+router.post('/devices/:id/ping', verifyToken, apiController.pingDevice);
+router.post('/locations', verifyToken, apiController.addLocation);
+router.post('/alerts', verifyToken, apiController.addAlert);
+router.get('/devices/:id/commands', verifyToken, apiController.getCommands);
+router.post('/devices/:id/commands/:cid/ack', verifyToken, apiController.ackCommand);
+router.post('/intruders', verifyToken, upload.single('photo'), apiController.addIntruder);
 
 router.get('/intruders/:filename', (req, res) => {
   const file = path.join(INTRUDERS_DIR, req.params.filename);

@@ -50,7 +50,7 @@ object EmergencyHandler {
             }
 
             if (prefs.hasBackend()) {
-                val client = BackendClient(prefs.backendUrl)
+                val client = BackendClient(prefs)
                 client.postAlert(
                     prefs.deviceId,
                     "emergency",

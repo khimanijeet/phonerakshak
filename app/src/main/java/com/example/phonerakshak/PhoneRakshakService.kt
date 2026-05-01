@@ -11,6 +11,15 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
 /**
  * Long-running foreground service whose only job is to keep the process alive
  * so the SMS and SIM receivers continue to function in the background, even
@@ -20,6 +29,8 @@ import androidx.core.app.NotificationCompat
 class PhoneRakshakService : Service() {
 
     private var poller: CommandPoller? = null
+    private val serviceJob = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -33,6 +44,19 @@ class PhoneRakshakService : Service() {
 
         if (poller == null && prefs.hasBackend()) {
             poller = CommandPoller(this).also { it.start() }
+            
+            // Heartbeat ping every 5 minutes
+            scope.launch {
+                val client = BackendClient(prefs)
+                while (isActive) {
+                    try {
+                        client.ping(prefs.deviceId)
+                    } catch (e: Exception) {
+                        // ignore
+                    }
+                    delay(5 * 60 * 1000L) // 5 minutes
+                }
+            }
         }
         return START_STICKY
     }
@@ -40,6 +64,7 @@ class PhoneRakshakService : Service() {
     override fun onDestroy() {
         poller?.stop()
         poller = null
+        scope.cancel()
         super.onDestroy()
     }
 

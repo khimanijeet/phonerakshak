@@ -155,7 +155,7 @@ class DashboardActivity : AppCompatActivity() {
                 prefs.lastKnownLocation =
                     "${loc.latitude},${loc.longitude},${loc.accuracy},${System.currentTimeMillis()}"
                 if (backend) {
-                    BackendClient(prefs.backendUrl).postLocation(
+                    BackendClient(prefs).postLocation(
                         prefs.deviceId,
                         loc.latitude,
                         loc.longitude,

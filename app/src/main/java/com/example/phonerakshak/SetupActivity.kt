@@ -87,14 +87,16 @@ class SetupActivity : AppCompatActivity() {
         PhoneRakshakService.start(this)
 
         if (prefs.hasBackend()) {
-            val client = BackendClient(prefs.backendUrl)
+            val client = BackendClient(prefs)
             CoroutineScope(Dispatchers.IO).launch {
-                val ok = client.registerDevice(
+                val token = client.registerDevice(
                     prefs.deviceId,
                     phone,
                     emergency,
                     Build.MODEL
                 )
+                val ok = token != null
+                if (ok) prefs.jwtToken = token
                 withContext(Dispatchers.Main) {
                     toast(
                         if (ok) "Saved & registered with server"

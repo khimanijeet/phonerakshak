@@ -14,7 +14,8 @@
             <span><strong>Emergency:</strong> <%= device.emergencyNumber || '—' %></span>
             <span><strong>Model:</strong> <%= device.deviceModel || '—' %></span>
             <span><strong>City:</strong> <%= device.city || '—' %></span>
-            <span class="pill <%= device.online ? 'pill-green' : 'pill-grey' %>"><%= device.online ? 'Online' : 'Offline' %></span>
+            <% const isOnline = (Date.now() - new Date(device.lastSeen).getTime()) < 5 * 60 * 1000; %>
+            <span class="pill <%= isOnline ? 'pill-green' : 'pill-grey' %>"><%= isOnline ? 'Online' : 'Offline' %></span>
           </div>
         </div>
       </section>

@@ -6,6 +6,7 @@ const deviceSchema = new mongoose.Schema({
   emergencyNumber: { type: String, default: '' },
   deviceModel: { type: String, default: '' },
   city: { type: String, default: 'Others' },
+  fcmToken: { type: String, default: null },
   registeredAt: { type: Date, default: Date.now },
   lastSeen: { type: Date, default: Date.now }
 }, { timestamps: true });

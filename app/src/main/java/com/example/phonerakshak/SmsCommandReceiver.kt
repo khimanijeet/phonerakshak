@@ -100,7 +100,7 @@ class SmsCommandReceiver : BroadcastReceiver() {
                     prefs.lastKnownLocation =
                         "${loc.latitude},${loc.longitude},${loc.accuracy},${System.currentTimeMillis()}"
                     if (prefs.hasBackend()) {
-                        BackendClient(prefs.backendUrl).postLocation(
+                        BackendClient(prefs).postLocation(
                             prefs.deviceId,
                             loc.latitude,
                             loc.longitude,

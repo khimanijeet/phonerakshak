@@ -6,10 +6,11 @@ const Intruder = require('../models/Intruder');
 const BlockedNumber = require('../models/BlockedNumber');
 const Report = require('../models/Report');
 const logger = require('../utils/logger');
+const { generateToken } = require('../middlewares/auth');
 
 exports.upsertDevice = async (req, res, next) => {
   try {
-    const { deviceId, phoneNumber, emergencyNumber, deviceModel, city } = req.body || {};
+    const { deviceId, phoneNumber, emergencyNumber, deviceModel, city, fcmToken } = req.body || {};
     if (!deviceId) return res.status(400).json({ error: 'deviceId required' });
     
     let device = await Device.findOne({ deviceId });
@@ -18,12 +19,18 @@ exports.upsertDevice = async (req, res, next) => {
       device.emergencyNumber = emergencyNumber || device.emergencyNumber;
       device.deviceModel = deviceModel || device.deviceModel;
       device.city = city || device.city;
+      if (fcmToken) device.fcmToken = fcmToken;
       device.lastSeen = Date.now();
       await device.save();
     } else {
-      device = await Device.create({ deviceId, phoneNumber, emergencyNumber, deviceModel, city, registeredAt: Date.now(), lastSeen: Date.now() });
+      device = await Device.create({ deviceId, phoneNumber, emergencyNumber, deviceModel, city, fcmToken, registeredAt: Date.now(), lastSeen: Date.now() });
     }
-    res.json({ ok: true, device });
+    
+    const io = req.app.get('io');
+    if (io) io.emit('device_updated', device);
+    
+    const token = generateToken(device.deviceId);
+    res.json({ ok: true, device, token });
   } catch (err) { next(err); }
 };
 
@@ -48,7 +55,14 @@ exports.addLocation = async (req, res, next) => {
       accuracy: accuracy != null ? Number(accuracy) : null,
       trigger
     });
-    await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() });
+    const device = await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() }, { new: true });
+    
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new_location', entry);
+      io.emit('device_updated', device);
+    }
+    
     res.json({ ok: true, entry });
   } catch (err) { next(err); }
 };
@@ -72,21 +86,40 @@ exports.addAlert = async (req, res, next) => {
         await BlockedNumber.create({ number: String(blocked), count: 1, addedBy: deviceId, lastSeen: Date.now() });
       }
     }
-    await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() });
+    const device = await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() }, { new: true });
+    
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new_alert', entry);
+      io.emit('device_updated', device);
+    }
+    
     res.json({ ok: true, entry });
   } catch (err) { next(err); }
 };
 
 exports.getCommands = async (req, res, next) => {
   try {
-    const pending = await Command.find({ deviceId: req.params.id, status: 'pending' });
+    const fifteenSecsAgo = new Date(Date.now() - 15000);
+    const pending = await Command.find({ 
+      deviceId: req.params.id, 
+      $or: [
+        { status: 'queued' },
+        { status: 'processing', processingAt: { $lt: fifteenSecsAgo } }
+      ]
+    });
+    
     if (pending.length > 0) {
       await Command.updateMany(
         { _id: { $in: pending.map(c => c._id) } },
-        { status: 'delivered', deliveredAt: Date.now() }
+        { status: 'processing', processingAt: Date.now() }
       );
       await Device.findOneAndUpdate({ deviceId: req.params.id }, { lastSeen: Date.now() });
     }
+    
+    // Convert to what Android expects or just send
+    // Since Android might still expect 'pending' -> 'delivered', wait,
+    // we should just return the documents. The Android app checks if response is successful.
     res.json({ commands: pending });
   } catch (err) { next(err); }
 };
@@ -100,10 +133,14 @@ exports.ackCommand = async (req, res, next) => {
     const command = await Command.findOne({ _id: cid, deviceId: id }).catch(() => Command.findOne({ id: cid, deviceId: id }));
     
     if (command) {
-      command.status = 'done';
+      command.status = 'executed';
       command.ackedAt = Date.now();
       command.result = result;
       await command.save();
+      
+      const io = req.app.get('io');
+      if (io) io.emit('command_status_change', command);
+      
       res.json({ ok: true });
     } else {
       res.json({ ok: false });
@@ -117,14 +154,21 @@ exports.addIntruder = async (req, res, next) => {
     if (!deviceId || !req.file) return res.status(400).json({ error: 'deviceId and photo required' });
     
     const entry = await Intruder.create({ deviceId, filename: req.file.filename });
-    await Alert.create({
+    const alertEntry = await Alert.create({
       deviceId,
       type: 'intruder_photo',
       message: 'Intruder photo captured',
       meta: { filename: req.file.filename }
     });
     await Report.create({ deviceId, type: 'intruder_photo', message: 'Intruder photo captured' });
-    await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() });
+    const device = await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() }, { new: true });
+    
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new_intruder', entry);
+      io.emit('new_alert', alertEntry);
+      io.emit('device_updated', device);
+    }
     
     res.json({ ok: true, entry });
   } catch (err) { next(err); }

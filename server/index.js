@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const qrcode = require('qrcode');
 const os = require('os');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 const connectDB = require('./src/config/db');
 const logger = require('./src/utils/logger');
@@ -18,6 +19,12 @@ const adminRoutes = require('./src/routes/admin');
 
 // Initialize Express and Connect to DB
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, { cors: { origin: '*' } });
+app.set('io', io);
+
 connectDB();
 
 const PORT = parseInt(process.env.PORT, 10) || 5000;
@@ -51,7 +58,21 @@ app.use(
   })
 );
 
-app.use('/api', apiRoutes);
+// Rate Limiting for API routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // Limit each IP to 200 requests per windowMs
+  message: { error: 'Too many requests, please try again later.' }
+});
+
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, // Limit each IP to 20 auth requests per hour
+  message: { error: 'Too many registration attempts, please try again later.' }
+});
+
+app.use('/api/devices', authLimiter);
+app.use('/api', apiLimiter, apiRoutes);
 
 function getLocalIp() {
   const nets = os.networkInterfaces();
@@ -131,7 +152,7 @@ app.get('/healthz', (req, res) => res.json({ ok: true }));
 // Custom centralized error handler
 app.use(errorHandler);
 
-app.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
   logger.info(`PhoneRakshak admin running on http://0.0.0.0:${PORT}`);
   logger.info(`Login: ${ADMIN_USERNAME} / ${ADMIN_PASSWORD}`);
 });

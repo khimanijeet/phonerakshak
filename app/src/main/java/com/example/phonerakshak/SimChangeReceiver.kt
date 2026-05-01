@@ -52,7 +52,7 @@ class SimChangeReceiver : BroadcastReceiver() {
                 }
 
                 if (prefs.hasBackend()) {
-                    val client = BackendClient(prefs.backendUrl)
+                    val client = BackendClient(prefs)
                     val meta = JSONObject().apply {
                         put("oldSim", saved)
                         put("newSim", current)

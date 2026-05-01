@@ -74,7 +74,7 @@ class LockScreenActivity : AppCompatActivity() {
 
         // After 3+ wrong attempts, post an alert.
         if (wrongAttempts == 3 && prefs.hasBackend()) {
-            val client = BackendClient(prefs.backendUrl)
+            val client = BackendClient(prefs)
             CoroutineScope(Dispatchers.IO).launch {
                 client.postAlert(
                     prefs.deviceId,
@@ -99,7 +99,7 @@ class LockScreenActivity : AppCompatActivity() {
 
     private fun uploadIntruder(file: File) {
         if (!prefs.hasBackend()) return
-        val client = BackendClient(prefs.backendUrl)
+        val client = BackendClient(prefs)
         CoroutineScope(Dispatchers.IO).launch {
             client.uploadIntruderPhoto(prefs.deviceId, file)
         }

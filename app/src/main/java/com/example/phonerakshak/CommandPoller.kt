@@ -20,42 +20,66 @@ import kotlinx.coroutines.launch
  */
 class CommandPoller(
     private val context: Context,
-    private val intervalMs: Long = 30_000L
+    private val baseIntervalMs: Long = 60_000L,
+    private val fastIntervalMs: Long = 10_000L
 ) {
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
+    
+    // Tracks how many fast polls remain before decaying back to base interval
+    private var fastPollsRemaining = 0
 
     fun start() {
         scope.launch {
             while (isActive) {
                 try {
-                    pollOnce()
+                    val receivedAny = pollOnce()
+                    if (receivedAny) {
+                        fastPollsRemaining = 6 // Poll fast for the next 60s
+                    }
                 } catch (e: Exception) {
                     Log.w(TAG, "poll loop error: ${e.message}")
                 }
-                delay(intervalMs)
+                
+                val currentInterval = if (fastPollsRemaining > 0) {
+                    fastPollsRemaining--
+                    fastIntervalMs
+                } else {
+                    baseIntervalMs
+                }
+                delay(currentInterval)
             }
         }
-        Log.i(TAG, "CommandPoller started (interval=${intervalMs}ms)")
+        Log.i(TAG, "CommandPoller started (baseInterval=${baseIntervalMs}ms)")
     }
 
     fun stop() {
         scope.cancel()
     }
 
-    private suspend fun pollOnce() {
+    private suspend fun pollOnce(): Boolean {
         val prefs = Prefs(context)
-        if (!prefs.hasBackend()) return
-        val client = BackendClient(prefs.backendUrl)
+        if (!prefs.hasBackend()) return false
+        val client = BackendClient(prefs)
         val cmds = client.pollCommands(prefs.deviceId)
+        var executedAny = false
         for (c in cmds) {
+            if (prefs.executedCommandIds.contains(c.id)) {
+                Log.i(TAG, "Skipping already executed command: ${c.id}")
+                client.ackCommand(prefs.deviceId, c.id, "already_executed")
+                continue
+            }
             Log.i(TAG, "Received command: ${c.type} (${c.id})")
+            executedAny = true
             val result = runCatching { dispatch(c, prefs, client) }
                 .onFailure { Log.w(TAG, "dispatch failed: ${it.message}") }
                 .getOrElse { "error: ${it.message}" }
+            
+            prefs.markCommandExecuted(c.id)
             client.ackCommand(prefs.deviceId, c.id, result)
         }
+        return executedAny
     }
 
     private suspend fun dispatch(

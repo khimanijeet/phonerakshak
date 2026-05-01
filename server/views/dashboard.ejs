@@ -116,7 +116,10 @@
             </div>
             <div class="info-item">
               <span class="info-label">Status</span>
-              <span class="status-badge-inline" style="margin-top: 2px;">● Online</span>
+              <% const isOnline = (Date.now() - new Date(device.lastSeen).getTime()) < 5 * 60 * 1000; %>
+              <span class="status-badge-inline" style="margin-top: 2px; <%= isOnline ? 'color: #10b981; background: rgba(16,185,129,.15);' : 'color: #f87171; background: rgba(239,68,68,.15);' %>">
+                ● <%= isOnline ? 'Online' : 'Offline' %>
+              </span>
             </div>
           </div>
         </section>
@@ -190,7 +193,11 @@
                 <% commands.forEach(function(c){ %>
                   <tr>
                     <td style="font-weight: 500;"><%= c.type %></td>
-                    <td><span class="status-badge-inline" style="<%= c.status === 'Success' ? '' : 'color: #f87171; background: rgba(239,68,68,.15)' %>"><%= c.status || 'Sent' %></span></td>
+                    <td>
+                      <span class="status-badge-inline" style="<%= c.status === 'executed' ? 'color: #10b981; background: rgba(16,185,129,.15)' : (c.status === 'failed' ? 'color: #f87171; background: rgba(239,68,68,.15)' : 'color: #fbbf24; background: rgba(245,158,11,.15)') %>">
+                        <%= c.status ? c.status.charAt(0).toUpperCase() + c.status.slice(1) : 'Queued' %>
+                      </span>
+                    </td>
                     <td><span class="local-time-short" data-prefix="Today, " data-timestamp="<%= c.timestamp || c.queuedAt %>"></span></td>
                   </tr>
                 <% }); %>
@@ -206,16 +213,19 @@
 
 <script>
   const latest = <%- JSON.stringify(latest) %>;
+  const deviceId = "<%= device ? device.deviceId : '' %>";
+  let map, currentMarker;
+
   window.addEventListener('DOMContentLoaded', function(){
     const mapEl = document.getElementById('map');
     if (!mapEl) return;
     if (latest) {
       const center = [latest.latitude, latest.longitude];
-      const map = L.map('map', { zoomControl: false }).setView(center, 14);
+      map = L.map('map', { zoomControl: false }).setView(center, 14);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19, attribution: '&copy; OpenStreetMap'
       }).addTo(map);
-      L.marker(center).addTo(map);
+      currentMarker = L.marker(center).addTo(map);
     } else {
       document.getElementById('map').innerHTML = '<div style="color:#666; display:flex; align-items:center; justify-content:center; height:100%;">No Location Data</div>';
     }
@@ -224,7 +234,7 @@
     document.querySelectorAll('.local-time-full').forEach(el => {
       const ts = el.getAttribute('data-timestamp');
       if (ts && ts !== '') {
-        el.textContent = new Date(ts).toLocaleString();
+        el.textContent = new Date(parseInt(ts) || ts).toLocaleString();
       }
     });
 
@@ -232,9 +242,51 @@
       const ts = el.getAttribute('data-timestamp');
       const prefix = el.getAttribute('data-prefix') || '';
       if (ts && ts !== '') {
-        el.textContent = prefix + new Date(ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        el.textContent = prefix + new Date(parseInt(ts) || ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       }
     });
+
+    // Real-Time Socket.io Listeners (Zero Refresh)
+    if (typeof socket !== 'undefined' && deviceId) {
+      
+      socket.on('new_location', (data) => {
+        if (data.deviceId === deviceId) {
+          const newCenter = [data.latitude, data.longitude];
+          if (!map) {
+            document.getElementById('map').innerHTML = '';
+            map = L.map('map', { zoomControl: false }).setView(newCenter, 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            currentMarker = L.marker(newCenter).addTo(map);
+          } else {
+            if (currentMarker) currentMarker.setLatLng(newCenter);
+            map.setView(newCenter);
+          }
+          // Update text
+          const locText = document.querySelector('.local-time-full');
+          if (locText) {
+             locText.setAttribute('data-timestamp', data.timestamp);
+             locText.textContent = new Date(data.timestamp).toLocaleString();
+          }
+        }
+      });
+
+      socket.on('command_status_change', (data) => {
+        if (data.deviceId === deviceId) {
+          // Since we prepend on UI reload, a quick reload is the safest for complex table sync,
+          // but for zero-refresh, we just reload the page for command status to avoid complex DOM matching
+          // Or we can just find the row:
+          window.location.reload(); 
+        }
+      });
+
+      socket.on('new_alert', (data) => {
+        if (data.deviceId === deviceId) window.location.reload();
+      });
+      
+      socket.on('new_intruder', (data) => {
+        if (data.deviceId === deviceId) window.location.reload();
+      });
+    }
   });
 </script>
 

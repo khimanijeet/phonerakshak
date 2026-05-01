@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.provider.Settings
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import java.security.MessageDigest
 
 /**
@@ -13,8 +15,17 @@ import java.security.MessageDigest
  */
 class Prefs(context: Context) {
 
-    private val prefs: SharedPreferences =
-        context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
+    private val masterKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+
+    private val prefs: SharedPreferences = EncryptedSharedPreferences.create(
+        context.applicationContext,
+        FILE,
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
 
     @SuppressLint("HardwareIds")
     val deviceId: String =
@@ -81,6 +92,25 @@ class Prefs(context: Context) {
         get() = prefs.getString(KEY_LAST_LOC, null)
         set(value) = prefs.edit().putString(KEY_LAST_LOC, value).apply()
 
+    var jwtToken: String?
+        get() = prefs.getString(KEY_JWT_TOKEN, null)
+        set(value) = prefs.edit().putString(KEY_JWT_TOKEN, value).apply()
+
+    var executedCommandIds: Set<String>
+        get() = prefs.getStringSet(KEY_EXECUTED_CMDS, emptySet()) ?: emptySet()
+        set(value) = prefs.edit().putStringSet(KEY_EXECUTED_CMDS, value).apply()
+
+    fun markCommandExecuted(commandId: String) {
+        val current = executedCommandIds.toMutableSet()
+        current.add(commandId)
+        // Keep only the last 50 to prevent unbounded growth
+        if (current.size > 50) {
+            val toRemove = current.size - 50
+            current.removeAll(current.take(toRemove).toSet())
+        }
+        executedCommandIds = current
+    }
+
     private fun sha256(s: String): String {
         val bytes = MessageDigest.getInstance("SHA-256").digest(s.toByteArray())
         return bytes.joinToString("") { "%02x".format(it) }
@@ -95,5 +125,7 @@ class Prefs(context: Context) {
         private const val KEY_SIM_FP = "sim_fingerprint"
         private const val KEY_BACKEND_URL = "backend_url"
         private const val KEY_LAST_LOC = "last_known_location"
+        private const val KEY_JWT_TOKEN = "jwt_token"
+        private const val KEY_EXECUTED_CMDS = "executed_commands"
     }
 }

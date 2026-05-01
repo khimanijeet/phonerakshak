@@ -4,5 +4,10 @@
   <% if (typeof chartjs !== 'undefined' && chartjs) { %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <% } %>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.on('connect', () => console.log('Connected to Real-Time server'));
+  </script>
 </body>
 </html>

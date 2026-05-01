@@ -5,9 +5,9 @@ const commandSchema = new mongoose.Schema({
   deviceId: { type: String, required: true },
   type: { type: String, required: true },
   params: { type: mongoose.Schema.Types.Mixed, default: null },
-  status: { type: String, enum: ['pending', 'delivered', 'done'], default: 'pending' },
+  status: { type: String, enum: ['queued', 'processing', 'executed', 'failed'], default: 'queued' },
   queuedAt: { type: Date, default: Date.now },
-  deliveredAt: { type: Date, default: null },
+  processingAt: { type: Date, default: null },
   ackedAt: { type: Date, default: null },
   result: { type: mongoose.Schema.Types.Mixed, default: null }
 }, { timestamps: true });
