@@ -1,0 +1,83 @@
+const Device = require('../models/Device');
+const Location = require('../models/Location');
+const Alert = require('../models/Alert');
+const Command = require('../models/Command');
+const Intruder = require('../models/Intruder');
+const BlockedNumber = require('../models/BlockedNumber');
+const Report = require('../models/Report');
+
+const isOnline = (device, windowMs = 5 * 60 * 1000) => {
+  return device && device.lastSeen && (Date.now() - new Date(device.lastSeen).getTime()) < windowMs;
+};
+
+exports.getDashboard = async (req, res, next) => {
+  try {
+    const devices = await Device.find().sort({ lastSeen: -1 });
+    let device = devices.length > 0 ? devices[0].toObject() : null;
+    
+    if (device) {
+      device.online = isOnline(device);
+    }
+
+    const locations = device ? await Location.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(20) : [];
+    const latest = locations.length > 0 ? locations[0] : null;
+    const alerts = device ? await Alert.find({ deviceId: device.deviceId, type: 'sim_change' }).sort({ timestamp: -1 }).limit(10) : [];
+    const intruders = device ? await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(4) : [];
+    const commands = device ? await Command.find({ deviceId: device.deviceId }).sort({ queuedAt: -1 }).limit(5) : [];
+
+    res.render('dashboard', {
+      user: req.session.user,
+      device, locations, latest, alerts, intruders, commands
+    });
+  } catch (err) { next(err); }
+};
+
+exports.getDevices = async (req, res, next) => {
+  try {
+    let devices = await Device.find().sort({ lastSeen: -1 }).lean();
+    devices = devices.map(d => ({ ...d, online: isOnline(d) }));
+    res.render('devices', { user: req.session.user, devices });
+  } catch (err) { next(err); }
+};
+
+exports.getDevice = async (req, res, next) => {
+  try {
+    const device = await Device.findOne({ deviceId: req.params.id }).lean();
+    if (!device) return res.status(404).send('Device not found');
+    
+    const locations = await Location.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(200);
+    const latest = locations.length > 0 ? locations[0] : null;
+    const alerts = await Alert.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(100);
+    const intruders = await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(50);
+    const commands = await Command.find({ deviceId: device.deviceId }).sort({ queuedAt: -1 }).limit(50);
+    
+    res.render('device', {
+      user: req.session.user,
+      device: { ...device, online: isOnline(device) },
+      locations, latest, alerts, intruders, commands
+    });
+  } catch (err) { next(err); }
+};
+
+exports.sendCommand = async (req, res, next) => {
+  try {
+    const { type } = req.body;
+    if (!type) return res.status(400).send('type required');
+    await Command.create({ deviceId: req.params.id, type, status: 'pending', queuedAt: Date.now() });
+    res.redirect(`/admin/devices/${req.params.id}`);
+  } catch (err) { next(err); }
+};
+
+exports.getBlocked = async (req, res, next) => {
+  try {
+    const blocked = await BlockedNumber.find().sort({ count: -1 }).lean();
+    res.render('blocked', { user: req.session.user, blocked });
+  } catch (err) { next(err); }
+};
+
+exports.getReports = async (req, res, next) => {
+  try {
+    const reports = await Alert.find().sort({ timestamp: -1 }).limit(200).lean();
+    res.render('reports', { user: req.session.user, reports });
+  } catch (err) { next(err); }
+};

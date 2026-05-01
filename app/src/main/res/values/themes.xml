@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PhoneRakshak" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:navigationBarColor">@color/bg</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="Theme.PhoneRakshak.Fullscreen" parent="Theme.PhoneRakshak">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="PR.Card" parent="">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+
+    <style name="PR.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/btn_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PR.Button.Secondary" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/btn_secondary</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="PR.Button.Danger" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/btn_danger</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

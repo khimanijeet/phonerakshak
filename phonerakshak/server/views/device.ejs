@@ -1,0 +1,116 @@
+<% const leaflet = true; const chartjs = false; const active = 'devices'; %>
+<%- include('partials/header', { title: 'Device — Phonerakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Device Detail' }) %>
+    <div class="content">
+      <section class="card device-header">
+        <div>
+          <div class="muted small">Device ID</div>
+          <h2 class="mono"><%= device.deviceId %></h2>
+          <div class="device-meta">
+            <span><strong>Phone:</strong> <%= device.phoneNumber || '—' %></span>
+            <span><strong>Emergency:</strong> <%= device.emergencyNumber || '—' %></span>
+            <span><strong>Model:</strong> <%= device.deviceModel || '—' %></span>
+            <span><strong>City:</strong> <%= device.city || '—' %></span>
+            <span class="pill <%= device.online ? 'pill-green' : 'pill-grey' %>"><%= device.online ? 'Online' : 'Offline' %></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <header class="card-header"><h2>Remote Commands</h2></header>
+        <div class="cmd-row">
+          <% ['lock','alarm','stop_alarm','locate','emergency','unlock'].forEach(function(t){ %>
+            <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
+              <input type="hidden" name="type" value="<%= t %>" />
+              <button class="btn-secondary" type="submit"><%= t.replace('_',' ').toUpperCase() %></button>
+            </form>
+          <% }); %>
+        </div>
+        <p class="muted small">Commands are queued and picked up by the device on its next poll (every ~30s).</p>
+      </section>
+
+      <section class="card">
+        <header class="card-header"><h2>Live Map & Recent Locations</h2></header>
+        <div id="map" style="height:380px;border-radius:12px;overflow:hidden;"></div>
+        <% if (latest) { %>
+          <p class="muted small">Latest fix: <%= latest.latitude.toFixed(5) %>, <%= latest.longitude.toFixed(5) %> — <%= new Date(latest.timestamp).toLocaleString() %> (<%= latest.trigger %>)</p>
+        <% } else { %>
+          <p class="muted small">No location yet. Send a "locate" command or update from the device.</p>
+        <% } %>
+      </section>
+
+      <div class="row-grid">
+        <section class="card">
+          <header class="card-header"><h2>Alerts</h2></header>
+          <ul class="report-list">
+            <% if (alerts.length === 0) { %><li class="empty">No alerts yet</li><% } %>
+            <% alerts.slice(0,30).forEach(function(a){ %>
+              <li>
+                <span class="flag">⚠️</span>
+                <div class="report-body">
+                  <div class="report-title"><%= (a.type || '').replace(/_/g,' ') %></div>
+                  <div class="report-sub"><%= a.message || '' %></div>
+                </div>
+                <span class="time"><%= new Date(a.timestamp).toLocaleString() %></span>
+              </li>
+            <% }); %>
+          </ul>
+        </section>
+
+        <section class="card">
+          <header class="card-header"><h2>Command Log</h2></header>
+          <ul class="report-list">
+            <% if (commands.length === 0) { %><li class="empty">No commands yet</li><% } %>
+            <% commands.slice(0,30).forEach(function(c){ %>
+              <li>
+                <span class="flag">⚡</span>
+                <div class="report-body">
+                  <div class="report-title"><%= c.type %></div>
+                  <div class="report-sub">queued <%= new Date(c.queuedAt).toLocaleString() %></div>
+                </div>
+                <span class="status status-<%= c.status %>"><%= c.status %></span>
+              </li>
+            <% }); %>
+          </ul>
+        </section>
+      </div>
+
+      <section class="card">
+        <header class="card-header"><h2>Intruder Photos</h2></header>
+        <div class="photo-grid">
+          <% if (intruders.length === 0) { %><div class="empty">No intruder photos yet</div><% } %>
+          <% intruders.forEach(function(p){ %>
+            <a class="photo-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
+              <img src="/api/intruders/<%= p.filename %>" alt="intruder" loading="lazy" />
+              <div class="photo-time"><%= new Date(p.timestamp).toLocaleString() %></div>
+            </a>
+          <% }); %>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  const locations = <%- JSON.stringify(locations) %>;
+  const latest = <%- JSON.stringify(latest) %>;
+  window.addEventListener('DOMContentLoaded', function(){
+    const center = latest ? [latest.latitude, latest.longitude] : [20.5937, 78.9629];
+    const map = L.map('map').setView(center, latest ? 14 : 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    if (locations.length) {
+      const pts = locations.map(l => [l.latitude, l.longitude]);
+      L.polyline(pts, { color: '#a855f7', weight: 3, opacity: .7 }).addTo(map);
+      pts.slice(0, 10).forEach((p, i) => {
+        L.circleMarker(p, { radius: i === 0 ? 8 : 4, color: i === 0 ? '#22c55e' : '#3b82f6', fillOpacity: .8 }).addTo(map);
+      });
+    }
+  });
+</script>
+
+<%- include('partials/footer', { leaflet: true }) %>

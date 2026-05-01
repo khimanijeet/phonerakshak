@@ -1,0 +1,18 @@
+# Copy to `local.properties` and edit for your machine.
+# Android Studio usually creates this file automatically on first sync,
+# so you typically only need the sdk.dir line.
+
+sdk.dir=/Users/YOUR_USER/Library/Android/sdk
+# On Windows:   sdk.dir=C\:\\Users\\YOUR_USER\\AppData\\Local\\Android\\Sdk
+# On Linux:     sdk.dir=/home/YOUR_USER/Android/Sdk
+
+# --- Optional backend URL --------------------------------------------------
+# The app works fully without a backend (SMS-only mode). To enable optional
+# server registration and location push, put this line in `gradle.properties`
+# at the project root (NOT local.properties — Gradle does not expose
+# local.properties as a project property):
+#
+#     backendUrl=https://your-server.example.com
+#
+# Or pass on the command line:
+#     ./gradlew assembleDebug -PbackendUrl="https://your-server.example.com"

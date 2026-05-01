@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-38:/layout/activity_dashboard.xml",
+        "source": "com.example.phonerakshak.app-main-41:/layout/activity_dashboard.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-38:/layout/activity_lock.xml",
+        "source": "com.example.phonerakshak.app-main-41:/layout/activity_lock.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-38:/layout/activity_setup.xml",
+        "source": "com.example.phonerakshak.app-main-41:/layout/activity_setup.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-38:/layout/item_intruder.xml",
+        "source": "com.example.phonerakshak.app-main-41:/layout/item_intruder.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-38:/layout/activity_photo_viewer.xml",
+        "source": "com.example.phonerakshak.app-main-41:/layout/activity_photo_viewer.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-38:/layout/activity_intruders.xml",
+        "source": "com.example.phonerakshak.app-main-41:/layout/activity_intruders.xml"
+    }
+]

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PhoneRakshak</string>
+
+    <!-- Setup -->
+    <string name="setup_title">PhoneRakshak Setup</string>
+    <string name="hint_phone">Your phone number (optional)</string>
+    <string name="hint_emergency">Emergency contact phone number</string>
+    <string name="hint_pin">PIN (4–8 digits)</string>
+    <string name="hint_backend">Backend URL (optional, e.g. https://your-server.com)</string>
+    <string name="btn_save">Save and start protection</string>
+    <string name="btn_admin">Enable Device Admin (required to lock)</string>
+    <string name="btn_test_lock">Test lock screen</string>
+    <string name="btn_view_intruders">View intruder photos</string>
+    <string name="btn_open_dashboard">Open Dashboard</string>
+    <string name="status_running">Protection active</string>
+    <string name="status_stopped">Protection stopped</string>
+    <string name="status_admin_off">Device admin OFF — tap above to enable</string>
+    <string name="status_admin_on">Device admin enabled</string>
+    <string name="status_backend_on">Connected: %1$s</string>
+    <string name="status_backend_off">Backend not configured (SMS-only)</string>
+
+    <!-- Boot recovery consent -->
+    <string name="boot_recovery_title">Boot Recovery (recommended)</string>
+    <string name="boot_recovery_explainer">If your phone is stolen and turned off and on again, PhoneRakshak can automatically send a one-time status update to your account (or, if no server is set, to your emergency contact via SMS).\n\nThe update contains:\n• Battery level and charging state\n• Network type (Wi-Fi or mobile)\n• The last known location already saved on this device\n\nNo new tracking is started without your other settings. You can turn this off any time from this screen.</string>
+    <string name="boot_recovery_toggle">Send a status update to my account when the phone reboots</string>
+
+    <!-- Lock screen -->
+    <string name="lock_message">This phone is reported stolen. Please contact the owner.</string>
+    <string name="locked_title">LOCKED</string>
+    <string name="enter_pin">Enter PIN to unlock</string>
+    <string name="btn_unlock">Unlock</string>
+    <string name="wrong_pin">Wrong PIN — photo captured</string>
+
+    <!-- Notification -->
+    <string name="notif_channel">PhoneRakshak Service</string>
+    <string name="notif_text">PhoneRakshak protection is running</string>
+
+    <!-- Device admin -->
+    <string name="admin_label">PhoneRakshak Device Admin</string>
+    <string name="admin_description">Allows the PhoneRakshak app to lock the device when an SMS LOCK command is received.</string>
+    <string name="admin_explanation">Enabling this lets the app lock your screen when you send the LOCK SMS from another phone.</string>
+
+    <!-- SMS help -->
+    <string name="sms_help">SMS commands (replace 123 with your PIN):\n• LOCK&lt;PIN&gt; — lock the device\n• LOC&lt;PIN&gt; — reply with GPS link\n• ALARM&lt;PIN&gt; — sound alarm\n• STOPALARM&lt;PIN&gt; — stop alarm\n• SOS&lt;PIN&gt; — trigger Emergency Mode\n\nIf the SIM is changed, an alert SMS with the current location is sent to your emergency contact.</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">PhoneRakshak Dashboard</string>
+    <string name="status_card_title">Status</string>
+    <string name="quick_actions_title">Quick Actions</string>
+    <string name="last_location_title">Last Known Location</string>
+    <string name="last_loc_format">%1$s, %2$s\nUpdated: %3$s</string>
+    <string name="last_loc_none">No location recorded yet. Tap "Update Location".</string>
+    <string name="btn_emergency">EMERGENCY MODE</string>
+    <string name="btn_emergency_sub">Sound alarm, alert contact, share location</string>
+    <string name="btn_test_alarm">Test Alarm (10s)</string>
+    <string name="btn_stop_alarm">Stop Alarm</string>
+    <string name="btn_locate">Update Location</string>
+    <string name="btn_open_in_maps">Open in Maps</string>
+    <string name="btn_settings">Settings</string>
+
+    <!-- Intruder gallery -->
+    <string name="intruders_title">Intruder Photos</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_delete_all">Delete All</string>
+    <string name="empty_intruders">No intruder photos yet. Photos are captured silently from the front camera after wrong PIN attempts on the lock screen.</string>
+
+    <plurals name="intruders_count">
+        <item quantity="one">%d intruder photo</item>
+        <item quantity="other">%d intruder photos</item>
+    </plurals>
+</resources>

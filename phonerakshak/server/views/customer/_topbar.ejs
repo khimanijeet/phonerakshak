@@ -1,0 +1,32 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-title-row">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="topbar-title-icon"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+      <h1 class="topbar-title"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'My Device' %></h1>
+    </div>
+    <% if (typeof subtitle !== 'undefined' && subtitle) { %>
+      <div class="topbar-sub"><%= subtitle %></div>
+    <% } %>
+  </div>
+  <div class="topbar-right">
+    <% if (typeof ctx !== 'undefined' && ctx && ctx.device) { %>
+      <div class="topbar-status">
+        <div class="status-line">
+          <span class="muted small">Phone:</span>
+          <% if (ctx.device.online) { %>
+            <span class="status-online">● Online</span>
+          <% } else { %>
+            <span class="status-offline">● Offline</span>
+          <% } %>
+        </div>
+        <div class="muted small">Last seen: <%= ctx.device.lastSeenLabel %></div>
+      </div>
+    <% } %>
+    <div class="profile-chip">
+      <div class="profile-avatar"><%= (user.name || user.phone || 'U').charAt(0).toUpperCase() %></div>
+      <div class="profile-chip-text">
+        <div class="profile-chip-name"><%= user.name || user.phone %></div>
+      </div>
+    </div>
+  </div>
+</header>

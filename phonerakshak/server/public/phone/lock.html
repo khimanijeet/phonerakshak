@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PhoneRakshak · Locked</title>
+<meta name="viewport" content="width=390, initial-scale=1">
+<link rel="stylesheet" href="/phone/_phone.css">
+<style>
+  body, .phone{background:#000;}
+  .lock{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:32px; text-align:center;
+  }
+  .locked{color:var(--bad); font-size:52px; font-weight:800; letter-spacing:2px; margin-bottom:24px;}
+  .lockicon{
+    width:64px; height:64px; border:3px solid var(--bad); border-radius:14px;
+    margin-bottom:18px; position:relative;
+  }
+  .lockicon::before{
+    content:""; position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+    width:32px; height:28px; border:3px solid var(--bad); border-bottom:none; border-radius:16px 16px 0 0;
+  }
+  .msg{color:#fff; font-size:16px; line-height:1.5; margin-bottom:36px; max-width:280px;}
+  .pin{
+    width:100%; max-width:300px; background:#1a1a1a; border:1px solid #333; color:#fff;
+    border-radius:10px; padding:14px; font-size:16px; text-align:center; letter-spacing:8px;
+    margin-bottom:14px;
+  }
+  .pin::placeholder{color:#666; letter-spacing:1px;}
+  .unlock{
+    width:100%; max-width:300px; background:var(--accent); color:#fff; border:none;
+    padding:14px; font-size:15px; font-weight:600; border-radius:10px;
+  }
+  .err{color:var(--bad); margin-top:16px; font-size:13px;}
+</style>
+</head><body>
+<div class="phone">
+  <div class="statusbar" style="background:#000"><span>9:41</span><span class="right">5G&nbsp;<span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;42%</span></div>
+  <div class="lock">
+    <div class="lockicon"></div>
+    <div class="locked">LOCKED</div>
+    <div class="msg">This phone is reported stolen. Please contact the owner.</div>
+    <input class="pin" type="password" placeholder="Enter PIN to unlock" value="••••">
+    <button class="unlock">Unlock</button>
+    <div class="err">Wrong PIN — photo captured</div>
+  </div>
+</div>
+</body></html>

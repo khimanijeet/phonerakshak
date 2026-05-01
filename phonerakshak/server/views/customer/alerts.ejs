@@ -1,0 +1,41 @@
+<%- include('_layout-head', { title: 'Alerts — PhoneRakshak Customer' }) %>
+<body>
+<div class="app-shell">
+<%- include('_sidebar', { active }) %>
+<main class="app-main">
+  <%- include('_topbar', { user, ctx, pageTitle: 'Alerts', subtitle: 'Everything that happened on your device' }) %>
+  <div class="content">
+    <% if (!ctx.device) { %>
+      <div class="card empty-state"><h2>No device linked yet.</h2></div>
+    <% } else if (!ctx.alerts.length) { %>
+      <div class="card empty-state"><h2>No alerts</h2><p class="muted">All quiet. You'll see SIM changes, wrong-PIN attempts, intruder captures and SOS events here.</p></div>
+    <% } else { %>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Time</th><th>Type</th><th>Message</th></tr></thead>
+          <tbody>
+            <% ctx.alerts.forEach(a => {
+              const labelMap = {
+                sim_change:'SIM changed', wrong_pin:'Wrong PIN', intruder_photo:'Intruder photo',
+                emergency:'Emergency / SOS', sos:'SOS', boot_recovery:'Boot recovery',
+                blocked_call:'Blocked call', call_monitored:'Call monitored', info:'Info'
+              };
+              const colorMap = {
+                emergency:'red', sos:'red', wrong_pin:'amber', intruder_photo:'amber',
+                sim_change:'blue', boot_recovery:'blue', blocked_call:'red', call_monitored:'green', info:'blue'
+              };
+            %>
+              <tr>
+                <td><%= timeAgo(a.timestamp) %></td>
+                <td><span class="pill <%= colorMap[a.type] || 'blue' %>"><%= labelMap[a.type] || a.type %></span></td>
+                <td><%= a.message || '—' %><% if (a.meta && a.meta.oldSim) { %><br><small class="muted">old: <%= a.meta.oldSim %> → new: <%= a.meta.newSim %></small><% } %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</main>
+</div>
+</body></html>

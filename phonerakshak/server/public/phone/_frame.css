@@ -1,0 +1,3 @@
+html,body{background:#000; margin:0; height:100%;}
+body{display:flex; align-items:flex-start; justify-content:center;}
+iframe{border:0;}

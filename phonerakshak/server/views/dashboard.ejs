@@ -1,0 +1,469 @@
+<% const leaflet = true; const chartjs = false; const active = 'dashboard'; %>
+<%- include('partials/header', { title: 'Phonerakshak Admin Panel', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Dashboard', subtitle: 'Monitor and protect your device', context: context }) %>
+
+    <div class="content">
+
+      <% if (notice) { %>
+        <div class="<%= notice.type === 'error' ? 'error-banner' : 'notice-banner' %>"><%= notice.text %></div>
+      <% } %>
+
+      <% if (devices.length > 1) { %>
+        <form method="GET" action="/admin" class="device-picker">
+          <label for="deviceId">Device:</label>
+          <select id="deviceId" name="deviceId" onchange="this.form.submit()">
+            <% devices.forEach(function(d){ %>
+              <option value="<%= d.deviceId %>" <%= context && context.device.deviceId === d.deviceId ? 'selected' : '' %>>
+                <%= d.deviceModel || d.deviceId %><%= d.phoneNumber ? ' — ' + d.phoneNumber : '' %>
+              </option>
+            <% }); %>
+          </select>
+        </form>
+      <% } %>
+
+      <% if (!context) { %>
+        <section class="card empty-device-card">
+          <div class="empty-device-icon">📱</div>
+          <h2>No device registered yet</h2>
+          <p>Install the PhoneRakshak Android app on your phone and set the backend URL to this server.
+             Once it checks in, this dashboard will populate with live data.</p>
+          <p class="muted small"><strong>Stats so far:</strong>
+            <%= stats.devicesRegistered %> devices · <%= stats.sosAlerts %> SOS alerts · <%= stats.reportsFiled %> reports filed
+          </p>
+        </section>
+      <% } else {
+            const d = context.device;
+            const lat = context.latest;
+            const isLive = lat && (Date.now() - lat.timestamp) < 5 * 60 * 1000;
+        %>
+
+      <!-- Action cards -->
+      <div id="actions" class="action-grid">
+        <form method="POST" action="/admin/quick-command" class="action-card action-green">
+          <input type="hidden" name="type" value="locate" />
+          <input type="hidden" name="deviceId" value="<%= d.deviceId %>" />
+          <div class="action-top">
+            <div class="action-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="action-title">Get Location</div>
+              <div class="action-sub">Get current location of your device</div>
+            </div>
+          </div>
+          <button class="action-btn" type="submit">
+            GET LOCATION
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2z"/></svg>
+          </button>
+        </form>
+
+        <form method="POST" action="/admin/quick-command" class="action-card action-red">
+          <input type="hidden" name="type" value="lock" />
+          <input type="hidden" name="deviceId" value="<%= d.deviceId %>" />
+          <div class="action-top">
+            <div class="action-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div class="action-title">Lock Device</div>
+              <div class="action-sub">Lock your device remotely</div>
+            </div>
+          </div>
+          <button class="action-btn" type="submit">
+            LOCK DEVICE
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </button>
+        </form>
+
+        <form method="POST" action="/admin/quick-command" class="action-card action-orange">
+          <input type="hidden" name="type" value="alarm" />
+          <input type="hidden" name="deviceId" value="<%= d.deviceId %>" />
+          <div class="action-top">
+            <div class="action-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </div>
+            <div>
+              <div class="action-title">Play Alarm</div>
+              <div class="action-sub">Play loud alarm on your device</div>
+            </div>
+          </div>
+          <button class="action-btn" type="submit">
+            PLAY ALARM
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Location + Device Info row -->
+      <div class="row-grid-loc">
+        <section id="location-card" class="card">
+          <header class="card-header">
+            <h2>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Last Known Location
+            </h2>
+            <div class="header-right">
+              <% if (lat) { %>
+                <% var src = (lat.source || 'gps'); %>
+                <span class="src-pill src-<%= src %>" title="Resolved from <%= src %>"><%= src.toUpperCase() %></span>
+                <% if (lat.accuracy) { %><span class="muted small">±<%= Math.round(lat.accuracy) %> m</span><% } %>
+              <% } %>
+              <% if (isLive) { %><span class="badge-live">● Live</span><% } %>
+              <% if (lat) { %><span class="muted small"><%= timeAgo(lat.timestamp) %></span><% } %>
+            </div>
+          </header>
+          <% if (lat) { %>
+            <div id="map" class="map-box"></div>
+            <div class="addr-row">
+              <div class="addr-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="addr-body">
+                <div class="addr-label">Address</div>
+                <div id="addr-text" class="addr-value">Resolving address…</div>
+              </div>
+            </div>
+            <div class="latlng-row">
+              <div>
+                <div class="muted small">Latitude</div>
+                <div class="latlng-val"><%= lat.latitude.toFixed(4) %></div>
+              </div>
+              <div>
+                <div class="muted small">Longitude</div>
+                <div class="latlng-val"><%= lat.longitude.toFixed(4) %></div>
+              </div>
+              <a class="btn-maps" href="https://www.google.com/maps?q=<%= lat.latitude %>,<%= lat.longitude %>" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                OPEN IN MAPS
+              </a>
+            </div>
+          <% } else { %>
+            <p class="empty">No location reported yet. Use <strong>Get Location</strong> above to request one.</p>
+          <% } %>
+        </section>
+
+        <section id="device-info" class="card">
+          <header class="card-header">
+            <h2>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+              Device Information
+            </h2>
+          </header>
+          <div class="info-grid">
+            <div>
+              <div class="info-label">Device Name</div>
+              <div class="info-value"><%= d.deviceModel || '—' %></div>
+            </div>
+            <div>
+              <div class="info-label">Phone Number</div>
+              <div class="info-value"><%= d.phoneNumber || '—' %></div>
+            </div>
+            <div>
+              <div class="info-label">Battery Level</div>
+              <div class="info-value">
+                <% if (d.batteryLevel != null) { %>
+                  <%= d.batteryLevel %>%
+                  <span class="battery <%= d.batteryLevel > 60 ? 'battery-good' : (d.batteryLevel > 20 ? 'battery-mid' : 'battery-low') %>">
+                    <span style="width: <%= d.batteryLevel %>%"></span>
+                  </span>
+                <% } else { %>—<% } %>
+              </div>
+            </div>
+            <div>
+              <div class="info-label">App Version</div>
+              <div class="info-value"><%= d.appVersion || stats.appVersion %></div>
+            </div>
+            <div>
+              <div class="info-label">Last Seen</div>
+              <div class="info-value"><%= timeAgo(d.lastSeen) %></div>
+            </div>
+            <div>
+              <div class="info-label">Status</div>
+              <div class="info-value">
+                <% if (d.online) { %>
+                  <span class="pill pill-green">● Online</span>
+                <% } else { %>
+                  <span class="pill pill-grey">● Offline</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Last Known Wi-Fi -->
+      <section id="last-wifi" class="card" style="margin-top:18px;">
+        <header class="card-header">
+          <h2>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12" y2="20"/></svg>
+            Last Known Wi-Fi
+          </h2>
+          <span class="muted small">Helps locate the device when GPS fails (indoors / GPS off).</span>
+        </header>
+        <% if (!context.latestWifi) { %>
+          <p class="empty">No Wi-Fi captured yet. The app records the connected network whenever it gets a location fix.</p>
+        <% } else { %>
+          <% var w = context.latestWifi; %>
+          <div class="info-grid">
+            <div>
+              <div class="info-label">Network (SSID)</div>
+              <div class="info-value"><%= w.ssid || '— hidden —' %></div>
+            </div>
+            <div>
+              <div class="info-label">Router (BSSID)</div>
+              <div class="info-value" style="font-family: monospace;"><%= w.bssid || '—' %></div>
+            </div>
+            <div>
+              <div class="info-label">Signal</div>
+              <div class="info-value">
+                <% if (w.rssi != null) { %>
+                  <%= w.rssi %> dBm
+                  <% var q = (w.rssi >= -55 ? 'Excellent' : w.rssi >= -67 ? 'Good' : w.rssi >= -75 ? 'Fair' : w.rssi >= -85 ? 'Weak' : 'Very weak'); %>
+                  <span class="pill pill-grey">● <%= q %></span>
+                <% } else { %>—<% } %>
+              </div>
+            </div>
+            <div>
+              <div class="info-label">Frequency</div>
+              <div class="info-value">
+                <% if (w.frequencyMhz) {
+                     var band = (w.frequencyMhz < 3000 ? '2.4 GHz' : w.frequencyMhz < 5925 ? '5 GHz' : '6 GHz');
+                %>
+                  <%= w.frequencyMhz %> MHz <span class="muted small">(<%= band %>)</span>
+                <% } else { %>—<% } %>
+              </div>
+            </div>
+            <div>
+              <div class="info-label">Captured</div>
+              <div class="info-value"><%= timeAgo(w.timestamp) %></div>
+            </div>
+            <div>
+              <div class="info-label">Trigger</div>
+              <div class="info-value"><span class="pill pill-grey"><%= w.trigger %></span></div>
+            </div>
+          </div>
+
+          <% if (context.wifiHistory && context.wifiHistory.length > 1) { %>
+            <details style="margin-top:14px;">
+              <summary class="muted small" style="cursor:pointer;">Recent Wi-Fi history (<%= context.wifiHistory.length %>)</summary>
+              <div class="table-wrap" style="margin-top:8px;">
+                <table class="data-table mini-table">
+                  <thead><tr><th>Time</th><th>SSID</th><th>BSSID</th><th>Signal</th><th>Trigger</th></tr></thead>
+                  <tbody>
+                    <% context.wifiHistory.forEach(function(h){ %>
+                      <tr>
+                        <td><%= shortDateTime(h.timestamp) %></td>
+                        <td><%= h.ssid || '—' %></td>
+                        <td style="font-family: monospace;"><%= h.bssid || '—' %></td>
+                        <td><%= h.rssi != null ? h.rssi + ' dBm' : '—' %></td>
+                        <td><%= h.trigger || '—' %></td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          <% } %>
+        <% } %>
+      </section>
+
+      <!-- SIM alerts + Recent commands + Photos -->
+      <div class="row-grid-bot">
+        <section id="sim-alerts" class="card">
+          <header class="card-header">
+            <h2>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+              SIM Change Alerts
+            </h2>
+          </header>
+          <% if (context.simAlerts.length === 0) { %>
+            <p class="empty">No SIM change alerts.</p>
+          <% } else { %>
+            <div class="table-wrap">
+              <table class="data-table mini-table">
+                <thead><tr><th>Time</th><th>Old SIM</th><th>New SIM</th><th>Status</th></tr></thead>
+                <tbody>
+                  <% context.simAlerts.forEach(function(a){ %>
+                    <tr>
+                      <td><%= shortDateTime(a.timestamp) %></td>
+                      <td><%= (a.meta && a.meta.oldSim) || '—' %></td>
+                      <td><%= (a.meta && a.meta.newSim) || '—' %></td>
+                      <td><span class="badge-orange">SIM Changed</span></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="card">
+          <header class="card-header">
+            <h2>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Recent Commands
+            </h2>
+          </header>
+          <% if (context.commands.length === 0) { %>
+            <p class="empty">No commands sent yet.</p>
+          <% } else { %>
+            <div class="table-wrap">
+              <table class="data-table mini-table">
+                <thead><tr><th>Command</th><th>Status</th><th>Time</th></tr></thead>
+                <tbody>
+                  <% context.commands.forEach(function(c){ %>
+                    <tr>
+                      <td><%= prettyCommand(c.type) %></td>
+                      <td><span class="badge-status badge-<%= c.status %>"><%= c.status === 'done' ? 'Success' : (c.status.charAt(0).toUpperCase() + c.status.slice(1)) %></span></td>
+                      <td><%= shortTime(c.queuedAt) %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+      </div>
+
+      <!-- Boot Recovery events -->
+      <section id="boot-recovery" class="card" style="margin-top:18px;">
+        <header class="card-header">
+          <h2>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v10"/><path d="M5.6 6.6a9 9 0 1 0 12.8 0"/></svg>
+            Boot Recovery Events
+          </h2>
+          <span class="muted small">Sent automatically when the phone reboots (if enabled in the app).</span>
+        </header>
+        <% if (!context.bootEvents || context.bootEvents.length === 0) { %>
+          <p class="empty">No boot recovery reports yet. Enable "Boot Recovery" in the Android app's Setup screen.</p>
+        <% } else { %>
+          <div class="table-wrap">
+            <table class="data-table mini-table">
+              <thead><tr><th>Time</th><th>Battery</th><th>Network</th><th>Last location</th><th>Status</th></tr></thead>
+              <tbody>
+                <% context.bootEvents.forEach(function(b){ %>
+                  <% var m = b.meta || {}; %>
+                  <tr>
+                    <td><%= shortDateTime(b.timestamp) %></td>
+                    <td>
+                      <% if (m.batteryPct != null) { %>
+                        <%= m.batteryPct %>%<% if (m.batteryCharging) { %> ⚡<% } %>
+                      <% } else { %>—<% } %>
+                    </td>
+                    <td><%= m.network || '—' %></td>
+                    <td>
+                      <% if (m.lat != null && m.lng != null) { %>
+                        <a href="https://www.google.com/maps?q=<%= m.lat %>,<%= m.lng %>" target="_blank" rel="noopener">
+                          <%= Number(m.lat).toFixed(4) %>, <%= Number(m.lng).toFixed(4) %>
+                        </a>
+                      <% } else { %>—<% } %>
+                    </td>
+                    <td><span class="badge-orange">Rebooted</span></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+
+      <section id="photos" class="card">
+        <header class="card-header">
+          <h2>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            Recent Intruder Photos
+          </h2>
+          <a class="link" href="/admin/devices/<%= encodeURIComponent(d.deviceId) %>">View All</a>
+        </header>
+        <% if (context.intruders.length === 0) { %>
+          <p class="empty">No intruder photos captured yet.</p>
+        <% } else { %>
+          <div class="intruder-grid">
+            <% context.intruders.forEach(function(p){ %>
+              <a class="intruder-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
+                <img src="/api/intruders/<%= p.filename %>" alt="intruder" loading="lazy" />
+                <div class="intruder-time"><%= shortDateTime(p.timestamp) %></div>
+              </a>
+            <% }); %>
+          </div>
+        <% } %>
+      </section>
+
+      <% } %>
+
+      <footer class="dash-footer">© <%= (new Date()).getFullYear() %> PhoneRakshak — All rights reserved.</footer>
+    </div>
+  </main>
+</div>
+
+<% if (context && context.latest) { %>
+<script>
+  const lat = <%= context.latest.latitude %>;
+  const lng = <%= context.latest.longitude %>;
+
+  window.addEventListener('DOMContentLoaded', function(){
+    const map = L.map('map', { zoomControl: true, attributionControl: false }).setView([lat, lng], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+    L.marker([lat, lng]).addTo(map);
+
+    fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lng, {
+      headers: { 'Accept-Language': 'en' }
+    })
+      .then(r => r.json())
+      .then(data => {
+        const el = document.getElementById('addr-text');
+        if (el) el.textContent = (data && data.display_name) ? data.display_name : 'Address not available';
+      })
+      .catch(() => {
+        const el = document.getElementById('addr-text');
+        if (el) el.textContent = 'Address lookup failed';
+      });
+  });
+</script>
+<% } %>
+
+<%- include('partials/footer', { leaflet: true, chartjs: false }) %>
+
+<%
+function prettyCommand(t){
+  const map = { lock: 'Lock Device', unlock: 'Unlock Device', alarm: 'Play Alarm', stop_alarm: 'Stop Alarm', locate: 'Get Location', emergency: 'Emergency Mode' };
+  return map[t] || (t || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+function shortTime(ts){
+  if(!ts) return '—';
+  const d = new Date(ts);
+  let h = d.getHours();
+  const m = d.getMinutes().toString().padStart(2,'0');
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return 'Today, ' + h + ':' + m + ' ' + ap;
+}
+function shortDateTime(ts){
+  if(!ts) return '—';
+  const d = new Date(ts);
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  let h = d.getHours();
+  const m = d.getMinutes().toString().padStart(2,'0');
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  if (sameDay) return 'Today, ' + h + ':' + m + ' ' + ap;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ', ' + h + ':' + m + ' ' + ap;
+}
+function timeAgo(ts){
+  if(!ts) return '—';
+  const diff = Math.max(0, Date.now() - ts);
+  const sec = Math.floor(diff / 1000);
+  if (sec < 60) return sec + ' sec ago';
+  const min = Math.floor(sec / 60);
+  if (min < 60) return min + ' min ago';
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return hr + ' hr ago';
+  const day = Math.floor(hr / 24);
+  return day + ' day' + (day !== 1 ? 's' : '') + ' ago';
+}
+%>

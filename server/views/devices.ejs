@@ -1,0 +1,41 @@
+<% const leaflet = false; const chartjs = false; const active = 'devices'; %>
+<%- include('partials/header', { title: 'Devices — Phonerakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Devices' }) %>
+    <div class="content">
+      <section class="card">
+        <header class="card-header">
+          <h2>Registered Devices</h2>
+          <span class="muted"><%= devices.length %> total</span>
+        </header>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Device ID</th><th>Phone</th><th>Emergency</th><th>Model</th><th>City</th><th>Status</th><th>Last seen</th><th></th></tr>
+            </thead>
+            <tbody>
+              <% if (devices.length === 0) { %>
+                <tr><td colspan="8" class="empty">No devices registered yet. Install the Android app and tap "Save and start protection".</td></tr>
+              <% } %>
+              <% devices.forEach(function(d){ %>
+                <tr>
+                  <td class="mono"><%= d.deviceId %></td>
+                  <td><%= d.phoneNumber || '—' %></td>
+                  <td><%= d.emergencyNumber || '—' %></td>
+                  <td><%= d.deviceModel || '—' %></td>
+                  <td><%= d.city || '—' %></td>
+                  <td><span class="pill <%= d.online ? 'pill-green' : 'pill-grey' %>"><%= d.online ? 'Online' : 'Offline' %></span></td>
+                  <td><%= d.lastSeen ? new Date(d.lastSeen).toLocaleString() : '—' %></td>
+                  <td><a class="link" href="/admin/devices/<%= encodeURIComponent(d.deviceId) %>">Open</a></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

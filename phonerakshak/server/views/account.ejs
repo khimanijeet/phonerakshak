@@ -1,0 +1,42 @@
+<% const leaflet = false; const chartjs = false; const active = 'account'; %>
+<%- include('partials/header', { title: 'Account — Phonerakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Account' }) %>
+
+    <div class="content">
+      <section class="card" style="max-width:560px;">
+        <header class="card-header">
+          <h2>Change password</h2>
+        </header>
+        <div class="card-body" style="padding:20px;">
+          <% if (error) { %>
+            <div class="error-banner"><%= error %></div>
+          <% } %>
+          <% if (notice) { %>
+            <div class="notice-banner"><%= notice %></div>
+          <% } %>
+
+          <form method="POST" action="/admin/account/change-password" class="login-form" style="gap:12px;">
+            <label>Current password</label>
+            <input name="currentPassword" type="password" required autocomplete="current-password" />
+
+            <label>New password (min. 8 characters)</label>
+            <input name="newPassword" type="password" required minlength="8" autocomplete="new-password" />
+
+            <label>Confirm new password</label>
+            <input name="confirmPassword" type="password" required minlength="8" autocomplete="new-password" />
+
+            <button class="btn-primary" type="submit" style="margin-top:8px;">Update password</button>
+          </form>
+
+          <p class="login-hint" style="margin-top:18px;">
+            Signed in as <strong><%= user.username %></strong>. The new password is stored securely (bcrypt-hashed) and survives restarts.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

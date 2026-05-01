@@ -1,0 +1,32 @@
+<% const leaflet = false; const chartjs = false; const active = 'blocked'; %>
+<%- include('partials/header', { title: 'Blocked Numbers — Phonerakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Blocked Numbers' }) %>
+    <div class="content">
+      <section class="card">
+        <header class="card-header"><h2>All Blocked Numbers</h2><span class="muted"><%= blocked.length %> total</span></header>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Number</th><th>Times Blocked</th><th>Last Seen</th></tr></thead>
+            <tbody>
+              <% if (blocked.length === 0) { %>
+                <tr><td colspan="4" class="empty">No blocked numbers yet</td></tr>
+              <% } %>
+              <% blocked.forEach(function(b, i){ %>
+                <tr>
+                  <td><%= i+1 %></td>
+                  <td class="mono"><%= b.number %></td>
+                  <td><span class="badge-red"><%= b.count %> times</span></td>
+                  <td><%= b.lastSeen ? new Date(b.lastSeen).toLocaleString() : '—' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,225 @@
+<% const leaflet = true; const chartjs = false; const active = 'dashboard'; const pageTitle = 'Dashboard'; %>
+<%- include('partials/header', { title: 'PhoneRakshak Anti-Theft Admin Panel', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Dashboard' }) %>
+
+    <div class="content">
+      <% if (!device) { %>
+        <div style="text-align: center; padding: 60px 20px; background: var(--card); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1); margin-top: 20px;">
+          <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
+          <h2 style="margin-bottom: 8px;">Waiting for device to connect...</h2>
+          <p class="muted">Install the PhoneRakshak app on your Android device and open it to link it to this dashboard.</p>
+        </div>
+      <% } else { %>
+      <!-- Top Action Cards -->
+      <div class="action-cards">
+        <div class="action-card green">
+          <div class="action-card-top">
+            <div class="action-card-icon">📍</div>
+            <div>
+              <div class="action-card-title">Get Location</div>
+              <div class="action-card-desc">Get current location of your device</div>
+            </div>
+          </div>
+          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
+            <input type="hidden" name="type" value="locate" />
+            <button class="action-btn" type="submit">GET LOCATION 📍</button>
+          </form>
+        </div>
+        
+        <div class="action-card red">
+          <div class="action-card-top">
+            <div class="action-card-icon">🔒</div>
+            <div>
+              <div class="action-card-title">Lock Device</div>
+              <div class="action-card-desc">Lock your device remotely</div>
+            </div>
+          </div>
+          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
+            <input type="hidden" name="type" value="lock" />
+            <button class="action-btn" type="submit">LOCK DEVICE 🔒</button>
+          </form>
+        </div>
+
+        <div class="action-card orange">
+          <div class="action-card-top">
+            <div class="action-card-icon">🔊</div>
+            <div>
+              <div class="action-card-title">Play Alarm</div>
+              <div class="action-card-desc">Play loud alarm on your device</div>
+            </div>
+          </div>
+          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
+            <input type="hidden" name="type" value="alarm" />
+            <button class="action-btn" type="submit">PLAY ALARM 🔔</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Map and Device Info Grid -->
+      <div class="row-grid">
+        <section class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <header class="card-header" style="padding: 16px 20px; margin: 0; border-bottom: 1px solid var(--border);">
+            <h2 style="display: flex; align-items: center; gap: 8px;">📍 Last Known Location <span class="status-badge-inline">Live</span></h2>
+            <div class="muted small"><%= latest ? new Date(latest.timestamp).toLocaleString() : 'No location yet' %> ↻</div>
+          </header>
+          <div id="map" style="height: 250px; background: #222;"></div>
+          <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card);">
+            <div>
+              <div class="muted small" style="margin-bottom: 4px;">Address</div>
+              <div style="font-weight: 500; font-size: 14px; margin-bottom: 10px;"><%= latest && latest.address ? latest.address : 'Unknown Address' %></div>
+              <div style="display: flex; gap: 40px;">
+                <div>
+                  <div class="muted small">Latitude</div>
+                  <div style="font-size: 13px; font-family: monospace;"><%= latest ? latest.latitude.toFixed(4) : '—' %></div>
+                </div>
+                <div>
+                  <div class="muted small">Longitude</div>
+                  <div style="font-size: 13px; font-family: monospace;"><%= latest ? latest.longitude.toFixed(4) : '—' %></div>
+                </div>
+              </div>
+            </div>
+            <% if (latest) { %>
+              <a href="https://maps.google.com/?q=<%= latest.latitude %>,<%= latest.longitude %>" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; margin:0; background: #3b82f6;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg> OPEN IN MAPS
+              </a>
+            <% } %>
+          </div>
+        </section>
+
+        <section class="card">
+          <header class="card-header">
+            <h2 style="display: flex; align-items: center; gap: 8px;">📱 Device Information</h2>
+          </header>
+          <div class="device-info-grid">
+            <div class="info-item">
+              <span class="info-label">Device Name</span>
+              <span class="info-value"><%= device.deviceModel || 'Unknown Device' %></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone Number</span>
+              <span class="info-value"><%= device.phoneNumber || '—' %></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Battery Level</span>
+              <span class="info-value info-value-green">72% 🔋</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">App Version</span>
+              <span class="info-value"><%= device.appVersion || '1.0.3' %></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Last Seen</span>
+              <span class="info-value">2 min ago</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Status</span>
+              <span class="status-badge-inline" style="margin-top: 2px;">● Online</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Recent Intruder Photos -->
+      <section class="card" style="margin-top: 20px;">
+        <header class="card-header">
+          <h2 style="display: flex; align-items: center; gap: 8px;">📸 Recent Intruder Photos</h2>
+          <a href="#photos" class="link">View All</a>
+        </header>
+        <div class="photo-grid" style="grid-template-columns: repeat(4, 1fr); gap: 16px;">
+          <% if (intruders.length === 0) { %><div class="empty" style="grid-column: span 4;">No intruder photos yet</div><% } %>
+          <% intruders.slice(0, 4).forEach(function(p){ %>
+            <a class="photo-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
+              <img src="<%= p.filename.startsWith('mock') ? 'https://images.unsplash.com/photo-1493121516709-380d32bb5e33?auto=format&fit=crop&q=80&w=200&h=200' : '/api/intruders/' + p.filename %>" alt="intruder" loading="lazy" />
+              <div class="photo-time" style="background: var(--card-2); text-align: left; padding: 10px;">
+                Today, <%= new Date(p.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      </section>
+
+      <!-- SIM Alerts and Commands Grid -->
+      <div class="row-grid" style="margin-top: 20px;">
+        <section class="card">
+          <header class="card-header">
+            <h2 style="display: flex; align-items: center; gap: 8px;">📋 SIM Change Alerts</h2>
+            <a href="#sim" class="link">View All</a>
+          </header>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Alert Details</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (alerts.length === 0) { %><tr><td colspan="3" class="empty">No SIM alerts</td></tr><% } %>
+                <% alerts.forEach(function(a){ %>
+                  <tr>
+                    <td><%= new Date(a.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                    <td><%= a.message || 'SIM Swapped' %></td>
+                    <td><span class="status-badge-inline" style="color: #fbbf24; background: rgba(245,158,11,.15);"><%= a.status || 'SIM Changed' %></span></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <header class="card-header">
+            <h2 style="display: flex; align-items: center; gap: 8px;">&gt;_ Recent Commands</h2>
+            <a href="#commands" class="link">View All</a>
+          </header>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Command</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (commands.length === 0) { %><tr><td colspan="3" class="empty">No commands</td></tr><% } %>
+                <% commands.forEach(function(c){ %>
+                  <tr>
+                    <td style="font-weight: 500;"><%= c.type %></td>
+                    <td><span class="status-badge-inline" style="<%= c.status === 'Success' ? '' : 'color: #f87171; background: rgba(239,68,68,.15)' %>"><%= c.status || 'Sent' %></span></td>
+                    <td>Today, <%= new Date(c.timestamp || c.queuedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script>
+  const latest = <%- JSON.stringify(latest) %>;
+  window.addEventListener('DOMContentLoaded', function(){
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+    if (latest) {
+      const center = [latest.latitude, latest.longitude];
+      const map = L.map('map', { zoomControl: false }).setView(center, 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19, attribution: '&copy; OpenStreetMap'
+      }).addTo(map);
+      L.marker(center).addTo(map);
+    } else {
+      document.getElementById('map').innerHTML = '<div style="color:#666; display:flex; align-items:center; justify-content:center; height:100%;">No Location Data</div>';
+    }
+  });
+</script>
+
+<%- include('partials/footer', { leaflet: true }) %>

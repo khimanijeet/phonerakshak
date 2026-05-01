@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emergency alert from <%= owner ? owner.name : 'PhoneRakshak user' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/customer.css" />
+  <% if (latest) { %>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <% } %>
+</head>
+<body>
+<div class="trusted-shell">
+  <div class="trusted-header">
+    <div class="brand-icon big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div>
+      <div class="brand-title big">PhoneRakshak</div>
+      <div class="brand-sub">Trusted contact share</div>
+    </div>
+  </div>
+
+  <% if (notifications && notifications.length) { %>
+    <div class="emergency-banner">
+      <strong>🚨 Emergency alert</strong> from <strong><%= owner ? owner.name : 'this user' %></strong>
+      &mdash; sent <%= timeAgo(notifications[0].createdAt) %>.
+    </div>
+  <% } else { %>
+    <div class="alert success">
+      Welcome <%= contact.name %>. <%= owner ? owner.name : 'This user' %> trusts you with their phone's safety info. There is no active emergency right now.
+    </div>
+  <% } %>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>
+        Phone status
+        <% var pmode = (protection && protection.mode) || 'normal';
+           var plabel = pmode === 'theft' ? 'THEFT MODE' : (pmode === 'suspicious' ? 'SUSPICIOUS' : 'NORMAL');
+        %>
+        <span id="mode-pill" class="mode-pill mode-<%= pmode %>"><%= plabel %></span>
+      </h2>
+      <span id="status-badge" class="badge <%= isOnline ? 'live' : '' %>" style="<%= isOnline ? '' : 'background:rgba(148,163,184,.2);color:#cbd5e1;' %>">
+        <%= isOnline ? 'Online' : 'Offline' %>
+      </span>
+    </div>
+    <% if (device) { %>
+      <div class="info-grid">
+        <div><span class="muted small">Owner</span><strong><%= owner ? owner.name : '—' %></strong></div>
+        <div><span class="muted small">Phone</span><strong><%= owner ? owner.phone : '—' %></strong></div>
+        <div><span class="muted small">Device</span><strong><%= device.deviceModel || '—' %></strong></div>
+        <div><span class="muted small">Last seen</span><strong id="last-seen"><%= timeAgo(device.lastSeen) %></strong></div>
+        <div>
+          <span class="muted small">Motion</span>
+          <strong><span id="motion-pill" class="pill grey">—</span></strong>
+        </div>
+        <div>
+          <span class="muted small">Battery</span>
+          <strong><span id="battery-text"><%= device.batteryLevel != null ? device.batteryLevel + '%' : '—' %></span> <span id="battery-trend" class="muted small"></span></strong>
+        </div>
+      </div>
+    <% } else { %>
+      <p class="muted">No device data is available yet.</p>
+    <% } %>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Live activity</h2>
+      <span class="muted small"><span id="live-dot" class="live-dot"></span> Updating every 30 s</span>
+    </div>
+    <div id="activity-feed" class="activity-feed">
+      <div class="activity-empty muted small">Loading activity…</div>
+    </div>
+  </section>
+
+  <% if (latest) { %>
+    <section class="card">
+      <div class="card-head">
+        <h2>Last known location</h2>
+        <span class="muted small">Updated <%= timeAgo(latest.timestamp) %></span>
+      </div>
+      <div id="map" style="height:340px;border-radius:12px;overflow:hidden;"></div>
+      <div class="loc-meta">
+        <div>
+          <span class="muted small">Lat / Lng</span>
+          <strong id="loc-latlng"><%= latest.latitude.toFixed(5) %>, <%= latest.longitude.toFixed(5) %></strong>
+        </div>
+        <div>
+          <span class="muted small">Source</span>
+          <strong>
+            <% var src = (latest.source || 'gps'); %>
+            <span id="loc-source-pill" class="src-pill src-<%= src %>"><%= src.toUpperCase() %></span>
+            <span id="loc-accuracy" class="muted small">±<%= latest.accuracy ? Math.round(latest.accuracy) : '?' %> m</span>
+          </strong>
+        </div>
+        <a id="loc-maps-link" class="btn-secondary"
+           href="https://www.google.com/maps?q=<%= latest.latitude %>,<%= latest.longitude %>" target="_blank">
+          Open in Google Maps
+        </a>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (photos && photos.length) { %>
+    <section class="card">
+      <div class="card-head"><h2>Recent intruder photos</h2></div>
+      <div class="photo-grid">
+        <% photos.forEach(function(p){ %>
+          <a class="photo-tile" href="/intruders/<%= p.filename %>" target="_blank">
+            <img src="/intruders/<%= p.filename %>" alt="Intruder capture" />
+            <div class="photo-ts"><%= timeAgo(p.timestamp) %></div>
+          </a>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
+  <section class="card">
+    <div class="card-head"><h2>What you can do right now</h2></div>
+    <ol class="muted" style="line-height:1.7;margin:0;padding-left:18px;">
+      <% if (owner) { %><li>Try calling <strong><%= owner.name %></strong> at <a href="tel:<%= owner.phone %>" style="color:#a5b4fc"><%= owner.phone %></a>.</li><% } %>
+      <% if (latest) { %><li>Open the location in Google Maps and check whether they're somewhere expected.</li><% } %>
+      <li>If anything looks wrong, please contact local authorities.</li>
+    </ol>
+  </section>
+
+  <p class="muted small" style="text-align:center;margin-top:24px;">
+    This page is private to you. Do not share the link &mdash; <%= owner ? owner.name : 'the owner' %> can revoke it any time.
+  </p>
+</div>
+
+<% if (latest) { %>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<% } %>
+<script>
+(function(){
+  var token = <%- JSON.stringify(contact.token) %>;
+  var liveUrl = '/trusted/' + encodeURIComponent(token) + '/live';
+  var marker = null, mapRef = null;
+
+  <% if (latest) { %>
+    mapRef = L.map('map', { zoomControl: true }).setView([<%= latest.latitude %>, <%= latest.longitude %>], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(mapRef);
+    marker = L.marker([<%= latest.latitude %>, <%= latest.longitude %>]).addTo(mapRef);
+  <% } %>
+
+  function timeAgo(ts){
+    if(!ts) return '—';
+    var diff = Math.max(0, Date.now() - ts);
+    var min = Math.floor(diff / 60000);
+    if(min < 1) return 'just now';
+    if(min < 60) return min + ' min ago';
+    var hr = Math.floor(min / 60);
+    if(hr < 24) return hr + ' hr ago';
+    return Math.floor(hr/24) + ' day ago';
+  }
+
+  function iconFor(kind){
+    if(kind === 'location' || kind.indexOf('move') === 0) return '📍';
+    if(kind === 'battery-charging') return '🔌';
+    if(kind === 'battery-unplugged') return '🔋';
+    if(kind === 'battery') return '🪫';
+    if(kind === 'alert-emergency' || kind === 'alert-sos') return '🚨';
+    if(kind === 'alert-intruder_photo') return '📷';
+    if(kind === 'alert-wrong_pin') return '🔑';
+    if(kind === 'alert-sim_change') return '📱';
+    return '•';
+  }
+
+  function renderFeed(events){
+    var el = document.getElementById('activity-feed');
+    if(!events || !events.length){
+      el.innerHTML = '<div class="activity-empty muted small">No activity yet.</div>';
+      return;
+    }
+    el.innerHTML = events.map(function(ev){
+      return '<div class="activity-item">' +
+        '<div class="activity-icon">' + iconFor(ev.kind) + '</div>' +
+        '<div class="activity-body">' +
+          '<div class="activity-title">' + escapeHtml(ev.title) + '</div>' +
+          (ev.detail ? '<div class="muted small">' + escapeHtml(ev.detail) + '</div>' : '') +
+        '</div>' +
+        '<div class="activity-time muted small">' + timeAgo(ev.ts) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  }); }
+
+  function setBadge(online){
+    var el = document.getElementById('status-badge');
+    el.textContent = online ? 'Online' : 'Offline';
+    if(online){
+      el.classList.add('live');
+      el.removeAttribute('style');
+    } else {
+      el.classList.remove('live');
+      el.setAttribute('style', 'background:rgba(148,163,184,.2);color:#cbd5e1;');
+    }
+  }
+
+  function setMotion(motion){
+    var el = document.getElementById('motion-pill');
+    if(!el || !motion) return;
+    el.className = 'pill';
+    if(motion.state === 'moving'){
+      el.classList.add('amber');
+      el.textContent = 'On the move (' + motion.distanceM + ' m / ' + motion.sinceMin + ' min)';
+    } else if(motion.state === 'stationary'){
+      el.classList.add('green');
+      el.textContent = 'Stationary';
+    } else if(motion.state === 'idle'){
+      el.classList.add('grey');
+      el.textContent = 'Idle';
+    } else {
+      el.classList.add('grey');
+      el.textContent = 'Unknown';
+    }
+  }
+
+  function setBattery(b){
+    var t = document.getElementById('battery-text');
+    var tr = document.getElementById('battery-trend');
+    if(t) t.textContent = (b && b.level != null) ? (b.level + '%') : '—';
+    if(tr){
+      if(!b){ tr.textContent = ''; return; }
+      if(b.charging || b.trend === 'charging') tr.textContent = '· charging ⚡';
+      else if(b.trend === 'discharging') tr.textContent = '· discharging';
+      else tr.textContent = '';
+    }
+  }
+
+  function pulse(){
+    var d = document.getElementById('live-dot');
+    if(!d) return;
+    d.classList.remove('pulse');
+    void d.offsetWidth;
+    d.classList.add('pulse');
+  }
+
+  function update(){
+    fetch(liveUrl, { cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data || !data.ok) return;
+        if(data.device){
+          setBadge(!!data.device.online);
+          var ls = document.getElementById('last-seen');
+          if(ls) ls.textContent = timeAgo(data.device.lastSeen);
+        }
+        if(data.protection){
+          var pp = document.getElementById('mode-pill');
+          if(pp){
+            var m = data.protection.mode || 'normal';
+            pp.className = 'mode-pill mode-' + m;
+            pp.textContent = m === 'theft' ? 'THEFT MODE' : (m === 'suspicious' ? 'SUSPICIOUS' : 'NORMAL');
+          }
+        }
+        setMotion(data.motion);
+        setBattery(data.battery);
+        renderFeed(data.events);
+        if(data.location && marker && mapRef){
+          marker.setLatLng([data.location.latitude, data.location.longitude]);
+          var pill = document.getElementById('loc-source-pill');
+          if(pill){
+            pill.className = 'src-pill src-' + (data.location.source || 'gps');
+            pill.textContent = (data.location.source || 'gps').toUpperCase();
+          }
+          var acc = document.getElementById('loc-accuracy');
+          if(acc) acc.textContent = '±' + (data.location.accuracy ? Math.round(data.location.accuracy) : '?') + ' m';
+          var ll = document.getElementById('loc-latlng');
+          if(ll) ll.textContent = data.location.latitude.toFixed(5) + ', ' + data.location.longitude.toFixed(5);
+          var maps = document.getElementById('loc-maps-link');
+          if(maps) maps.href = 'https://www.google.com/maps?q=' + data.location.latitude + ',' + data.location.longitude;
+        }
+        pulse();
+      })
+      .catch(function(){ /* keep last state */ });
+  }
+
+  update();
+  setInterval(update, 30000);
+})();
+</script>
+</body></html>

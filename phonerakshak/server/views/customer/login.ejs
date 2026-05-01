@@ -1,0 +1,32 @@
+<%- include('_layout-head', { title: 'Sign in — PhoneRakshak Customer' }) %>
+<body>
+<div class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-icon big">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <div class="brand-title big">PhoneRakshak</div>
+        <div class="brand-sub">My Device — Customer Sign in</div>
+      </div>
+    </div>
+    <% if (error) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/customer/login" class="login-form">
+      <label>Phone number</label>
+      <input name="phone" required autofocus value="<%= phone || '' %>" placeholder="+91 98xxxxxxxx" autocomplete="tel" />
+      <label>Password</label>
+      <input name="password" type="password" required autocomplete="current-password" />
+      <button class="btn-primary" type="submit">Sign in</button>
+    </form>
+    <p class="login-hint">
+      New here? <a href="/customer/register" class="forgot-link">Create an account</a>
+    </p>
+    <p class="login-hint">
+      Are you the system administrator? <a href="/login" class="forgot-link">Open Admin Panel</a>
+    </p>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,25 @@
+<% const leaflet = false; const chartjs = false; const active = 'admin-qr'; const pageTitle = 'Admin Panel QR'; %>
+<%- include('partials/header', { title: 'PhoneRakshak - Admin Panel QR', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Admin Panel QR' }) %>
+
+    <div class="content" style="align-items: center; justify-content: center; display: flex; flex-direction: column; min-height: 70vh;">
+      <section class="card" style="text-align: center; padding: 40px; max-width: 500px; width: 100%;">
+        <div style="font-size: 40px; margin-bottom: 16px;">🔐</div>
+        <h2 style="margin-bottom: 8px;">Admin Panel Access</h2>
+        <p class="muted" style="margin-bottom: 30px;">Scan this QR code with another device to instantly open this Admin Panel.</p>
+        
+        <div style="background: #fff; padding: 20px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
+          <img src="<%= qrDataUrl %>" alt="Admin QR Code" style="width: 250px; height: 250px; display: block;" />
+        </div>
+        
+        <div class="muted small" style="margin-bottom: 8px;">Direct Link:</div>
+        <a href="<%= adminUrl %>" style="color: #6366f1; font-family: monospace; word-break: break-all; font-size: 14px;"><%= adminUrl %></a>
+      </section>
+    </div>
+  </main>
+</div>
+
+<%- include('partials/footer', { leaflet: false }) %>

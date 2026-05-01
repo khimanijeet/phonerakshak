@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PhoneRakshak · Photo Viewer</title>
+<meta name="viewport" content="width=390, initial-scale=1">
+<link rel="stylesheet" href="/phone/_phone.css">
+<style>
+  body,.phone{background:#000;}
+  .viewer{
+    flex:1; position:relative; overflow:hidden;
+    background:radial-gradient(circle at 50% 38%, #5a5a5a 0 26%, #2a2a2a 27% 36%, #111 37%);
+  }
+  .face2{
+    position:absolute; inset:22% 24% 42% 24%;
+    background:linear-gradient(180deg,#a0856b,#8a6d52);
+    border-radius:50% 50% 45% 45%/55% 55% 45% 45%;
+  }
+  .face2::before{
+    content:""; position:absolute; top:36%; left:22%; width:14%; height:6%;
+    background:#1a1a1a; border-radius:50%;
+    box-shadow:46px 0 0 #1a1a1a;
+  }
+  .face2::after{
+    content:""; position:absolute; bottom:18%; left:36%; width:28%; height:6%;
+    background:#3b2a22; border-radius:0 0 40% 40%;
+  }
+  .pill{
+    position:absolute; top:14px; left:14px; background:rgba(255,255,255,0.12);
+    color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px;
+    padding:8px 12px; font-size:12px; font-weight:600;
+  }
+  .ts{
+    position:absolute; bottom:0; left:0; right:0;
+    background:rgba(0,0,0,0.7); color:#fff;
+    padding:14px; text-align:center; font-size:13px;
+  }
+</style>
+</head><body>
+<div class="phone">
+  <div class="statusbar" style="background:#000"><span>9:41</span><span class="right">5G&nbsp;<span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;42%</span></div>
+  <div class="viewer">
+    <div class="face2"></div>
+    <div class="pill">Back</div>
+    <div class="ts">Captured Today at 14:22:08 — wrong PIN attempt</div>
+  </div>
+</div>
+</body></html>

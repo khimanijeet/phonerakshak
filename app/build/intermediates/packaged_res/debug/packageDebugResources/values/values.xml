@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#4F8BFF</color>
+    <color name="accent2">#6E5CFF</color>
+    <color name="bad">#FF3B30</color>
+    <color name="bg">#0B1020</color>
+    <color name="bg_elev">#131A33</color>
+    <color name="black">#000000</color>
+    <color name="border">#2A3360</color>
+    <color name="card">#1A2245</color>
+    <color name="good">#34C759</color>
+    <color name="muted">#8A93B8</color>
+    <color name="text">#E7ECFF</color>
+    <color name="warn">#FFB020</color>
+    <color name="white">#FFFFFF</color>
+    <plurals name="intruders_count">
+        <item quantity="one">%d intruder photo</item>
+        <item quantity="other">%d intruder photos</item>
+    </plurals>
+    <string name="admin_description">Allows the PhoneRakshak app to lock the device when an SMS LOCK command is received.</string>
+    <string name="admin_explanation">Enabling this lets the app lock your screen when you send the LOCK SMS from another phone.</string>
+    <string name="admin_label">PhoneRakshak Device Admin</string>
+    <string name="app_name">PhoneRakshak</string>
+    <string name="btn_admin">Enable Device Admin (required to lock)</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_delete_all">Delete All</string>
+    <string name="btn_emergency">EMERGENCY MODE</string>
+    <string name="btn_emergency_sub">Sound alarm, alert contact, share location</string>
+    <string name="btn_locate">Update Location</string>
+    <string name="btn_open_dashboard">Open Dashboard</string>
+    <string name="btn_open_in_maps">Open in Maps</string>
+    <string name="btn_save">Save and start protection</string>
+    <string name="btn_settings">Settings</string>
+    <string name="btn_stop_alarm">Stop Alarm</string>
+    <string name="btn_test_alarm">Test Alarm (10s)</string>
+    <string name="btn_test_lock">Test lock screen</string>
+    <string name="btn_unlock">Unlock</string>
+    <string name="btn_view_intruders">View intruder photos</string>
+    <string name="dashboard_title">PhoneRakshak Dashboard</string>
+    <string name="empty_intruders">No intruder photos yet. Photos are captured silently from the front camera after wrong PIN attempts on the lock screen.</string>
+    <string name="enter_pin">Enter PIN to unlock</string>
+    <string name="hint_backend">Backend URL (optional, e.g. https://your-server.com)</string>
+    <string name="hint_emergency">Emergency contact phone number</string>
+    <string name="hint_phone">Your phone number (optional)</string>
+    <string name="hint_pin">PIN (4–8 digits)</string>
+    <string name="intruders_title">Intruder Photos</string>
+    <string name="last_loc_format">%1$s, %2$s\nUpdated: %3$s</string>
+    <string name="last_loc_none">No location recorded yet. Tap "Update Location".</string>
+    <string name="last_location_title">Last Known Location</string>
+    <string name="lock_message">This phone is reported stolen. Please contact the owner.</string>
+    <string name="locked_title">LOCKED</string>
+    <string name="notif_channel">PhoneRakshak Service</string>
+    <string name="notif_text">PhoneRakshak protection is running</string>
+    <string name="quick_actions_title">Quick Actions</string>
+    <string name="setup_title">PhoneRakshak Setup</string>
+    <string name="sms_help">SMS commands (replace 123 with your PIN):\n• LOCK&lt;PIN> — lock the device\n• LOC&lt;PIN> — reply with GPS link\n• ALARM&lt;PIN> — sound alarm\n• STOPALARM&lt;PIN> — stop alarm\n• SOS&lt;PIN> — trigger Emergency Mode\n\nIf the SIM is changed, an alert SMS with the current location is sent to your emergency contact.</string>
+    <string name="status_admin_off">Device admin OFF — tap above to enable</string>
+    <string name="status_admin_on">Device admin enabled</string>
+    <string name="status_backend_off">Backend not configured (SMS-only)</string>
+    <string name="status_backend_on">Connected: %1$s</string>
+    <string name="status_card_title">Status</string>
+    <string name="status_running">Protection active</string>
+    <string name="status_stopped">Protection stopped</string>
+    <string name="wrong_pin">Wrong PIN — photo captured</string>
+    <style name="PR.Button.Danger" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/btn_danger</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="PR.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/btn_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="PR.Button.Secondary" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/btn_secondary</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="PR.Card" parent="">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+    <style name="Theme.PhoneRakshak" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:navigationBarColor">@color/bg</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+    <style name="Theme.PhoneRakshak.Fullscreen" parent="Theme.PhoneRakshak">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+</resources>

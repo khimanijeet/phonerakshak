@@ -1,0 +1,27 @@
+<% const leaflet = false; const chartjs = false; %>
+<%- include('partials/header', { title: 'Sign in — Phonerakshak Admin', leaflet }) %>
+<div class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-icon big">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <div class="brand-title big">Phonerakshak</div>
+        <div class="brand-sub">Admin Panel</div>
+      </div>
+    </div>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="error-banner"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/login" class="login-form">
+      <label>Username</label>
+      <input name="username" required autofocus value="admin" />
+      <label>Password</label>
+      <input name="password" type="password" required />
+      <button class="btn-primary" type="submit">Sign in</button>
+    </form>
+    <p class="login-hint">Default credentials: <code>admin</code> / <code>admin123</code> — change them via <code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code>.</p>
+  </div>
+</div>
+<%- include('partials/footer') %>

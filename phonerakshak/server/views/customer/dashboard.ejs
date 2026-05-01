@@ -1,0 +1,268 @@
+<%- include('_layout-head', { title: 'My Device — PhoneRakshak', leaflet: !!ctx.latest }) %>
+<body>
+<div class="app-shell">
+<%- include('_sidebar', { active }) %>
+<main class="app-main">
+  <%- include('_topbar', { user, ctx, pageTitle: 'My Device', subtitle: 'Track, lock and protect your phone' }) %>
+  <div class="content">
+
+    <% if (notice) { %>
+      <div class="alert <%= notice.type === 'error' ? 'error' : 'success' %>"><%= notice.text %></div>
+    <% } %>
+
+    <% if (!ctx.device) { %>
+      <div class="card empty-state">
+        <div class="empty-icon">📱</div>
+        <h2>No device linked yet</h2>
+        <p class="muted">Install the PhoneRakshak Android app on your phone, open <strong>Setup</strong>,
+        and enter the same phone number you used to sign in here (<strong><%= user.phone %></strong>).
+        Your device will appear here automatically once it checks in.</p>
+      </div>
+    <% } else { %>
+
+      <!-- Protection Mode card -->
+      <% if (ctx.protection) {
+           var p = ctx.protection;
+           var pmCls = 'mode-' + p.mode;
+           var pmLabel = p.mode === 'theft' ? 'Theft Mode' : (p.mode === 'suspicious' ? 'Suspicious Mode' : 'Normal Mode');
+           var pmDesc = p.mode === 'theft'
+             ? 'Aggressive tracking. Phone pings every ' + p.pingIntervalSec + ' s, contacts have been alerted.'
+             : (p.mode === 'suspicious'
+                ? 'Heightened tracking. Phone pings every ' + p.pingIntervalSec + ' s.'
+                : 'Low battery usage. Phone pings every ' + p.pingIntervalSec + ' s.');
+      %>
+      <div class="card mode-card <%= pmCls %>">
+        <div class="card-head">
+          <h2>
+            Protection Mode
+            <span class="mode-pill <%= pmCls %>"><%= pmLabel %></span>
+          </h2>
+          <span class="muted small">since <%= timeAgo(p.since) %></span>
+        </div>
+        <p class="muted" style="margin:6px 0 12px;"><%= pmDesc %></p>
+        <% if (p.reason) { %>
+          <p class="small" style="margin:0 0 12px;"><strong>Reason:</strong> <%= p.reason %></p>
+        <% } %>
+        <div class="mode-actions">
+          <form method="POST" action="/customer/mode" style="display:inline;">
+            <input type="hidden" name="mode" value="normal" />
+            <button class="btn-secondary" <%= p.mode === 'normal' ? 'disabled' : '' %>>Stand down to Normal</button>
+          </form>
+          <form method="POST" action="/customer/mode" style="display:inline;">
+            <input type="hidden" name="mode" value="suspicious" />
+            <button class="btn-secondary" <%= p.mode === 'suspicious' ? 'disabled' : '' %>>Suspicious</button>
+          </form>
+          <form method="POST" action="/customer/mode" style="display:inline;">
+            <input type="hidden" name="mode" value="theft" />
+            <button class="btn-danger" <%= p.mode === 'theft' ? 'disabled' : '' %>>Arm Theft Mode</button>
+          </form>
+        </div>
+        <% if (ctx.modeHistory && ctx.modeHistory.length) { %>
+          <details style="margin-top:14px;">
+            <summary class="muted small" style="cursor:pointer;">Recent mode changes (<%= ctx.modeHistory.length %>)</summary>
+            <ul class="muted small" style="margin:8px 0 0;padding-left:18px;line-height:1.7;">
+              <% ctx.modeHistory.forEach(function(m){ %>
+                <li><strong><%= m.from.toUpperCase() %> → <%= m.to.toUpperCase() %></strong>
+                <% if (m.reason) { %> · <%= m.reason %><% } %>
+                · <%= timeAgo(m.timestamp) %> · <%= m.source %></li>
+              <% }) %>
+            </ul>
+          </details>
+        <% } %>
+      </div>
+      <% } %>
+
+      <!-- Quick action cards -->
+      <div class="action-grid">
+        <form method="POST" action="/customer/command">
+          <input type="hidden" name="type" value="locate" />
+          <button type="submit" class="action-card">
+            <div class="action-icon blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="action-text">
+              <div class="action-title">Locate</div>
+              <div class="muted small">Find phone on map</div>
+            </div>
+          </button>
+        </form>
+        <form method="POST" action="/customer/command">
+          <input type="hidden" name="type" value="lock" />
+          <button type="submit" class="action-card">
+            <div class="action-icon violet">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="action-text">
+              <div class="action-title">Lock Phone</div>
+              <div class="muted small">Lock screen instantly</div>
+            </div>
+          </button>
+        </form>
+        <form method="POST" action="/customer/command">
+          <input type="hidden" name="type" value="alarm" />
+          <button type="submit" class="action-card">
+            <div class="action-icon orange">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </div>
+            <div class="action-text">
+              <div class="action-title">Sound Alarm</div>
+              <div class="muted small">Loud siren for 30s</div>
+            </div>
+          </button>
+        </form>
+        <form method="POST" action="/customer/command">
+          <input type="hidden" name="type" value="emergency" />
+          <button type="submit" class="action-card danger">
+            <div class="action-icon red">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="action-text">
+              <div class="action-title">Emergency Mode</div>
+              <div class="muted small">Alarm + alert contact</div>
+            </div>
+          </button>
+        </form>
+      </div>
+
+      <div class="grid-two">
+        <!-- Last known location -->
+        <div class="card">
+          <div class="card-head">
+            <h2>Last Known Location</h2>
+            <% if (ctx.latest && Date.now() - ctx.latest.timestamp < 5*60*1000) { %>
+              <span class="badge live">Live</span>
+            <% } %>
+          </div>
+          <% if (ctx.latest) { %>
+            <div id="map" style="height:280px; border-radius:12px; overflow:hidden;"></div>
+            <div class="loc-meta">
+              <div><span class="muted small">Lat / Lng:</span> <%= ctx.latest.latitude.toFixed(5) %>, <%= ctx.latest.longitude.toFixed(5) %></div>
+              <div>
+                <span class="muted small">Source:</span>
+                <% var lsrc = (ctx.latest.source || 'gps'); %>
+                <span class="src-pill src-<%= lsrc %>"><%= lsrc.toUpperCase() %></span>
+                <% if (ctx.latest.accuracy) { %><span class="muted small">±<%= Math.round(ctx.latest.accuracy) %> m</span><% } %>
+                <% if (ctx.latest.contributors && ctx.latest.contributors.length) { %>
+                  <div class="muted small" style="margin-top:4px;">via <%= ctx.latest.contributors.join(', ') %></div>
+                <% } %>
+              </div>
+              <div><span class="muted small">Updated:</span> <%= timeAgo(ctx.latest.timestamp) %></div>
+              <a class="btn-secondary" target="_blank" href="https://www.google.com/maps?q=<%= ctx.latest.latitude %>,<%= ctx.latest.longitude %>">Open in Google Maps</a>
+            </div>
+          <% } else { %>
+            <p class="muted">No location yet — tap <strong>Locate</strong> above to request one.</p>
+          <% } %>
+        </div>
+
+        <!-- Device info -->
+        <div class="card">
+          <div class="card-head"><h2>Device Information</h2></div>
+          <div class="info-grid">
+            <div><span class="muted small">Device</span><div><%= ctx.device.deviceModel || '—' %></div></div>
+            <div><span class="muted small">Phone</span><div><%= ctx.device.phoneNumber || '—' %></div></div>
+            <div>
+              <span class="muted small">Battery</span>
+              <div class="battery">
+                <div class="battery-bar"><div style="width: <%= ctx.device.batteryLevel || 0 %>%; background: <%= (ctx.device.batteryLevel||0) > 30 ? '#34C759' : '#FF3B30' %>"></div></div>
+                <span><%= ctx.device.batteryLevel != null ? ctx.device.batteryLevel + '%' : '—' %></span>
+              </div>
+            </div>
+            <div><span class="muted small">App version</span><div><%= ctx.device.appVersion || '—' %></div></div>
+            <div><span class="muted small">Last seen</span><div><%= ctx.device.lastSeenLabel %></div></div>
+            <div>
+              <span class="muted small">Status</span>
+              <div>
+                <% if (ctx.device.online) { %>
+                  <span class="pill green">Online</span>
+                <% } else { %>
+                  <span class="pill red">Offline</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-two">
+        <!-- SIM alerts -->
+        <div class="card">
+          <div class="card-head"><h2>SIM Change Alerts</h2></div>
+          <% if (!ctx.simAlerts.length) { %>
+            <p class="muted small">No SIM changes detected. Your SIM is safe.</p>
+          <% } else { %>
+            <table class="data-table">
+              <thead><tr><th>When</th><th>Old SIM</th><th>New SIM</th></tr></thead>
+              <tbody>
+                <% ctx.simAlerts.forEach(a => { %>
+                  <tr>
+                    <td><%= timeAgo(a.timestamp) %></td>
+                    <td><%= a.meta && a.meta.oldSim || '—' %></td>
+                    <td><%= a.meta && a.meta.newSim || '—' %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% } %>
+        </div>
+
+        <!-- Recent commands -->
+        <div class="card">
+          <div class="card-head"><h2>Recent Commands</h2></div>
+          <% if (!ctx.commands.length) { %>
+            <p class="muted small">No commands yet — try the action buttons above.</p>
+          <% } else { %>
+            <table class="data-table">
+              <thead><tr><th>Command</th><th>Status</th><th>Time</th></tr></thead>
+              <tbody>
+                <% ctx.commands.forEach(c => {
+                  const label = { lock:'Lock', unlock:'Unlock', alarm:'Alarm', stop_alarm:'Stop Alarm', locate:'Locate', emergency:'Emergency'}[c.type] || c.type;
+                  const statusClass = c.status === 'done' ? 'green' : c.status === 'delivered' ? 'blue' : 'amber';
+                %>
+                  <tr>
+                    <td><%= label %></td>
+                    <td><span class="pill <%= statusClass %>"><%= c.status === 'done' ? 'Success' : (c.status === 'delivered' ? 'Delivered' : 'Pending') %></span></td>
+                    <td><%= timeAgo(c.queuedAt) %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Recent intruder photos -->
+      <div class="card">
+        <div class="card-head">
+          <h2>Recent Intruder Photos</h2>
+          <a class="btn-secondary" href="/customer/photos">View all</a>
+        </div>
+        <% if (!ctx.photos.length) { %>
+          <p class="muted small">No intruder photos yet. The phone captures front-camera photos silently after wrong PIN attempts.</p>
+        <% } else { %>
+          <div class="photo-grid">
+            <% ctx.photos.forEach(p => { %>
+              <a class="photo-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
+                <img src="/api/intruders/<%= p.filename %>" alt="Intruder photo" />
+                <div class="photo-ts"><%= timeAgo(p.timestamp) %></div>
+              </a>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+    <% } %>
+
+  </div>
+</main>
+</div>
+<% if (ctx.latest) { %>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  (function(){
+    var m = L.map('map', { zoomControl: true }).setView([<%= ctx.latest.latitude %>, <%= ctx.latest.longitude %>], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(m);
+    L.marker([<%= ctx.latest.latitude %>, <%= ctx.latest.longitude %>]).addTo(m);
+  })();
+</script>
+<% } %>
+</body></html>

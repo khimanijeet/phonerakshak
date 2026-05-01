@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PhoneRakshak · Setup</title>
+<meta name="viewport" content="width=390, initial-scale=1">
+<link rel="stylesheet" href="/phone/_phone.css">
+</head><body>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span class="right">5G&nbsp;<span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;87%</span></div>
+  <div class="scroll">
+    <h1 class="title">PhoneRakshak Setup</h1>
+
+    <div class="card">
+      <input class="input" placeholder="Your phone number (optional)" value="">
+      <input class="input" placeholder="Emergency contact phone number" value="+91 98xxxxxxxx">
+      <input class="input" type="password" placeholder="PIN (4–8 digits)" value="••••">
+      <input class="input" placeholder="Backend URL (optional, e.g. https://your-server.com)" value="https://phonerakshak.replit.app">
+    </div>
+
+    <div class="card">
+      <h2>Boot Recovery (recommended)</h2>
+      <div class="muted">If your phone is stolen and turned off and on again, PhoneRakshak can automatically send a one-time status update (battery, network, last known location) to your account or emergency contact.</div>
+      <div class="switch-row">
+        <span style="font-size:13px">Send status on reboot</span>
+        <span class="switch on"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <button class="btn secondary">Enable Device Admin (required to lock)</button>
+      <div class="muted" style="margin-top:6px">Device admin enabled</div>
+      <button class="btn primary">Save and start protection</button>
+      <button class="btn secondary">Open Dashboard</button>
+      <button class="btn secondary">Test lock screen</button>
+      <button class="btn secondary">View intruder photos</button>
+      <div class="muted" style="margin-top:14px; color:var(--good)">Protection active</div>
+    </div>
+
+    <div class="help">SMS commands (replace 123 with your PIN):
+• LOCK&lt;PIN&gt; — lock the device
+• LOC&lt;PIN&gt; — reply with GPS link
+• ALARM&lt;PIN&gt; — sound alarm
+• STOPALARM&lt;PIN&gt; — stop alarm
+• SOS&lt;PIN&gt; — trigger Emergency Mode</div>
+  </div>
+</div>
+</body></html>

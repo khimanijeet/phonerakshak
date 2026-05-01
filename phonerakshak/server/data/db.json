@@ -1,0 +1,342 @@
+{
+  "devices": {
+    "demo_device_000222": {
+      "deviceId": "demo_device_000222",
+      "phoneNumber": "+919811000222",
+      "emergencyNumber": "+919811000111",
+      "deviceModel": "Pixel 7",
+      "city": "Delhi",
+      "batteryLevel": 78,
+      "appVersion": "v1.3.2",
+      "registeredAt": 1777524285489,
+      "lastSeen": 1777524298590,
+      "mode": "theft",
+      "modeReason": "Customer test re-arm",
+      "modeSince": 1777524298680
+    }
+  },
+  "locations": [
+    {
+      "id": "loc_mol02ckx_wfoz9w",
+      "deviceId": "demo_device_000222",
+      "latitude": 28.6328,
+      "longitude": 77.2197,
+      "accuracy": 12,
+      "trigger": "auto",
+      "source": "gps",
+      "contributors": [],
+      "timestamp": 1777523385489
+    },
+    {
+      "id": "loc_mol02ckx_2m0dep",
+      "deviceId": "demo_device_000222",
+      "latitude": 28.6298,
+      "longitude": 77.221,
+      "accuracy": 14,
+      "trigger": "auto",
+      "source": "gps",
+      "contributors": [],
+      "timestamp": 1777523625490
+    },
+    {
+      "id": "loc_mol02cky_wagrmf",
+      "deviceId": "demo_device_000222",
+      "latitude": 28.6253,
+      "longitude": 77.2225,
+      "accuracy": 35,
+      "trigger": "auto",
+      "source": "wifi",
+      "contributors": [
+        "CP-Starbucks"
+      ],
+      "timestamp": 1777523865490
+    },
+    {
+      "id": "loc_mol02cky_edzk9r",
+      "deviceId": "demo_device_000222",
+      "latitude": 28.6201,
+      "longitude": 77.2245,
+      "accuracy": 18,
+      "trigger": "auto",
+      "source": "gps",
+      "contributors": [],
+      "timestamp": 1777524105490
+    },
+    {
+      "id": "loc_mol02cky_ph22qc",
+      "deviceId": "demo_device_000222",
+      "latitude": 28.6135,
+      "longitude": 77.2295,
+      "accuracy": 520,
+      "trigger": "auto",
+      "source": "cell",
+      "contributors": [
+        "Airtel India Gate"
+      ],
+      "timestamp": 1777524285490
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alt_mol02cky_tsfmmc",
+      "deviceId": "demo_device_000222",
+      "type": "sim_change",
+      "message": "SIM card changed",
+      "meta": {
+        "oldSim": "8991 1010 0000 1234",
+        "newSim": "8991 1010 0000 9876"
+      },
+      "status": "pending",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "alt_mol02cky_9v8h05",
+      "deviceId": "demo_device_000222",
+      "type": "mode_change",
+      "message": "Mode escalated to THEFT",
+      "meta": {
+        "from": "normal",
+        "to": "theft",
+        "reason": "SIM card changed",
+        "source": "alert:sim_change"
+      },
+      "status": "new",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "alt_mol02cky_73rf5d",
+      "deviceId": "demo_device_000222",
+      "type": "wrong_pin",
+      "message": "Wrong PIN attempt",
+      "meta": null,
+      "status": "pending",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "alt_mol02cky_7gexmw",
+      "deviceId": "demo_device_000222",
+      "type": "intruder_photo",
+      "message": "Intruder photo captured",
+      "meta": null,
+      "status": "pending",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "alt_mol02mnm_tzzux2",
+      "deviceId": "demo_device_000222",
+      "type": "mode_change",
+      "message": "Mode set to NORMAL",
+      "meta": {
+        "from": "theft",
+        "to": "normal",
+        "reason": "Phone recovered",
+        "source": "device"
+      },
+      "status": "new",
+      "timestamp": 1777524298546
+    },
+    {
+      "id": "alt_mol02mrc_dxv30h",
+      "deviceId": "demo_device_000222",
+      "type": "mode_change",
+      "message": "Mode escalated to THEFT",
+      "meta": {
+        "from": "normal",
+        "to": "theft",
+        "reason": "Customer test re-arm",
+        "source": "device"
+      },
+      "status": "new",
+      "timestamp": 1777524298680
+    }
+  ],
+  "commands": [
+    {
+      "id": "cmd_mol02cky_1vm2a7",
+      "deviceId": "demo_device_000222",
+      "type": "locate",
+      "status": "delivered",
+      "issuedAt": 1777524285490,
+      "meta": {
+        "auto": true,
+        "reason": "mode-escalation:theft"
+      },
+      "deliveredAt": 1777524286948
+    },
+    {
+      "id": "cmd_mol02cky_9nfz2f",
+      "deviceId": "demo_device_000222",
+      "type": "lock",
+      "params": null,
+      "status": "delivered",
+      "queuedAt": 1777524285490,
+      "deliveredAt": 1777524286948,
+      "ackedAt": null,
+      "result": null
+    },
+    {
+      "id": "cmd_mol02cky_l93iu5",
+      "deviceId": "demo_device_000222",
+      "type": "locate",
+      "params": null,
+      "status": "delivered",
+      "queuedAt": 1777524285490,
+      "deliveredAt": 1777524286948,
+      "ackedAt": null,
+      "result": null
+    },
+    {
+      "id": "cmd_mol02mrc_sig9pm",
+      "deviceId": "demo_device_000222",
+      "type": "locate",
+      "status": "pending",
+      "issuedAt": 1777524298680,
+      "meta": {
+        "auto": true,
+        "reason": "mode-escalation:theft"
+      }
+    }
+  ],
+  "intruders": [],
+  "wifiSnapshots": [],
+  "blockedNumbers": [],
+  "reports": [
+    {
+      "id": "rpt_mol02cky_qvoghg",
+      "deviceId": "demo_device_000222",
+      "type": "sim_change",
+      "message": "SIM card changed",
+      "status": "pending",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "rpt_mol02cky_ewejas",
+      "deviceId": "demo_device_000222",
+      "type": "wrong_pin",
+      "message": "Wrong PIN attempt",
+      "status": "pending",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "rpt_mol02cky_k4ca5l",
+      "deviceId": "demo_device_000222",
+      "type": "intruder_photo",
+      "message": "Intruder photo captured",
+      "status": "pending",
+      "timestamp": 1777524285490
+    }
+  ],
+  "callsMonitored": 0,
+  "appVersion": "v1.3.2",
+  "adminAuth": null,
+  "customers": {
+    "+919811000222": {
+      "phone": "+919811000222",
+      "name": "Aarav Sharma",
+      "passwordHash": "$2a$10$DFYuu6CEK6aUn0f.aTWkgulyklM88zkEAjUKfKklwGupyXfc3OM5O",
+      "createdAt": 1777524285488,
+      "updatedAt": 1777524285488
+    }
+  },
+  "trustedContacts": [
+    {
+      "id": "tc_mol02ckz_qnc7s3",
+      "ownerPhone": "+919811000222",
+      "name": "Priya Sharma (Mom)",
+      "phone": "+919811000333",
+      "email": "priya@example.com",
+      "token": "v8EjmU2mZQFtrKxwmHN8xAx4",
+      "createdAt": 1777524285491,
+      "lastNotifiedAt": 1777524285491
+    }
+  ],
+  "notifications": [
+    {
+      "id": "ntf_mol02ckz_rsiq9y",
+      "contactId": "tc_mol02ckz_qnc7s3",
+      "ownerPhone": "+919811000222",
+      "type": "emergency",
+      "payload": {
+        "deviceModel": "Pixel 7",
+        "ownerName": "Aarav Sharma",
+        "latitude": 28.6135,
+        "longitude": 77.2295
+      },
+      "createdAt": 1777524285491,
+      "viewedAt": 1777524306826
+    }
+  ],
+  "batterySamples": [
+    {
+      "id": "bat_mol02cky_qdmg69",
+      "deviceId": "demo_device_000222",
+      "level": 86,
+      "charging": false,
+      "timestamp": 1777522485490
+    },
+    {
+      "id": "bat_mol02cky_eo10pp",
+      "deviceId": "demo_device_000222",
+      "level": 84,
+      "charging": false,
+      "timestamp": 1777522845490
+    },
+    {
+      "id": "bat_mol02cky_hniivw",
+      "deviceId": "demo_device_000222",
+      "level": 81,
+      "charging": false,
+      "timestamp": 1777523205490
+    },
+    {
+      "id": "bat_mol02cky_ub11qn",
+      "deviceId": "demo_device_000222",
+      "level": 78,
+      "charging": false,
+      "timestamp": 1777523565490
+    },
+    {
+      "id": "bat_mol02cky_om4nvu",
+      "deviceId": "demo_device_000222",
+      "level": 76,
+      "charging": true,
+      "timestamp": 1777524045490
+    },
+    {
+      "id": "bat_mol02cky_f6ztz3",
+      "deviceId": "demo_device_000222",
+      "level": 78,
+      "charging": true,
+      "timestamp": 1777524285490
+    }
+  ],
+  "modeChanges": [
+    {
+      "id": "mch_mol02cky_xuw0lu",
+      "deviceId": "demo_device_000222",
+      "from": "normal",
+      "to": "theft",
+      "reason": "SIM card changed",
+      "source": "alert:sim_change",
+      "timestamp": 1777524285490
+    },
+    {
+      "id": "mch_mol02mnm_ckyoja",
+      "deviceId": "demo_device_000222",
+      "from": "theft",
+      "to": "normal",
+      "reason": "Phone recovered",
+      "source": "device",
+      "timestamp": 1777524298546
+    },
+    {
+      "id": "mch_mol02mrc_j9km0o",
+      "deviceId": "demo_device_000222",
+      "from": "normal",
+      "to": "theft",
+      "reason": "Customer test re-arm",
+      "source": "device",
+      "timestamp": 1777524298680
+    }
+  ]
+}

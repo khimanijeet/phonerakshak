@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/dashboard_title"
+                android:textColor="@color/text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- EMERGENCY button (big & red) -->
+        <LinearLayout style="@style/PR.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnEmergency"
+                style="@style/PR.Button.Danger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_emergency"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/btn_emergency_sub"
+                android:textColor="@color/muted"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Status card -->
+        <LinearLayout style="@style/PR.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/status_card_title"
+                android:textColor="@color/text"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+                <View
+                    android:id="@+id/dotProtection"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/dot_green" />
+                <TextView
+                    android:id="@+id/txtProtection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textSize="14sp"
+                    android:text="@string/status_running" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+                <View
+                    android:id="@+id/dotAdmin"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/dot_red" />
+                <TextView
+                    android:id="@+id/txtAdmin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textSize="14sp"
+                    android:text="@string/status_admin_off" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="4dp">
+                <View
+                    android:id="@+id/dotBackend"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/dot_red" />
+                <TextView
+                    android:id="@+id/txtBackend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textSize="14sp"
+                    android:text="@string/status_backend_off" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Last location -->
+        <LinearLayout style="@style/PR.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/last_location_title"
+                android:textColor="@color/text"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="10dp" />
+
+            <TextView
+                android:id="@+id/txtLastLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/muted"
+                android:textSize="14sp"
+                android:text="@string/last_loc_none" />
+
+            <Button
+                android:id="@+id/btnOpenMap"
+                style="@style/PR.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:enabled="false"
+                android:text="@string/btn_open_in_maps" />
+        </LinearLayout>
+
+        <!-- Quick actions -->
+        <LinearLayout style="@style/PR.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/quick_actions_title"
+                android:textColor="@color/text"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="10dp" />
+
+            <Button
+                android:id="@+id/btnLocate"
+                style="@style/PR.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_locate" />
+
+            <Button
+                android:id="@+id/btnTestAlarm"
+                style="@style/PR.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_test_alarm" />
+
+            <Button
+                android:id="@+id/btnStopAlarm"
+                style="@style/PR.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_stop_alarm" />
+
+            <Button
+                android:id="@+id/btnTestLock"
+                style="@style/PR.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_test_lock" />
+
+            <Button
+                android:id="@+id/btnIntruders"
+                style="@style/PR.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_view_intruders" />
+
+            <TextView
+                android:id="@+id/txtIntruderCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/muted"
+                android:textSize="12sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSettings"
+            style="@style/PR.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/btn_settings" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/muted"
+            android:textStyle="italic"
+            android:text="@string/sms_help" />
+
+    </LinearLayout>
+</ScrollView>

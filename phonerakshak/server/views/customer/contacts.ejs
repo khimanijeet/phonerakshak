@@ -1,0 +1,105 @@
+<%- include('_layout-head', { title: 'Trusted Contacts — PhoneRakshak Customer' }) %>
+<body>
+<div class="app-shell">
+<%- include('_sidebar', { active }) %>
+<main class="app-main">
+  <%- include('_topbar', { user, ctx, pageTitle: 'Trusted Contacts', subtitle: 'People notified the moment you trigger Emergency Mode' }) %>
+  <div class="content">
+
+    <% if (error) { %><div class="alert error"><%= error %></div><% } %>
+    <% if (notice) { %><div class="alert success"><%= notice %></div><% } %>
+
+    <div class="grid-two">
+
+      <section class="card">
+        <div class="card-head"><h2>Add a trusted contact</h2></div>
+        <p class="muted small" style="margin-top:0">
+          Add up to 5 people. When you tap <strong>Emergency Mode</strong>, each contact gets a private share link with your phone's last location and intruder photos.
+        </p>
+        <form method="POST" action="/customer/contacts/add" class="form-stack">
+          <label>Their name</label>
+          <input name="name" placeholder="e.g. Mom, Best friend, Brother" maxlength="60" />
+          <label>Their phone number</label>
+          <input name="phone" required placeholder="+91 98xxxxxxxx" />
+          <label>Their email <span class="muted">(optional)</span></label>
+          <input name="email" type="email" placeholder="them@example.com" />
+          <button class="btn-primary" type="submit">Add contact</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Your trusted contacts</h2>
+          <span class="muted small"><%= contacts.length %> / 5</span>
+        </div>
+        <% if (!contacts.length) { %>
+          <div class="empty-state">
+            <div class="empty-icon">👥</div>
+            <h2>No trusted contacts yet</h2>
+            <p class="muted">Add a family member or close friend to alert in an emergency.</p>
+          </div>
+        <% } else { %>
+          <div class="contacts-list">
+            <% contacts.forEach(function(c){
+                 var shareUrl = baseUrl + '/trusted/' + c.token;
+            %>
+              <div class="contact-row">
+                <div class="contact-avatar"><%= (c.name || '?').slice(0,1).toUpperCase() %></div>
+                <div class="contact-body">
+                  <div class="contact-name"><%= c.name %></div>
+                  <div class="muted small"><%= c.phone %><% if (c.email) { %> · <%= c.email %><% } %></div>
+                  <div class="share-link">
+                    <input readonly value="<%= shareUrl %>" onclick="this.select()" />
+                    <a href="<%= shareUrl %>" target="_blank" class="btn-secondary small">Open</a>
+                  </div>
+                  <% if (c.lastNotifiedAt) { %>
+                    <div class="muted small" style="margin-top:6px">Last notified <%= timeAgo(c.lastNotifiedAt) %></div>
+                  <% } %>
+                </div>
+                <form method="POST" action="/customer/contacts/<%= c.id %>/delete"
+                      onsubmit="return confirm('Remove <%= c.name %> from your trusted contacts?');">
+                  <button class="btn-secondary danger" type="submit" title="Remove">Remove</button>
+                </form>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </section>
+
+    </div>
+
+    <section class="card">
+      <div class="card-head"><h2>Notification history</h2></div>
+      <% if (!notifications.length) { %>
+        <p class="muted small" style="margin:0">No emergency alerts have been sent yet.</p>
+      <% } else { %>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>When</th><th>Type</th><th>Sent to</th><th>Viewed?</th></tr></thead>
+            <tbody>
+              <% notifications.forEach(function(n){
+                   var who = contacts.find(function(c){ return c.id === n.contactId; });
+              %>
+                <tr>
+                  <td><%= timeAgo(n.createdAt) %></td>
+                  <td><span class="pill <%= n.type === 'emergency' ? 'red' : 'blue' %>"><%= n.type.replace('_',' ') %></span></td>
+                  <td><%= who ? who.name : '(removed contact)' %></td>
+                  <td>
+                    <% if (n.viewedAt) { %>
+                      <span class="pill green">opened <%= timeAgo(n.viewedAt) %></span>
+                    <% } else { %>
+                      <span class="pill grey">not opened</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+
+  </div>
+</main>
+</div>
+</body></html>
