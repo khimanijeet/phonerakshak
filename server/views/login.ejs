@@ -17,9 +17,17 @@
     <form method="POST" action="/login" class="login-form">
       <label>Username</label>
       <input name="username" required autofocus value="admin" />
-      <label>Password</label>
-      <input name="password" type="password" required />
-      <button class="btn-primary" type="submit">Sign in</button>
+      <div class="input-group">
+          <label>Password</label>
+          <input type="password" name="password" class="input" required />
+        </div>
+        
+        <div class="input-group" style="margin-top: 10px;">
+          <label>Authenticator Code (if enabled)</label>
+          <input type="text" name="token" class="input" placeholder="000000" pattern="[0-9]*" maxlength="6" autocomplete="off" />
+        </div>
+        
+        <button type="submit" class="btn-primary" style="margin-top:20px;">Login</button>
     </form>
     <p class="login-hint">Default credentials: <code>admin</code> / <code>admin123</code> — change them via <code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code>.</p>
   </div>

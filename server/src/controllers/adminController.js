@@ -7,6 +7,9 @@ const BlockedNumber = require('../models/BlockedNumber');
 const Report = require('../models/Report');
 const SecurityLog = require('../models/SecurityLog');
 const AudioRecording = require('../models/AudioRecording');
+const Config = require('../models/Config');
+const speakeasy = require('speakeasy');
+const qrcode = require('qrcode');
 
 const isOnline = (device, windowMs = 5 * 60 * 1000) => {
   return device && device.lastSeen && (Date.now() - new Date(device.lastSeen).getTime()) < windowMs;
@@ -121,27 +124,6 @@ exports.updateGeofence = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.updateGeofence = async (req, res, next) => {
-  try {
-    const { enabled, lat, lng, radius } = req.body;
-    const device = await Device.findOne({ deviceId: req.params.id });
-    if (!device) return res.status(404).send('Device not found');
-    
-    device.geofence = {
-      enabled: enabled === 'on' || enabled === true,
-      lat: parseFloat(lat) || null,
-      lng: parseFloat(lng) || null,
-      radius: parseInt(radius) || 100
-    };
-    await device.save();
-    
-    // Create a background command to force the device to sync its geofence immediately
-    await Command.create({ deviceId: req.params.id, type: 'sync_geofence', status: 'queued', queuedAt: Date.now() });
-    
-    res.redirect(`/admin/devices/${req.params.id}`);
-  } catch (err) { next(err); }
-};
-
 exports.getBlocked = async (req, res, next) => {
   try {
     const blocked = await BlockedNumber.find().sort({ count: -1 }).lean();
@@ -160,5 +142,63 @@ exports.getSecurityLogs = async (req, res, next) => {
   try {
     const logs = await SecurityLog.find().sort({ timestamp: -1 }).limit(200).lean();
     res.render('security', { user: req.session.user, logs, active: 'security' });
+  } catch (err) { next(err); }
+};
+
+exports.getSetup2FA = async (req, res, next) => {
+  try {
+    const config = await Config.findOne({ key: 'admin_2fa_secret' });
+    if (config) {
+      return res.render('setup-2fa', { isEnabled: true });
+    }
+    
+    // Generate new secret
+    const secret = speakeasy.generateSecret({ name: 'PhoneRakshak Admin' });
+    const qrDataUrl = await qrcode.toDataURL(secret.otpauth_url);
+    
+    // Store temporarily in session
+    req.session.tempSecret = secret.base32;
+    
+    res.render('setup-2fa', { isEnabled: false, qrDataUrl, secret: secret.base32, error: null });
+  } catch (err) { next(err); }
+};
+
+exports.postSetup2FA = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    const tempSecret = req.session.tempSecret;
+    
+    if (!tempSecret) {
+      return res.redirect('/admin/setup-2fa');
+    }
+    
+    const verified = speakeasy.totp.verify({
+      secret: tempSecret,
+      encoding: 'base32',
+      token: token,
+      window: 1
+    });
+    
+    if (verified) {
+      await Config.create({ key: 'admin_2fa_secret', value: tempSecret });
+      req.session.tempSecret = null;
+      res.redirect('/admin/setup-2fa');
+    } else {
+      const qrDataUrl = await qrcode.toDataURL(`otpauth://totp/PhoneRakshak%20Admin?secret=${tempSecret}`);
+      res.render('setup-2fa', { isEnabled: false, qrDataUrl, secret: tempSecret, error: 'Invalid authenticator code. Try again.' });
+    }
+  } catch (err) { next(err); }
+};
+
+exports.disable2FA = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+    const bcrypt = require('bcryptjs');
+    const ADMIN_PASSWORD_HASH = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
+    
+    if (bcrypt.compareSync(password || '', ADMIN_PASSWORD_HASH)) {
+      await Config.deleteOne({ key: 'admin_2fa_secret' });
+    }
+    res.redirect('/admin/setup-2fa');
   } catch (err) { next(err); }
 };

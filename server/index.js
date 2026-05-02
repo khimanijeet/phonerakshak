@@ -134,9 +134,31 @@ app.get('/login', (req, res) => {
   res.render('login', {});
 });
 
-app.post('/login', (req, res) => {
-  const { username, password } = req.body || {};
+app.post('/login', async (req, res) => {
+  const { username, password, token } = req.body || {};
   if (username === ADMIN_USERNAME && bcrypt.compareSync(password || '', ADMIN_PASSWORD_HASH)) {
+    
+    // Check if 2FA is enabled
+    const Config = require('./src/models/Config');
+    const speakeasy = require('speakeasy');
+    const config = await Config.findOne({ key: 'admin_2fa_secret' });
+    
+    if (config) {
+      if (!token) {
+        return res.status(401).render('login', { error: 'Authenticator code is required.' });
+      }
+      const verified = speakeasy.totp.verify({
+        secret: config.value,
+        encoding: 'base32',
+        token: token,
+        window: 1
+      });
+      if (!verified) {
+        SecurityLog.create({ ip: req.ip, type: 'Failed Login', message: `Invalid 2FA code for user: ${username}` }).catch(err => console.error(err));
+        return res.status(401).render('login', { error: 'Invalid authenticator code.' });
+      }
+    }
+    
     req.session.user = { username };
     return res.redirect('/admin');
   }

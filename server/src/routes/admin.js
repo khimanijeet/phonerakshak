@@ -16,5 +16,8 @@ router.post('/devices/:id/geofence', requireAuth, adminController.updateGeofence
 router.get('/blocked', requireAuth, adminController.getBlocked);
 router.get('/reports', requireAuth, adminController.getReports);
 router.get('/security', requireAuth, adminController.getSecurityLogs);
+router.get('/setup-2fa', requireAuth, adminController.getSetup2FA);
+router.post('/setup-2fa', requireAuth, adminController.postSetup2FA);
+router.post('/disable-2fa', requireAuth, adminController.disable2FA);
 
 module.exports = router;
