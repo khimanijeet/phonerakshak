@@ -257,3 +257,11 @@ exports.verifyFace = async (req, res, next) => {
     }
   } catch (err) { next(err); }
 };
+
+exports.getGeofence = async (req, res, next) => {
+  try {
+    const device = await Device.findOne({ deviceId: req.params.id });
+    if (!device) return res.status(404).send('Device not found');
+    res.json(device.geofence || { enabled: false });
+  } catch (err) { next(err); }
+};

@@ -244,6 +244,19 @@ class BackendClient(private val prefs: Prefs) {
         }
     }
 
+    fun getGeofence(deviceId: String): JSONObject? {
+        return try {
+            executeWithAuthRetry { buildRequest("$baseUrl/api/devices/$deviceId/geofence", "GET") }.use { resp ->
+                if (!resp.isSuccessful) return null
+                val bodyStr = resp.body?.string() ?: return null
+                JSONObject(bodyStr)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "getGeofence failed: ${e.message}")
+            null
+        }
+    }
+
     companion object {
         private const val TAG = "BackendClient"
     }

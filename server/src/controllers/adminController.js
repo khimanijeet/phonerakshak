@@ -100,6 +100,48 @@ exports.sendCommand = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.updateGeofence = async (req, res, next) => {
+  try {
+    const { enabled, lat, lng, radius } = req.body;
+    const device = await Device.findOne({ deviceId: req.params.id });
+    if (!device) return res.status(404).send('Device not found');
+    
+    device.geofence = {
+      enabled: enabled === 'on' || enabled === true,
+      lat: parseFloat(lat) || null,
+      lng: parseFloat(lng) || null,
+      radius: parseInt(radius) || 100
+    };
+    await device.save();
+    
+    // Create a background command to force the device to sync its geofence immediately
+    await Command.create({ deviceId: req.params.id, type: 'sync_geofence', status: 'queued', queuedAt: Date.now() });
+    
+    res.redirect(`/admin/devices/${req.params.id}`);
+  } catch (err) { next(err); }
+};
+
+exports.updateGeofence = async (req, res, next) => {
+  try {
+    const { enabled, lat, lng, radius } = req.body;
+    const device = await Device.findOne({ deviceId: req.params.id });
+    if (!device) return res.status(404).send('Device not found');
+    
+    device.geofence = {
+      enabled: enabled === 'on' || enabled === true,
+      lat: parseFloat(lat) || null,
+      lng: parseFloat(lng) || null,
+      radius: parseInt(radius) || 100
+    };
+    await device.save();
+    
+    // Create a background command to force the device to sync its geofence immediately
+    await Command.create({ deviceId: req.params.id, type: 'sync_geofence', status: 'queued', queuedAt: Date.now() });
+    
+    res.redirect(`/admin/devices/${req.params.id}`);
+  } catch (err) { next(err); }
+};
+
 exports.getBlocked = async (req, res, next) => {
   try {
     const blocked = await BlockedNumber.find().sort({ count: -1 }).lean();

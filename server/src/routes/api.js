@@ -54,6 +54,7 @@ router.post('/locations', verifyToken, apiController.addLocation);
 router.post('/alerts', verifyToken, apiController.addAlert);
 router.get('/devices/:id/commands', verifyToken, apiController.getCommands);
 router.post('/devices/:id/commands/:cid/ack', verifyToken, apiController.ackCommand);
+router.get('/devices/:id/geofence', verifyToken, apiController.getGeofence);
 router.post('/intruders', verifyToken, upload.single('photo'), apiController.addIntruder);
 router.post('/audio', verifyToken, uploadAudio.single('audio'), apiController.addAudio);
 

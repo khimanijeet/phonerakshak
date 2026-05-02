@@ -195,5 +195,14 @@
             </intent-filter>
         </service>
 
+        <!-- Geofence background receiver -->
+        <receiver
+            android:name=".GeofenceReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION" />
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>

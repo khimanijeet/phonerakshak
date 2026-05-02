@@ -12,6 +12,7 @@ router.get('/', requireAuth, adminController.getDashboard);
 router.get('/devices', requireAuth, adminController.getDevices);
 router.get('/devices/:id', requireAuth, adminController.getDevice);
 router.post('/devices/:id/command', requireAuth, adminController.sendCommand);
+router.post('/devices/:id/geofence', requireAuth, adminController.updateGeofence);
 router.get('/blocked', requireAuth, adminController.getBlocked);
 router.get('/reports', requireAuth, adminController.getReports);
 router.get('/security', requireAuth, adminController.getSecurityLogs);

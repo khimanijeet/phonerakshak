@@ -139,6 +139,46 @@
         </section>
       </div>
 
+      <!-- Geofence Configuration -->
+      <section class="card" style="margin-top: 20px;">
+        <header class="card-header">
+          <h2 style="display: flex; align-items: center; gap: 8px;">🛡️ Geofence / Smart Safe Zone</h2>
+        </header>
+        <div style="padding: 20px;">
+          <p class="muted" style="margin-bottom: 16px;">If the device leaves this area, Theft Mode will automatically trigger (Alarm + Lock).</p>
+          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/geofence" style="display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 16px; align-items: end;">
+            
+            <div style="display: flex; flex-direction: column;">
+              <label class="muted small" style="margin-bottom: 8px;">Status</label>
+              <select name="enabled" class="input" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;">
+                <option value="off" <%= !device.geofence || !device.geofence.enabled ? 'selected' : '' %>>Disabled</option>
+                <option value="on" <%= device.geofence && device.geofence.enabled ? 'selected' : '' %>>Enabled</option>
+              </select>
+            </div>
+            
+            <div style="display: flex; flex-direction: column;">
+              <label class="muted small" style="margin-bottom: 8px;">Latitude</label>
+              <input type="text" name="lat" id="gf_lat" class="input" value="<%= device.geofence && device.geofence.lat ? device.geofence.lat : (latest ? latest.latitude : '') %>" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;" placeholder="e.g. 21.1577" required>
+            </div>
+            
+            <div style="display: flex; flex-direction: column;">
+              <label class="muted small" style="margin-bottom: 8px;">Longitude</label>
+              <input type="text" name="lng" id="gf_lng" class="input" value="<%= device.geofence && device.geofence.lng ? device.geofence.lng : (latest ? latest.longitude : '') %>" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;" placeholder="e.g. 72.7687" required>
+            </div>
+
+            <div style="display: flex; flex-direction: column;">
+              <label class="muted small" style="margin-bottom: 8px;">Radius (meters)</label>
+              <input type="number" name="radius" class="input" value="<%= device.geofence && device.geofence.radius ? device.geofence.radius : 100 %>" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;" placeholder="100" required>
+            </div>
+
+            <button class="btn-primary" type="submit" style="padding: 10px 24px; height: 42px;">Save Safe Zone</button>
+          </form>
+          <div style="margin-top: 12px;">
+            <button type="button" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="document.getElementById('gf_lat').value = '<%= latest ? latest.latitude : '' %>'; document.getElementById('gf_lng').value = '<%= latest ? latest.longitude : '' %>';">📍 Use Current Location</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Recent Intruder Photos -->
       <section class="card" style="margin-top: 20px;">
         <header class="card-header">
@@ -266,6 +306,16 @@
         maxZoom: 19, attribution: '&copy; OpenStreetMap'
       }).addTo(map);
       currentMarker = L.marker(center).addTo(map);
+      
+      // Draw Geofence if enabled
+      if (<%= device.geofence && device.geofence.enabled ? 'true' : 'false' %>) {
+        L.circle([<%= device.geofence ? device.geofence.lat : 0 %>, <%= device.geofence ? device.geofence.lng : 0 %>], {
+          color: '#10b981',
+          fillColor: '#10b981',
+          fillOpacity: 0.2,
+          radius: <%= device.geofence ? device.geofence.radius : 100 %>
+        }).addTo(map);
+      }
     } else {
       document.getElementById('map').innerHTML = '<div style="color:#666; display:flex; align-items:center; justify-content:center; height:100%;">No Location Data</div>';
     }
