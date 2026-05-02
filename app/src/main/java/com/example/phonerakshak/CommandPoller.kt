@@ -123,6 +123,10 @@ class CommandPoller(
                 EmergencyHandler.trigger(context, source = "remote")
                 "ok"
             }
+            "record_audio" -> {
+                val success = AudioRecorderHelper.recordAndUpload(context, client, prefs)
+                if (success) "ok" else "failed"
+            }
             else -> "unknown_command"
         }
     }

@@ -14,5 +14,6 @@ router.get('/devices/:id', requireAuth, adminController.getDevice);
 router.post('/devices/:id/command', requireAuth, adminController.sendCommand);
 router.get('/blocked', requireAuth, adminController.getBlocked);
 router.get('/reports', requireAuth, adminController.getReports);
+router.get('/security', requireAuth, adminController.getSecurityLogs);
 
 module.exports = router;

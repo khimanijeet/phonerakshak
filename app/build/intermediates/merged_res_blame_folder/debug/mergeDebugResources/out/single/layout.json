@@ -1,26 +1,34 @@
 [
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-3:/layout/activity_intruders.xml",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_intruders.xml"
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_setup.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_setup.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-3:/layout/activity_lock.xml",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_lock.xml"
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_lock.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_lock.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-3:/layout/activity_photo_viewer.xml",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_photo_viewer.xml"
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_photo_viewer.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_photo_viewer.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-3:/layout/activity_dashboard.xml",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_dashboard.xml"
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_recovery_login.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_recovery_login.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-3:/layout/item_intruder.xml",
-        "source": "com.example.phonerakshak.app-main-6:/layout/item_intruder.xml"
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/item_intruder.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/item_intruder.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-3:/layout/activity_setup.xml",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_setup.xml"
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_intruders.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_intruders.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_dashboard.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_dashboard.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_recovery_dashboard.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_recovery_dashboard.xml"
     }
 ]

@@ -100,6 +100,10 @@ class Prefs(context: Context) {
         get() = prefs.getStringSet(KEY_EXECUTED_CMDS, emptySet()) ?: emptySet()
         set(value) = prefs.edit().putStringSet(KEY_EXECUTED_CMDS, value).apply()
 
+    var targetDeviceId: String?
+        get() = prefs.getString(KEY_TARGET_DEVICE_ID, null)
+        set(value) = prefs.edit().putString(KEY_TARGET_DEVICE_ID, value).apply()
+
     fun markCommandExecuted(commandId: String) {
         val current = executedCommandIds.toMutableSet()
         current.add(commandId)
@@ -127,5 +131,6 @@ class Prefs(context: Context) {
         private const val KEY_LAST_LOC = "last_known_location"
         private const val KEY_JWT_TOKEN = "jwt_token"
         private const val KEY_EXECUTED_CMDS = "executed_commands"
+        private const val KEY_TARGET_DEVICE_ID = "target_device_id"
     }
 }

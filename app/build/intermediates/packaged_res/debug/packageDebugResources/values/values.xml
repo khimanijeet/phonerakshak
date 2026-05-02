@@ -39,6 +39,11 @@
     <string name="dashboard_title">PhoneRakshak Dashboard</string>
     <string name="empty_intruders">No intruder photos yet. Photos are captured silently from the front camera after wrong PIN attempts on the lock screen.</string>
     <string name="enter_pin">Enter PIN to unlock</string>
+    <string name="gcm_defaultSenderId" translatable="false">1090938532777</string>
+    <string name="google_api_key" translatable="false">AIzaSyDTYqCL2gZjN0TCODoSMhYoqQWJ3w0azMM</string>
+    <string name="google_app_id" translatable="false">1:1090938532777:android:b8e033e2b315ec146c4ab8</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDTYqCL2gZjN0TCODoSMhYoqQWJ3w0azMM</string>
+    <string name="google_storage_bucket" translatable="false">phonerakshak-f8677.firebasestorage.app</string>
     <string name="hint_backend">Backend URL (optional, e.g. https://your-server.com)</string>
     <string name="hint_emergency">Emergency contact phone number</string>
     <string name="hint_phone">Your phone number (optional)</string>
@@ -51,6 +56,7 @@
     <string name="locked_title">LOCKED</string>
     <string name="notif_channel">PhoneRakshak Service</string>
     <string name="notif_text">PhoneRakshak protection is running</string>
+    <string name="project_id" translatable="false">phonerakshak-f8677</string>
     <string name="quick_actions_title">Quick Actions</string>
     <string name="setup_title">PhoneRakshak Setup</string>
     <string name="sms_help">SMS commands (replace 123 with your PIN):\n• LOCK&lt;PIN> — lock the device\n• LOC&lt;PIN> — reply with GPS link\n• ALARM&lt;PIN> — sound alarm\n• STOPALARM&lt;PIN> — stop alarm\n• SOS&lt;PIN> — trigger Emergency Mode\n\nIf the SIM is changed, an alert SMS with the current location is sent to your emergency contact.</string>

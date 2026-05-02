@@ -16,6 +16,7 @@ const DEFAULT_DB = {
   intruders: [],
   blockedNumbers: [],
   reports: [],
+  securityLogs: [],
   callsMonitored: 0,
   appVersion: 'v1.3.2',
 };
@@ -384,6 +385,26 @@ function guessCity(phone) {
   return cities[Math.abs(h) % cities.length];
 }
 
+// ----------- Security Logs -----------
+function addSecurityLog({ ip, type, message }) {
+  const entry = {
+    id: uid('sec'),
+    ip: ip || 'Unknown',
+    type: type || 'threat',
+    message: message || '',
+    timestamp: Date.now(),
+  };
+  db.securityLogs = db.securityLogs || [];
+  db.securityLogs.push(entry);
+  if (db.securityLogs.length > 2000) db.securityLogs = db.securityLogs.slice(-2000);
+  persist();
+  return entry;
+}
+
+function getSecurityLogs(limit = 100) {
+  return [...(db.securityLogs || [])].slice(-limit).reverse();
+}
+
 module.exports = {
   INTRUDERS_DIR,
   upsertDevice,
@@ -412,4 +433,6 @@ module.exports = {
   getStats,
   getCityBreakdown,
   getDailySeries,
+  addSecurityLog,
+  getSecurityLogs,
 };

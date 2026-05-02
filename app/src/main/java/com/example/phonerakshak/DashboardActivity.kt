@@ -8,6 +8,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import android.widget.Toast
+import android.content.ComponentName
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.phonerakshak.databinding.ActivityDashboardBinding
 import java.text.SimpleDateFormat
@@ -76,6 +79,9 @@ class DashboardActivity : AppCompatActivity() {
         binding.btnIntruders.setOnClickListener {
             startActivity(Intent(this, IntruderActivity::class.java))
         }
+        
+        binding.btnStealth.setOnClickListener { toggleStealthMode() }
+        
         binding.btnSettings.setOnClickListener {
             startActivity(Intent(this, SetupActivity::class.java))
         }
@@ -85,11 +91,59 @@ class DashboardActivity : AppCompatActivity() {
         super.onResume()
         renderStatus()
         handler.post(refresher)
+        
+        // Update stealth button text
+        val pm = packageManager
+        val alias = ComponentName(this, "com.example.phonerakshak.CalculatorAlias")
+        val state = pm.getComponentEnabledSetting(alias)
+        val isStealthEnabled = state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        binding.btnStealth.text = getString(
+            if (isStealthEnabled) R.string.btn_disable_stealth else R.string.btn_enable_stealth
+        )
     }
 
     override fun onPause() {
         handler.removeCallbacks(refresher)
         super.onPause()
+    }
+
+    private fun toggleStealthMode() {
+        val pm = packageManager
+        val baseActivity = ComponentName(this, "com.example.phonerakshak.DashboardActivity")
+        val aliasActivity = ComponentName(this, "com.example.phonerakshak.CalculatorAlias")
+
+        val state = pm.getComponentEnabledSetting(aliasActivity)
+        val isStealthEnabled = state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+
+        if (isStealthEnabled) {
+            // Disable stealth (restore original)
+            pm.setComponentEnabledSetting(
+                aliasActivity,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
+            pm.setComponentEnabledSetting(
+                baseActivity,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+            toast("Stealth Mode Disabled. Original icon restored.")
+            binding.btnStealth.text = getString(R.string.btn_enable_stealth)
+        } else {
+            // Enable stealth (use calculator alias)
+            pm.setComponentEnabledSetting(
+                baseActivity,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
+            pm.setComponentEnabledSetting(
+                aliasActivity,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+            toast("Stealth Mode Enabled! Icon disguised as Calculator.")
+            binding.btnStealth.text = getString(R.string.btn_disable_stealth)
+        }
     }
 
     private fun renderStatus() {

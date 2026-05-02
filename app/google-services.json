@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1090938532777",
+    "project_id": "phonerakshak-f8677",
+    "storage_bucket": "phonerakshak-f8677.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090938532777:android:b8e033e2b315ec146c4ab8",
+        "android_client_info": {
+          "package_name": "com.example.phonerakshak"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTYqCL2gZjN0TCODoSMhYoqQWJ3w0azMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

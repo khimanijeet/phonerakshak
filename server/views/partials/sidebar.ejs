@@ -5,7 +5,7 @@
     </div>
     <div>
       <div class="brand-title">PhoneRakshak</div>
-      <div class="brand-sub">Anti-Theft Admin Panel</div>
+      <div class="brand-sub">Anti-Theft Admin Panel (Pro)</div>
     </div>
   </div>
   <nav class="sidebar-nav">
@@ -35,6 +35,9 @@
     </a>
     <a href="/install" target="_blank" class="">
       <span class="nav-icon">📲</span> Install App (QR)
+    </a>
+    <a href="/admin/security" class="<%= typeof active !== 'undefined' && active === 'security' ? 'active' : '' %>">
+      <span class="nav-icon">🛡️</span> Security Logs
     </a>
     <a href="/admin-qr" class="<%= active === 'admin-qr' ? 'active' : '' %>">
       <span class="nav-icon">🔐</span> Admin QR

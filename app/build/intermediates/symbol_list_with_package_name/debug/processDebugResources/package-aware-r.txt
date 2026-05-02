@@ -647,6 +647,7 @@ attr imagePanX
 attr imagePanY
 attr imageRotate
 attr imageZoom
+attr implementationMode
 attr indeterminateAnimationType
 attr indeterminateProgressStyle
 attr indicatorColor
@@ -1014,6 +1015,7 @@ attr round
 attr roundPercent
 attr saturation
 attr scaleFromTextSize
+attr scaleType
 attr scopeUris
 attr scrimAnimationDuration
 attr scrimBackground
@@ -3251,12 +3253,15 @@ id bounceBoth
 id bounceEnd
 id bounceStart
 id btnAdmin
+id btnAlarm
 id btnBack
 id btnDashboard
 id btnDeleteAll
 id btnEmergency
 id btnIntruders
 id btnLocate
+id btnLocation
+id btnLock
 id btnOpenMap
 id btnSave
 id btnSettings
@@ -3264,6 +3269,7 @@ id btnStopAlarm
 id btnTestAlarm
 id btnTestLock
 id btnUnlock
+id btnVerify
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3287,6 +3293,7 @@ id clip_vertical
 id clockwise
 id closest
 id collapseActionView
+id compatible
 id compress
 id confirm_button
 id constraint
@@ -3351,11 +3358,15 @@ id endToStart
 id enterAlways
 id enterAlwaysCollapsed
 id escape
+id etRecoveryCode
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
 id fade
 id fill
+id fillCenter
+id fillEnd
+id fillStart
 id fill_horizontal
 id fill_vertical
 id filled
@@ -3529,6 +3540,7 @@ id path
 id pathRelative
 id peekHeight
 id percent
+id performance
 id pin
 id pooling_container_listener_holder_tag
 id position
@@ -3658,6 +3670,9 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tvLivenessPrompt
+id tvStatus
+id tvTitle
 id txtAdmin
 id txtAdminStatus
 id txtBackend
@@ -3675,6 +3690,7 @@ id unlabeled
 id up
 id useLogo
 id vertical_only
+id viewFinder
 id view_offset_helper
 id view_transition
 id view_tree_lifecycle_owner
@@ -3812,6 +3828,8 @@ layout activity_dashboard
 layout activity_intruders
 layout activity_lock
 layout activity_photo_viewer
+layout activity_recovery_dashboard
+layout activity_recovery_login
 layout activity_setup
 layout custom_dialog
 layout design_bottom_navigation_item
@@ -3897,6 +3915,7 @@ mipmap ic_launcher
 mipmap ic_launcher_round
 plurals intruders_count
 plurals mtrl_badge_content_description
+raw firebase_common_keep
 string abc_action_bar_home_description
 string abc_action_bar_up_description
 string abc_action_menu_overflow_description
@@ -3988,6 +4007,12 @@ string error_icon_content_description
 string exposed_dropdown_menu_content_description
 string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
+string fcm_fallback_notification_channel_label
+string gcm_defaultSenderId
+string google_api_key
+string google_app_id
+string google_crash_reporting_api_key
+string google_storage_bucket
 string hide_bottom_view_on_scroll_behavior
 string hint_backend
 string hint_emergency
@@ -4108,6 +4133,7 @@ string path_password_eye
 string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
 string path_password_strike_through
+string project_id
 string quick_actions_title
 string search_menu_title
 string searchbar_scrolling_view_behavior
@@ -5372,6 +5398,7 @@ styleable OnClick clickAction targetId
 styleable OnSwipe autoCompleteMode dragDirection dragScale dragThreshold limitBoundsTo maxAcceleration maxVelocity moveWhenScrollAtTop nestedScrollFlags onTouchUp rotationCenterId springBoundary springDamping springMass springStiffness springStopThreshold touchAnchorId touchAnchorSide touchRegionId
 styleable PopupWindow android_popupBackground android_popupAnimationStyle overlapAnchor
 styleable PopupWindowBackgroundState state_above_anchor
+styleable PreviewView implementationMode scaleType
 styleable PropertySet android_visibility android_alpha layout_constraintTag motionProgress visibilityMode
 styleable RadialViewGroup materialCircleRadius
 styleable RangeSlider minSeparation values

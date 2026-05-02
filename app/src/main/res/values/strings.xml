@@ -60,6 +60,14 @@
     <string name="btn_delete_all">Delete All</string>
     <string name="empty_intruders">No intruder photos yet. Photos are captured silently from the front camera after wrong PIN attempts on the lock screen.</string>
 
+    <!-- Stealth Mode -->
+    <string name="app_name_disguised">Calculator</string>
+    <string name="btn_enable_stealth">Enable Stealth Mode (Disguise App)</string>
+    <string name="btn_disable_stealth">Disable Stealth Mode (Restore Original Icon)</string>
+
+    <string name="accessibility_description_fake_shutdown">Allows PhoneRakshak to intercept the power button menu and simulate a fake shutdown to trick thieves.</string>
+    <string name="fake_shutting_down">Shutting down...</string>
+
     <plurals name="intruders_count">
         <item quantity="one">%d intruder photo</item>
         <item quantity="other">%d intruder photos</item>

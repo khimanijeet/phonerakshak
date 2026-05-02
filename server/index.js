@@ -11,6 +11,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
 const connectDB = require('./src/config/db');
+const SecurityLog = require('./src/models/SecurityLog');
 const logger = require('./src/utils/logger');
 const errorHandler = require('./src/middlewares/errorHandler');
 
@@ -62,13 +63,19 @@ app.use(
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // Limit each IP to 200 requests per windowMs
-  message: { error: 'Too many requests, please try again later.' }
+  handler: (req, res, next, options) => {
+    SecurityLog.create({ ip: req.ip, type: 'API Spam', message: 'Rate limit exceeded on API routes' }).catch(err => console.error(err));
+    res.status(options.statusCode).send(options.message);
+  }
 });
 
 const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 20, // Limit each IP to 20 auth requests per hour
-  message: { error: 'Too many registration attempts, please try again later.' }
+  handler: (req, res, next, options) => {
+    SecurityLog.create({ ip: req.ip, type: 'Brute Force', message: 'Rate limit exceeded on Auth routes' }).catch(err => console.error(err));
+    res.status(options.statusCode).send(options.message);
+  }
 });
 
 app.use('/api/devices', authLimiter);
@@ -133,6 +140,7 @@ app.post('/login', (req, res) => {
     req.session.user = { username };
     return res.redirect('/admin');
   }
+  SecurityLog.create({ ip: req.ip, type: 'Failed Login', message: `Invalid attempt for user: ${username || 'unknown'}` }).catch(err => console.error(err));
   res.status(401).render('login', { error: 'Invalid username or password.' });
 });
 

@@ -1,0 +1,62 @@
+=========================================
+    PHONERAKSHAK FEATURE LIST & ROADMAP
+=========================================
+
+This document outlines the capabilities of the PhoneRakshak ecosystem (Server, Client APK, and Admin Dashboard) along with the pending roadmap items that need to be solved to reach ultimate completion.
+
+-----------------------------------------
+1. SERVER BACKEND FEATURES (Provided to Customer/Admin)
+-----------------------------------------
+- Instant Command Dispatch: Utilizes Firebase Cloud Messaging (FCM) to instantly push commands to offline/dozing devices using high-priority data payloads.
+- Hybrid Fallback Reliability: Maintains a state machine (Queued -> Processing -> Executed). If FCM fails, HTTP Polling guarantees command delivery within a 15-second timeout window.
+- Real-Time Device Tracking: Tracks and stores highly accurate device GPS locations, storing them dynamically for live map rendering.
+- Intruder Logging: Processes and stores silent photos taken by the phone when an unauthorized user attempts to unlock the device.
+- Ironclad Security: Implements JWT (JSON Web Token) authentication with a 7-day auto-refresh cycle and express-rate-limit to protect against brute force DDoS attacks.
+- Real-Time Socket Connections: Streams live data to the Admin Dashboard (e.g., instant location pings, SIM change alerts) via Socket.io.
+
+-----------------------------------------
+2. CLIENT APK FEATURES (Installed on Target Device)
+-----------------------------------------
+- Stealth Operation: Operates silently in the background with AES256-GCM hardware encryption for all sensitive data (EncryptedSharedPreferences).
+- Battery-Optimized Adaptive Polling: Rests at a 60-second polling interval but instantly revs up to 10 seconds when actively receiving commands.
+- Offline SMS Fallback: Capable of receiving legacy SMS commands (e.g., LOCK<PIN>) to trigger actions even when mobile data is disabled.
+- Silent Intruder Selfie: Automatically snaps a photo using the front camera when an incorrect PIN is entered on the lock screen.
+- SIM Change Detection: Constantly monitors the SIM card fingerprint. If an unauthorized SIM is inserted, it instantly alerts the backend and sends an SMS to the emergency contact.
+- 5-Minute Heartbeat: Automatically pings the server every 5 minutes to prove the device is online and active.
+- Idempotent Command Execution: Strictly ensures that no remote command is ever executed twice, even across reboots.
+
+-----------------------------------------
+3. ADMIN DASHBOARD FEATURES (Web UI Control Center)
+-----------------------------------------
+- Glassmorphism UI: A premium, modern, and responsive interface designed to wow users.
+- Live Map Tracking: Integrates Leaflet.js to plot recent GPS coordinates and device movement history dynamically.
+- Remote Device Control: One-click buttons to instantly Lock, trigger Alarms, request Live Location, and trigger Emergency Mode.
+- Heartbeat Monitoring: Dynamically calculates device connectivity, showing a Green "Online" badge if pinged within 5 minutes, or a Red "Offline" badge.
+- Instant Install via QR: Dynamically generates QR codes pointing to the local network IP or live Render URL so devices can instantly download the APK.
+- Granular Command Logs: Displays the exact lifecycle of a command (Queued, Processing, Executed, Failed) without requiring page refreshes.
+
+=========================================
+    ROADMAP / PENDING ISSUES TO SOLVE
+=========================================
+
+1. SMS Fallback Edge Cases:
+   - Issue: Need to ensure SMS commands still bypass Android 14+ background execution limits when the app is heavily restricted by the OS.
+   - Solution: Deeply integrate the Foreground Service (PhoneRakshakService) with the SMS Receiver.
+
+2. Intruder Photo Watermarking:
+   - Issue: Photos currently do not have contextual data burned into them.
+   - Solution: Add a Canvas watermark to the original image before upload, stamping it with the Timestamp, Location, and Device Info.
+
+3. Stealth Icon / App Disguise:
+   - Issue: The app is easily recognizable as "PhoneRakshak" by a thief.
+   - Solution: Implement a feature to programmatically change the app icon and name (e.g., to "Calculator" or "Settings") using activity-alias in the AndroidManifest.
+
+4. Multi-Admin 2FA Verification:
+   - Issue: The Admin Dashboard currently relies on a single Username/Password.
+   - Solution: Implement Time-based One-Time Password (TOTP) or Email OTP to securely log into the Admin panel.
+
+5. Dynamic Theft-Mode Tracking:
+   - Issue: Need an active "Theft Mode" that automatically pings location every 10 seconds without manual command triggers, but without draining battery permanently.
+   - Solution: Implement a state flag that enables continuous tracking only when 'Theft Mode' is explicitly enabled by the Admin.
+
+=========================================

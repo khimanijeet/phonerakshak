@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">1090938532777</string>
+    <string name="google_api_key" translatable="false">AIzaSyDTYqCL2gZjN0TCODoSMhYoqQWJ3w0azMM</string>
+    <string name="google_app_id" translatable="false">1:1090938532777:android:b8e033e2b315ec146c4ab8</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDTYqCL2gZjN0TCODoSMhYoqQWJ3w0azMM</string>
+    <string name="google_storage_bucket" translatable="false">phonerakshak-f8677.firebasestorage.app</string>
+    <string name="project_id" translatable="false">phonerakshak-f8677</string>
+</resources>

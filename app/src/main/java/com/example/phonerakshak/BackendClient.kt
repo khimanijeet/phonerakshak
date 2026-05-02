@@ -33,6 +33,7 @@ class BackendClient(private val prefs: Prefs) {
 
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
     private val jpegMedia = "image/jpeg".toMediaType()
+    private val amrMedia = "audio/amr".toMediaType()
     private val baseUrl: String get() = prefs.backendUrl
 
     private fun buildRequest(url: String, method: String, body: okhttp3.RequestBody? = null): Request {
@@ -208,6 +209,25 @@ class BackendClient(private val prefs: Prefs) {
             }
         } catch (e: Exception) {
             Log.w(TAG, "uploadIntruderPhoto failed: ${e.message}")
+            false
+        }
+    }
+
+    fun uploadAudio(deviceId: String, file: File): Boolean {
+        if (!file.exists()) return false
+        return try {
+            val body = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("deviceId", deviceId)
+                .addFormDataPart("audio", file.name, file.asRequestBody(amrMedia))
+                .build()
+
+            executeWithAuthRetry { buildRequest("$baseUrl/api/audio", "POST", body) }.use { resp ->
+                Log.i(TAG, "uploadAudio -> ${resp.code}")
+                resp.isSuccessful
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "uploadAudio failed: ${e.message}")
             false
         }
     }

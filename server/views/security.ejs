@@ -1,0 +1,56 @@
+<% const leaflet = false; const chartjs = false; const active = 'security'; %>
+<%- include('partials/header', { title: 'Security Logs — Phonerakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Security Logs & Threat Monitor' }) %>
+    <div class="content">
+      
+      <!-- Warning Banner -->
+      <div class="card" style="border-left: 4px solid #ef4444; margin-bottom: 24px; background: rgba(239, 68, 68, 0.05);">
+        <h3 style="color: #ef4444; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Hacker Trap Active
+        </h3>
+        <p style="color: var(--text); margin-bottom: 0;">This page actively monitors your server for DDoS attacks, brute force login attempts, and API spam. All malicious IPs are automatically rate-limited.</p>
+      </div>
+
+      <section class="card">
+        <header class="card-header">
+          <h2>Unauthorized Access Attempts</h2>
+          <span class="muted"><%= logs.length %> threats detected</span>
+        </header>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Attack Type</th>
+                <th>IP Address</th>
+                <th>Message / Details</th>
+                <th>Time of Attack</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (logs.length === 0) { %>
+                <tr><td colspan="4" class="empty" style="padding: 40px; text-align: center; color: var(--success);">✅ Your server is secure. No threats detected yet.</td></tr>
+              <% } %>
+              <% logs.forEach(function(log){ %>
+                <tr>
+                  <td>
+                    <span class="pill" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2);">
+                      <%= log.type || 'Unknown Threat' %>
+                    </span>
+                  </td>
+                  <td class="mono" style="color: #f87171;"><%= log.ip %></td>
+                  <td><%= log.message || '—' %></td>
+                  <td><%= new Date(log.timestamp).toLocaleString() %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

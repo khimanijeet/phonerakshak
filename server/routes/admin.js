@@ -78,6 +78,15 @@ router.get('/reports', requireAuth, (req, res) => {
   res.render('reports', {
     user: req.session.user,
     reports: db.getAllAlerts(200),
+    active: 'reports'
+  });
+});
+
+router.get('/security', requireAuth, (req, res) => {
+  res.render('security', {
+    user: req.session.user,
+    logs: db.getSecurityLogs(200),
+    active: 'security'
   });
 });
 

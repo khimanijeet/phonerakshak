@@ -5,6 +5,7 @@ const Command = require('../models/Command');
 const Intruder = require('../models/Intruder');
 const BlockedNumber = require('../models/BlockedNumber');
 const Report = require('../models/Report');
+const SecurityLog = require('../models/SecurityLog');
 
 const isOnline = (device, windowMs = 5 * 60 * 1000) => {
   return device && device.lastSeen && (Date.now() - new Date(device.lastSeen).getTime()) < windowMs;
@@ -23,11 +24,12 @@ exports.getDashboard = async (req, res, next) => {
     const latest = locations.length > 0 ? locations[0] : null;
     const alerts = device ? await Alert.find({ deviceId: device.deviceId, type: 'sim_change' }).sort({ timestamp: -1 }).limit(10) : [];
     const intruders = device ? await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(4) : [];
+    const audioClips = device ? await AudioRecording.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(3) : [];
     const commands = device ? await Command.find({ deviceId: device.deviceId }).sort({ queuedAt: -1 }).limit(5) : [];
 
     res.render('dashboard', {
       user: req.session.user,
-      device, locations, latest, alerts, intruders, commands
+      device, locations, latest, alerts, intruders, audioClips, commands
     });
   } catch (err) { next(err); }
 };
@@ -49,12 +51,13 @@ exports.getDevice = async (req, res, next) => {
     const latest = locations.length > 0 ? locations[0] : null;
     const alerts = await Alert.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(100);
     const intruders = await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(50);
+    const audioClips = await AudioRecording.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(50);
     const commands = await Command.find({ deviceId: device.deviceId }).sort({ queuedAt: -1 }).limit(50);
     
     res.render('device', {
       user: req.session.user,
       device: { ...device, online: isOnline(device) },
-      locations, latest, alerts, intruders, commands
+      locations, latest, alerts, intruders, audioClips, commands
     });
   } catch (err) { next(err); }
 };
@@ -106,6 +109,13 @@ exports.getBlocked = async (req, res, next) => {
 exports.getReports = async (req, res, next) => {
   try {
     const reports = await Alert.find().sort({ timestamp: -1 }).limit(200).lean();
-    res.render('reports', { user: req.session.user, reports });
+    res.render('reports', { user: req.session.user, reports, active: 'reports' });
+  } catch (err) { next(err); }
+};
+
+exports.getSecurityLogs = async (req, res, next) => {
+  try {
+    const logs = await SecurityLog.find().sort({ timestamp: -1 }).limit(200).lean();
+    res.render('security', { user: req.session.user, logs, active: 'security' });
   } catch (err) { next(err); }
 };

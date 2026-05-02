@@ -222,6 +222,14 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/btn_view_intruders" />
 
+            <Button
+                android:id="@+id/btnStealth"
+                style="@style/PR.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_enable_stealth" />
+
             <TextView
                 android:id="@+id/txtIntruderCount"
                 android:layout_width="match_parent"

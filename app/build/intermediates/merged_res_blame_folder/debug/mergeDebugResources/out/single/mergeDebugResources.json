@@ -1,102 +1,110 @@
 [
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/xml_device_admin.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/xml/device_admin.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_dot_green.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/dot_green.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_dot_red.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/dot_red.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-hdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/layout_activity_photo_viewer.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_photo_viewer.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_btn_primary.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/btn_primary.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_bg_input.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/bg_input.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_recovery_login.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_recovery_login.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_intruders.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_intruders.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/layout_activity_intruders.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_intruders.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/layout_activity_lock.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_lock.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_recovery_dashboard.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_recovery_dashboard.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_dot_green.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/dot_green.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_bg_card.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/bg_card.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_btn_secondary.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/btn_secondary.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-hdpi/ic_launcher.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_btn_danger.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/btn_danger.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_btn_danger.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/btn_danger.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_item_intruder.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/item_intruder.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_btn_primary.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/btn_primary.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-xxxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/xml_network_security_config.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/xml/network_security_config.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/xml_device_admin.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/xml/device_admin.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/layout_activity_setup.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_setup.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_bg_input.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/bg_input.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/layout_item_intruder.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/layout/item_intruder.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-mdpi/ic_launcher.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/xml_network_security_config.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/xml/network_security_config.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/layout_activity_dashboard.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/layout/activity_dashboard.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-xxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_bg_card.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/bg_card.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_setup.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_setup.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-xxhdpi/ic_launcher_round.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_dashboard.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_dashboard.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "com.example.phonerakshak.app-main-6:/mipmap-xxxhdpi/ic_launcher_round.png"
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_photo_viewer.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_photo_viewer.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-debug-4:/drawable_btn_secondary.xml.flat",
-        "source": "com.example.phonerakshak.app-main-6:/drawable/btn_secondary.xml"
+        "merged": "com.example.phonerakshak.app-debug-5:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.example.phonerakshak.app-main-7:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-debug-5:/drawable_dot_red.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/drawable/dot_red.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-debug-5:/layout_activity_lock.xml.flat",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_lock.xml"
     }
 ]
