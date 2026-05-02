@@ -6,6 +6,7 @@ const Intruder = require('../models/Intruder');
 const BlockedNumber = require('../models/BlockedNumber');
 const Report = require('../models/Report');
 const SecurityLog = require('../models/SecurityLog');
+const AudioRecording = require('../models/AudioRecording');
 
 const isOnline = (device, windowMs = 5 * 60 * 1000) => {
   return device && device.lastSeen && (Date.now() - new Date(device.lastSeen).getTime()) < windowMs;
