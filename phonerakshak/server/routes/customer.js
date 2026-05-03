@@ -35,9 +35,12 @@ function buildCustomerContext(customer) {
     lastSeenLabel: timeAgo(d.lastSeen),
   }));
   const device = devices[0] || null;
+  const isPremium = !!customer.isPremium; // Added premium check
+  
   let context = {
     devices, device, latest: null, alerts: [], photos: [], commands: [],
-    simAlerts: [], protection: null, modeHistory: [],
+    simAlerts: [], protection: null, modeHistory: [], activityLogs: [],
+    isPremium
   };
   if (device) {
     context.latest = db.getLatestLocation(device.deviceId);
@@ -47,6 +50,23 @@ function buildCustomerContext(customer) {
     context.simAlerts = db.getAlertsByType(device.deviceId, 'sim_change', 10);
     context.protection = db.getModeInfo(device);
     context.modeHistory = db.getModeHistory(device.deviceId, 6);
+    
+    // Derive activityLogs
+    let logs = [];
+    context.alerts.forEach(a => logs.push({ type: a.type, timestamp: a.timestamp, message: a.message }));
+    context.commands.forEach(c => {
+      let msg = 'Command ' + c.type + ' executed';
+      if (c.type === 'lock') msg = 'Device Locked';
+      if (c.type === 'alarm') msg = 'Alarm Played';
+      if (c.type === 'locate') msg = 'Location Requested';
+      logs.push({ type: c.type, timestamp: c.queuedAt || c.timestamp || Date.now(), message: msg });
+    });
+    context.photos.forEach(p => logs.push({ type: 'photo', timestamp: p.timestamp, message: 'Intruder Photo Captured', image: p.filename }));
+    if (context.latest) {
+      logs.push({ type: 'location', timestamp: context.latest.timestamp, message: 'Location Updated' });
+    }
+    
+    context.activityLogs = logs.sort((a,b) => b.timestamp - a.timestamp);
   }
   return context;
 }
@@ -137,15 +157,24 @@ router.get('/__preview-login', (req, res) => {
 
 // ---------- Dashboard ----------
 router.get('/', requireCustomer, (req, res) => {
-  const ctx = buildCustomerContext(req.session.customer);
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const c = dbCustomer || req.session.customer;
+  const ctx = buildCustomerContext(c);
   res.render('customer/dashboard', {
-    user: req.session.customer,
+    user: c,
     active: 'dashboard',
     ctx,
     notice: req.session.notice || null,
     timeAgo,
   });
   if (req.session.notice) delete req.session.notice;
+});
+
+// ---------- Polling ----------
+router.get('/api/poll', requireCustomer, (req, res) => {
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const ctx = buildCustomerContext(dbCustomer || req.session.customer);
+  res.json({ latest: ctx.latest, activityLogs: ctx.activityLogs.slice(0, 10), alerts: ctx.alerts });
 });
 
 router.post('/command', requireCustomer, (req, res) => {

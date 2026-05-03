@@ -236,6 +236,13 @@
       "passwordHash": "$2a$10$DFYuu6CEK6aUn0f.aTWkgulyklM88zkEAjUKfKklwGupyXfc3OM5O",
       "createdAt": 1777524285488,
       "updatedAt": 1777524285488
+    },
+    "9876543210": {
+      "phone": "9876543210",
+      "name": "Test User",
+      "passwordHash": "$2a$10$Lwoacj/kCiQp6dCxILhOses4CPHcBy6I847yJaApapX5X3B1RTgO2",
+      "createdAt": 1777841581632,
+      "updatedAt": 1777841581632
     }
   },
   "trustedContacts": [

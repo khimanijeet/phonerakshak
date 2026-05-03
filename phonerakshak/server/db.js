@@ -397,6 +397,10 @@ function getCommands(deviceId, limit = 50) {
     .reverse();
 }
 
+function getAllCommands(limit = 200) {
+  return db.commands.slice(-limit).reverse();
+}
+
 // ----------- Intruder photos -----------
 function addIntruderPhoto({ deviceId, filename }) {
   const entry = {
@@ -613,6 +617,10 @@ function updateCustomer(phone, patch) {
   Object.assign(c, patch, { updatedAt: Date.now() });
   persist();
   return c;
+}
+
+function getAllCustomers() {
+  return Object.values(db.customers || {});
 }
 
 function listCustomerDevices(phone) {
@@ -1156,6 +1164,7 @@ module.exports = {
   getPendingCommands,
   ackCommand,
   getCommands,
+  getAllCommands,
   addIntruderPhoto,
   getIntruderPhotos,
   addWifiSnapshot,
@@ -1169,6 +1178,7 @@ module.exports = {
   getCustomerByPhone,
   createCustomer,
   updateCustomer,
+  getAllCustomers,
   listCustomerDevices,
   getCustomerPrimaryDevice,
   ensureDemoCustomer,

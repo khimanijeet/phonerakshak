@@ -35,14 +35,29 @@ router.get('/', requireAuth, (req, res) => {
     };
   }
 
+  const alerts = db.getAllAlerts(200);
+  const commands = db.getAllCommands(200);
+  const customers = db.getAllCustomers();
+  const dailySeries = db.getDailySeries(7);
+
   res.render('dashboard', {
     user: req.session.user,
     devices,
     stats,
     context,
+    alerts,
+    commands,
+    customers,
+    dailySeries,
     notice: req.session.notice || null,
   });
   if (req.session.notice) delete req.session.notice;
+});
+
+router.get('/api/poll', requireAuth, (req, res) => {
+  const alerts = db.getAllAlerts(50);
+  const commands = db.getAllCommands(50);
+  res.json({ alerts, commands });
 });
 
 // Quick remote command from dashboard / sidebar (Lock, Alarm, Locate, etc.)

@@ -1,46 +1,23 @@
 <header class="topbar">
   <div class="topbar-left">
-    <div class="topbar-title-row">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="topbar-title-icon"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
-      <h1 class="topbar-title"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' %></h1>
-    </div>
-    <% if (typeof subtitle !== 'undefined' && subtitle) { %>
-      <div class="topbar-sub"><%= subtitle %></div>
-    <% } %>
+    <h1 class="topbar-title">Dashboard</h1>
+    <div class="topbar-sub">Monitor and protect your system</div>
   </div>
   <div class="topbar-right">
-    <% if (typeof context !== 'undefined' && context && context.device) { %>
-      <div class="topbar-status">
-        <div class="status-line">
-          <% var dmode = context.device.mode || 'normal';
-             var dlabel = dmode === 'theft' ? 'THEFT' : (dmode === 'suspicious' ? 'SUSPICIOUS' : 'NORMAL');
-          %>
-          <span class="mode-pill mode-<%= dmode %>" title="<%= context.device.modeReason || 'Auto-managed protection mode' %>"><%= dlabel %></span>
-          <span class="muted small">Device Status:</span>
-          <% if (context.device.online) { %>
-            <span class="status-online">● Online</span>
-          <% } else { %>
-            <span class="status-offline">● Offline</span>
-          <% } %>
-        </div>
-        <div class="muted small">Last seen: <%= (function(ts){
-          if(!ts) return '—';
-          const diff = Math.max(0, Date.now() - ts);
-          const min = Math.floor(diff / 60000);
-          if (min < 1) return 'just now';
-          if (min < 60) return min + ' min ago';
-          const hr = Math.floor(min / 60);
-          if (hr < 24) return hr + ' hr ago';
-          return Math.floor(hr/24) + ' day ago';
-        })(context.device.lastSeen) %></div>
+    <div class="topbar-date-picker">
+      <span>May 3 – May 9, 2026</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    
+    <button class="topbar-icon-btn notif-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      <span class="notif-badge">12</span>
+    </button>
+    
+    <div class="topbar-profile">
+      <div class="profile-avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
-    <% } %>
-    <div class="profile-chip">
-      <div class="profile-avatar">A</div>
-      <div class="profile-chip-text">
-        <div class="profile-chip-name">Admin User</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="muted"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
   </div>
 </header>
