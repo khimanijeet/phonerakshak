@@ -189,9 +189,9 @@
         <div class="photo-grid" style="grid-template-columns: repeat(4, 1fr); gap: 16px;">
           <% if (intruders.length === 0) { %><div class="empty" style="grid-column: span 4;">No intruder photos yet</div><% } %>
           <% intruders.slice(0, 4).forEach(function(p){ %>
-            <a class="photo-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
-              <img src="<%= p.filename.startsWith('mock') ? 'https://images.unsplash.com/photo-1493121516709-380d32bb5e33?auto=format&fit=crop&q=80&w=200&h=200' : '/api/intruders/' + p.filename %>" alt="intruder" loading="lazy" />
-              <div class="photo-time" style="background: var(--card-2); text-align: left; padding: 10px;">
+            <a class="photo-tile" href="<%= p.filename.startsWith('http') ? p.filename : '/api/intruders/' + p.filename %>" target="_blank" style="display: flex; flex-direction: column;">
+              <img src="<%= p.filename.startsWith('http') ? p.filename : (p.filename.startsWith('mock') ? 'https://images.unsplash.com/photo-1493121516709-380d32bb5e33?auto=format&fit=crop&q=80&w=200&h=200' : '/api/intruders/' + p.filename) %>" alt="intruder" loading="lazy" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;" />
+              <div class="photo-time" style="background: var(--card-2); text-align: left; padding: 10px; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
                 <span class="local-time-short" data-prefix="Today, " data-timestamp="<%= p.timestamp %>"></span>
               </div>
             </a>
@@ -216,8 +216,13 @@
                 </div>
               </div>
               <audio controls style="width: 100%; height: 36px;">
-                <source src="/api/audio/<%= clip.filename %>" type="audio/amr">
-                <source src="/api/audio/<%= clip.filename %>" type="audio/mpeg">
+                <% if (clip.filename.startsWith('http')) { %>
+                  <source src="<%= clip.filename %>" type="audio/amr">
+                  <source src="<%= clip.filename %>" type="audio/mpeg">
+                <% } else { %>
+                  <source src="/api/audio/<%= clip.filename %>" type="audio/amr">
+                  <source src="/api/audio/<%= clip.filename %>" type="audio/mpeg">
+                <% } %>
                 Your browser does not support the audio element.
               </audio>
             </div>

@@ -154,12 +154,39 @@ exports.addIntruder = async (req, res, next) => {
     const deviceId = req.body.deviceId || (req.file && req.file.filename) ? req.body.deviceId : null;
     if (!deviceId || !req.file) return res.status(400).json({ error: 'deviceId and photo required' });
     
-    const entry = await Intruder.create({ deviceId, filename: req.file.filename });
+    let fileUrl = req.file.filename;
+    const { admin } = require('../utils/firebase');
+    
+    if (admin.apps.length > 0 && process.env.FIREBASE_STORAGE_BUCKET) {
+      try {
+        const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        const destination = `intruders/${req.file.filename}`;
+        const crypto = require('crypto');
+        const token = crypto.randomUUID();
+        
+        await bucket.upload(req.file.path, {
+          destination: destination,
+          metadata: {
+            contentType: req.file.mimetype,
+            metadata: { firebaseStorageDownloadTokens: token }
+          }
+        });
+        
+        fileUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.FIREBASE_STORAGE_BUCKET}/o/${encodeURIComponent(destination)}?alt=media&token=${token}`;
+        
+        const fs = require('fs');
+        if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      } catch (uploadErr) {
+        console.error('Firebase upload failed:', uploadErr);
+      }
+    }
+
+    const entry = await Intruder.create({ deviceId, filename: fileUrl });
     const alertEntry = await Alert.create({
       deviceId,
       type: 'intruder_photo',
       message: 'Intruder photo captured',
-      meta: { filename: req.file.filename }
+      meta: { filename: fileUrl }
     });
     await Report.create({ deviceId, type: 'intruder_photo', message: 'Intruder photo captured' });
     const device = await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() }, { new: true });
@@ -180,12 +207,39 @@ exports.addAudio = async (req, res, next) => {
     const deviceId = req.body.deviceId || (req.file && req.file.filename) ? req.body.deviceId : null;
     if (!deviceId || !req.file) return res.status(400).json({ error: 'deviceId and audio required' });
     
-    const entry = await AudioRecording.create({ deviceId, filename: req.file.filename });
+    let fileUrl = req.file.filename;
+    const { admin } = require('../utils/firebase');
+    
+    if (admin.apps.length > 0 && process.env.FIREBASE_STORAGE_BUCKET) {
+      try {
+        const bucket = admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        const destination = `audio/${req.file.filename}`;
+        const crypto = require('crypto');
+        const token = crypto.randomUUID();
+        
+        await bucket.upload(req.file.path, {
+          destination: destination,
+          metadata: {
+            contentType: req.file.mimetype,
+            metadata: { firebaseStorageDownloadTokens: token }
+          }
+        });
+        
+        fileUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.FIREBASE_STORAGE_BUCKET}/o/${encodeURIComponent(destination)}?alt=media&token=${token}`;
+        
+        const fs = require('fs');
+        if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      } catch (uploadErr) {
+        console.error('Firebase upload failed:', uploadErr);
+      }
+    }
+
+    const entry = await AudioRecording.create({ deviceId, filename: fileUrl });
     const alertEntry = await Alert.create({
       deviceId,
       type: 'audio_surveillance',
       message: 'Ambient audio recorded',
-      meta: { filename: req.file.filename }
+      meta: { filename: fileUrl }
     });
     const device = await Device.findOneAndUpdate({ deviceId }, { lastSeen: Date.now() }, { new: true });
     

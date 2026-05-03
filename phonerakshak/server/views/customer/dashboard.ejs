@@ -241,9 +241,9 @@
         <% } else { %>
           <div class="photo-grid">
             <% ctx.photos.forEach(p => { %>
-              <a class="photo-tile" href="/api/intruders/<%= p.filename %>" target="_blank">
-                <img src="/api/intruders/<%= p.filename %>" alt="Intruder photo" />
-                <div class="photo-ts"><%= timeAgo(p.timestamp) %></div>
+              <a class="photo-tile" href="<%= p.filename.startsWith('http') ? p.filename : '/api/intruders/' + p.filename %>" target="_blank" style="display: flex; flex-direction: column;">
+                <img src="<%= p.filename.startsWith('http') ? p.filename : '/api/intruders/' + p.filename %>" alt="Intruder photo" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;" />
+                <div class="photo-ts" style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;"><%= timeAgo(p.timestamp) %></div>
               </a>
             <% }) %>
           </div>
