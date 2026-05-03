@@ -100,7 +100,7 @@ app.get('/install', async (req, res, next) => {
       const port = host.split(':')[1] || PORT;
       host = `${getLocalIp()}:${port}`;
     }
-    const installUrl = `${req.protocol}://${host}/download/PhoneRakshak.apk`;
+    const installUrl = `${req.protocol}://${host}/download/PhoneRakshak.apk?v=2`;
     
     const qrDataUrl = await qrcode.toDataURL(installUrl, {
       errorCorrectionLevel: 'H', margin: 2, width: 300,
