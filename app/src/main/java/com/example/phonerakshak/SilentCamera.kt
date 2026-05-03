@@ -105,7 +105,26 @@ object SilentCamera {
 
     private fun addWatermark(context: Context, file: File) {
         try {
-            val bitmap = BitmapFactory.decodeFile(file.absolutePath) ?: return
+            var bitmap = BitmapFactory.decodeFile(file.absolutePath) ?: return
+            
+            // Read EXIF to handle rotation
+            val exif = androidx.exifinterface.media.ExifInterface(file.absolutePath)
+            val orientation = exif.getAttributeInt(
+                androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, 
+                androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+            )
+            val rotationDegrees = when (orientation) {
+                androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                else -> 0f
+            }
+            
+            if (rotationDegrees != 0f) {
+                val matrix = android.graphics.Matrix().apply { postRotate(rotationDegrees) }
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            }
+
             val mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
             val canvas = Canvas(mutableBitmap)
 
