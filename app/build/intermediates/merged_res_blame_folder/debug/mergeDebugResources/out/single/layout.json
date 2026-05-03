@@ -1,34 +1,42 @@
 [
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_setup.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/activity_setup.xml"
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_recovery_login.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_recovery_login.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_lock.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/activity_lock.xml"
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_recovery_dashboard.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_recovery_dashboard.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_photo_viewer.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/activity_photo_viewer.xml"
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_setup.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_setup.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_recovery_login.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/activity_recovery_login.xml"
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_lock.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_lock.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/item_intruder.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/item_intruder.xml"
-    },
-    {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_intruders.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/activity_intruders.xml"
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_photo_viewer.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_photo_viewer.xml"
     },
     {
         "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_dashboard.xml",
         "source": "com.example.phonerakshak.app-main-7:/layout/activity_dashboard.xml"
     },
     {
-        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_recovery_dashboard.xml",
-        "source": "com.example.phonerakshak.app-main-7:/layout/activity_recovery_dashboard.xml"
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_intruders.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_intruders.xml"
+    },
+    {
+        "merged": "com.example.phonerakshak.app-mergeDebugResources-4:/layout/activity_fake_shutdown.xml",
+        "source": "com.example.phonerakshak.app-main-7:/layout/activity_fake_shutdown.xml"
+    },
+    {
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\item_intruder.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\item_intruder.xml"
+    },
+    {
+        "merged": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-mergeDebugResources-4:\\layout\\activity_dashboard.xml",
+        "source": "C:\\Users\\khima\\.gradle\\daemon\\8.7\\com.example.phonerakshak.app-main-7:\\layout\\activity_dashboard.xml"
     }
 ]

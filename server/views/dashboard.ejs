@@ -118,7 +118,8 @@
             </div>
             <div class="info-item">
               <span class="info-label">Battery Level</span>
-              <span class="info-value info-value-green">72% 🔋</span>
+              <% const bat = device.batteryLevel != null && device.batteryLevel !== -1 ? device.batteryLevel + '%' : 'Unknown'; %>
+              <span class="info-value info-value-green"><%= bat %> 🔋</span>
             </div>
             <div class="info-item">
               <span class="info-label">App Version</span>

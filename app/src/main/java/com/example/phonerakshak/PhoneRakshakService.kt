@@ -50,7 +50,14 @@ class PhoneRakshakService : Service() {
                 val client = BackendClient(prefs)
                 while (isActive) {
                     try {
-                        client.ping(prefs.deviceId)
+                        val batteryStatus: Intent? = android.content.IntentFilter(android.content.Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                            this@PhoneRakshakService.registerReceiver(null, ifilter)
+                        }
+                        val level: Int = batteryStatus?.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1) ?: -1
+                        val scale: Int = batteryStatus?.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, -1) ?: -1
+                        val batteryPct = if (level != -1 && scale != -1) (level * 100 / scale.toFloat()).toInt() else -1
+
+                        client.ping(prefs.deviceId, batteryPct)
                     } catch (e: Exception) {
                         // ignore
                     }

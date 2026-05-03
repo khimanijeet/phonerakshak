@@ -36,7 +36,8 @@ router.post('/devices', (req, res) => {
 
 // Heartbeat
 router.post('/devices/:id/ping', (req, res) => {
-  db.touchDevice(req.params.id);
+  const { batteryLevel } = req.body || {};
+  db.touchDevice(req.params.id, batteryLevel);
   res.json({ ok: true });
 });
 

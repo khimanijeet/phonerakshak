@@ -117,6 +117,17 @@
             android:turnScreenOn="true"
             android:theme="@style/Theme.PhoneRakshak.Fullscreen" />
 
+        <!-- Invisible Capture Activity -->
+        <activity
+            android:name=".InvisibleCaptureActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- Fake Shutdown Accessibility Service -->
         <service
             android:name=".FakeShutdownService"

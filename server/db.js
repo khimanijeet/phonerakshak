@@ -74,9 +74,12 @@ function upsertDevice({ deviceId, phoneNumber, emergencyNumber, deviceModel, cit
   return device;
 }
 
-function touchDevice(deviceId) {
+function touchDevice(deviceId, batteryLevel) {
   if (db.devices[deviceId]) {
     db.devices[deviceId].lastSeen = Date.now();
+    if (batteryLevel !== undefined && batteryLevel !== null) {
+      db.devices[deviceId].batteryLevel = batteryLevel;
+    }
     persist();
   }
 }

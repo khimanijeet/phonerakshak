@@ -36,6 +36,9 @@ public final class ActivityDashboardBinding implements ViewBinding {
   public final Button btnSettings;
 
   @NonNull
+  public final Button btnStealth;
+
+  @NonNull
   public final Button btnStopAlarm;
 
   @NonNull
@@ -70,17 +73,18 @@ public final class ActivityDashboardBinding implements ViewBinding {
 
   private ActivityDashboardBinding(@NonNull ScrollView rootView, @NonNull Button btnEmergency,
       @NonNull Button btnIntruders, @NonNull Button btnLocate, @NonNull Button btnOpenMap,
-      @NonNull Button btnSettings, @NonNull Button btnStopAlarm, @NonNull Button btnTestAlarm,
-      @NonNull Button btnTestLock, @NonNull View dotAdmin, @NonNull View dotBackend,
-      @NonNull View dotProtection, @NonNull TextView txtAdmin, @NonNull TextView txtBackend,
-      @NonNull TextView txtIntruderCount, @NonNull TextView txtLastLocation,
-      @NonNull TextView txtProtection) {
+      @NonNull Button btnSettings, @NonNull Button btnStealth, @NonNull Button btnStopAlarm,
+      @NonNull Button btnTestAlarm, @NonNull Button btnTestLock, @NonNull View dotAdmin,
+      @NonNull View dotBackend, @NonNull View dotProtection, @NonNull TextView txtAdmin,
+      @NonNull TextView txtBackend, @NonNull TextView txtIntruderCount,
+      @NonNull TextView txtLastLocation, @NonNull TextView txtProtection) {
     this.rootView = rootView;
     this.btnEmergency = btnEmergency;
     this.btnIntruders = btnIntruders;
     this.btnLocate = btnLocate;
     this.btnOpenMap = btnOpenMap;
     this.btnSettings = btnSettings;
+    this.btnStealth = btnStealth;
     this.btnStopAlarm = btnStopAlarm;
     this.btnTestAlarm = btnTestAlarm;
     this.btnTestLock = btnTestLock;
@@ -151,6 +155,12 @@ public final class ActivityDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnStealth;
+      Button btnStealth = ViewBindings.findChildViewById(rootView, id);
+      if (btnStealth == null) {
+        break missingId;
+      }
+
       id = R.id.btnStopAlarm;
       Button btnStopAlarm = ViewBindings.findChildViewById(rootView, id);
       if (btnStopAlarm == null) {
@@ -218,9 +228,9 @@ public final class ActivityDashboardBinding implements ViewBinding {
       }
 
       return new ActivityDashboardBinding((ScrollView) rootView, btnEmergency, btnIntruders,
-          btnLocate, btnOpenMap, btnSettings, btnStopAlarm, btnTestAlarm, btnTestLock, dotAdmin,
-          dotBackend, dotProtection, txtAdmin, txtBackend, txtIntruderCount, txtLastLocation,
-          txtProtection);
+          btnLocate, btnOpenMap, btnSettings, btnStealth, btnStopAlarm, btnTestAlarm, btnTestLock,
+          dotAdmin, dotBackend, dotProtection, txtAdmin, txtBackend, txtIntruderCount,
+          txtLastLocation, txtProtection);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

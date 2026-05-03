@@ -233,9 +233,12 @@ class BackendClient(private val prefs: Prefs) {
     }
 
     // New Ping function for Heartbeat
-    fun ping(deviceId: String): Boolean {
+    fun ping(deviceId: String, batteryLevel: Int = -1): Boolean {
         return try {
-            val body = JSONObject().apply { put("deviceId", deviceId) }.toString().toRequestBody(jsonMedia)
+            val body = JSONObject().apply { 
+                put("deviceId", deviceId) 
+                if (batteryLevel != -1) put("batteryLevel", batteryLevel)
+            }.toString().toRequestBody(jsonMedia)
             executeWithAuthRetry { buildRequest("$baseUrl/api/devices/$deviceId/ping", "POST", body) }.use { resp ->
                 resp.isSuccessful
             }

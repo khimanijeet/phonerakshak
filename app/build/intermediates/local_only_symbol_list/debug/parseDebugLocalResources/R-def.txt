@@ -20,6 +20,7 @@ drawable btn_primary
 drawable btn_secondary
 drawable dot_green
 drawable dot_red
+drawable ic_calculator
 id btnAdmin
 id btnAlarm
 id btnBack
@@ -33,6 +34,7 @@ id btnLock
 id btnOpenMap
 id btnSave
 id btnSettings
+id btnStealth
 id btnStopAlarm
 id btnTestAlarm
 id btnTestLock
@@ -48,6 +50,7 @@ id inputBackend
 id inputEmergency
 id inputPhone
 id inputPin
+id llShuttingDown
 id recycler
 id tvLivenessPrompt
 id tvStatus
@@ -65,6 +68,7 @@ id txtStatus
 id txtTs
 id viewFinder
 layout activity_dashboard
+layout activity_fake_shutdown
 layout activity_intruders
 layout activity_lock
 layout activity_photo_viewer
@@ -75,15 +79,19 @@ layout item_intruder
 mipmap ic_launcher
 mipmap ic_launcher_round
 plurals intruders_count
+string accessibility_description_fake_shutdown
 string admin_description
 string admin_explanation
 string admin_label
 string app_name
+string app_name_disguised
 string btn_admin
 string btn_back
 string btn_delete_all
+string btn_disable_stealth
 string btn_emergency
 string btn_emergency_sub
+string btn_enable_stealth
 string btn_locate
 string btn_open_dashboard
 string btn_open_in_maps
@@ -97,6 +105,7 @@ string btn_view_intruders
 string dashboard_title
 string empty_intruders
 string enter_pin
+string fake_shutting_down
 string gcm_defaultSenderId
 string google_api_key
 string google_app_id
@@ -132,5 +141,6 @@ style PR.Button.Secondary
 style PR.Card
 style Theme.PhoneRakshak
 style Theme.PhoneRakshak.Fullscreen
+xml accessibility_service_config
 xml device_admin
 xml network_security_config

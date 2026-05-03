@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhoneRakshak Animated Logo</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0f172a;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Animated Gradient Background */
+  .bg-animation {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(6, 182, 212, 0.15) 0%, rgba(15, 23, 42, 1) 50%);
+    animation: pulse 8s ease-in-out infinite alternate;
+    z-index: 0;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    100% { transform: scale(1.2); opacity: 1; }
+  }
+
+  /* Floating Particles */
+  .particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-image: 
+      radial-gradient(circle, #06b6d4 1px, transparent 1px),
+      radial-gradient(circle, #3b82f6 1px, transparent 1px);
+    background-size: 50px 50px, 100px 100px;
+    background-position: 0 0, 25px 25px;
+    animation: drift 20s linear infinite;
+    opacity: 0.3;
+  }
+
+  @keyframes drift {
+    100% { background-position: 500px 500px, 1000px 1000px; }
+  }
+
+  /* Container */
+  .brand-container {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Shield Logo */
+  .shield-logo {
+    width: 120px;
+    height: 140px;
+    position: relative;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .shield-outline {
+    fill: none;
+    stroke: #06b6d4;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.6));
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    animation: draw 2s ease-out forwards;
+  }
+
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .shield-inner {
+    fill: url(#grad1);
+    opacity: 0;
+    animation: fade-in 1s ease-out 1.5s forwards;
+  }
+
+  .letter-path {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+    opacity: 0;
+    animation: fade-in 1s ease-out 2s forwards;
+  }
+
+  @keyframes fade-in {
+    to { opacity: 1; }
+  }
+
+  /* Typography */
+  .brand-title {
+    color: #ffffff;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slide-up 0.8s ease-out 2.2s forwards;
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+  }
+
+  .brand-subtitle {
+    color: #94a3b8;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slide-up 0.8s ease-out 2.5s forwards;
+  }
+
+  .brand-names {
+    color: #06b6d4;
+    font-weight: 600;
+  }
+
+  @keyframes slide-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Glow effects */
+  .glow-ring {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px solid rgba(6, 182, 212, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+    animation: ripple 3s linear infinite;
+  }
+
+  .glow-ring:nth-child(2) {
+    animation-delay: 1.5s;
+  }
+
+  @keyframes ripple {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="bg-animation"></div>
+  <div class="particles"></div>
+
+  <div class="brand-container">
+    <div style="position: relative;">
+      <div class="glow-ring"></div>
+      <div class="glow-ring"></div>
+      
+      <svg class="shield-logo" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.4" />
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1" />
+          </linearGradient>
+        </defs>
+        <!-- Outer Shield -->
+        <path class="shield-inner" d="M50 5 L90 20 L90 60 C90 90, 50 115, 50 115 C50 115, 10 90, 10 60 L10 20 Z" />
+        <path class="shield-outline" d="M50 5 L90 20 L90 60 C90 90, 50 115, 50 115 C50 115, 10 90, 10 60 L10 20 Z" />
+        
+        <!-- P & J Intertwined -->
+        <!-- P -->
+        <path class="letter-path" d="M 35 80 L 35 35 L 55 35 C 65 35, 65 55, 55 55 L 35 55" />
+        <!-- J -->
+        <path class="letter-path" d="M 65 35 L 65 70 C 65 85, 45 85, 45 75" />
+      </svg>
+    </div>
+
+    <h1 class="brand-title">PhoneRakshak</h1>
+    <h2 class="brand-subtitle">ENGINEERED BY <span class="brand-names">PRIYA & JEET</span></h2>
+  </div>
+
+</body>
+</html>

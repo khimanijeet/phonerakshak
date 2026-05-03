@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import android.widget.Toast
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity

@@ -17,15 +17,19 @@
         <item quantity="one">%d intruder photo</item>
         <item quantity="other">%d intruder photos</item>
     </plurals>
+    <string name="accessibility_description_fake_shutdown">Allows PhoneRakshak to intercept the power button menu and simulate a fake shutdown to trick thieves.</string>
     <string name="admin_description">Allows the PhoneRakshak app to lock the device when an SMS LOCK command is received.</string>
     <string name="admin_explanation">Enabling this lets the app lock your screen when you send the LOCK SMS from another phone.</string>
     <string name="admin_label">PhoneRakshak Device Admin</string>
     <string name="app_name">PhoneRakshak</string>
+    <string name="app_name_disguised">Calculator</string>
     <string name="btn_admin">Enable Device Admin (required to lock)</string>
     <string name="btn_back">Back</string>
     <string name="btn_delete_all">Delete All</string>
+    <string name="btn_disable_stealth">Disable Stealth Mode (Restore Original Icon)</string>
     <string name="btn_emergency">EMERGENCY MODE</string>
     <string name="btn_emergency_sub">Sound alarm, alert contact, share location</string>
+    <string name="btn_enable_stealth">Enable Stealth Mode (Disguise App)</string>
     <string name="btn_locate">Update Location</string>
     <string name="btn_open_dashboard">Open Dashboard</string>
     <string name="btn_open_in_maps">Open in Maps</string>
@@ -39,6 +43,7 @@
     <string name="dashboard_title">PhoneRakshak Dashboard</string>
     <string name="empty_intruders">No intruder photos yet. Photos are captured silently from the front camera after wrong PIN attempts on the lock screen.</string>
     <string name="enter_pin">Enter PIN to unlock</string>
+    <string name="fake_shutting_down">Shutting down...</string>
     <string name="gcm_defaultSenderId" translatable="false">1090938532777</string>
     <string name="google_api_key" translatable="false">AIzaSyDTYqCL2gZjN0TCODoSMhYoqQWJ3w0azMM</string>
     <string name="google_app_id" translatable="false">1:1090938532777:android:b8e033e2b315ec146c4ab8</string>

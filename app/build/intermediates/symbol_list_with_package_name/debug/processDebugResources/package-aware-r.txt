@@ -3059,6 +3059,7 @@ drawable dot_red
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
 drawable ic_arrow_back_black_24
+drawable ic_calculator
 drawable ic_call_answer
 drawable ic_call_answer_low
 drawable ic_call_answer_video
@@ -3265,6 +3266,7 @@ id btnLock
 id btnOpenMap
 id btnSave
 id btnSettings
+id btnStealth
 id btnStopAlarm
 id btnTestAlarm
 id btnTestLock
@@ -3431,6 +3433,7 @@ id line3
 id linear
 id listMode
 id list_item
+id llShuttingDown
 id m3_side_sheet
 id marquee
 id masked
@@ -3825,6 +3828,7 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_dashboard
+layout activity_fake_shutdown
 layout activity_intruders
 layout activity_lock
 layout activity_photo_viewer
@@ -3943,11 +3947,13 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
+string accessibility_description_fake_shutdown
 string admin_description
 string admin_explanation
 string admin_label
 string androidx_startup
 string app_name
+string app_name_disguised
 string appbar_scrolling_view_behavior
 string bottom_sheet_behavior
 string bottomsheet_action_collapse
@@ -3958,8 +3964,10 @@ string bottomsheet_drag_handle_content_description
 string btn_admin
 string btn_back
 string btn_delete_all
+string btn_disable_stealth
 string btn_emergency
 string btn_emergency_sub
+string btn_enable_stealth
 string btn_locate
 string btn_open_dashboard
 string btn_open_in_maps
@@ -4007,6 +4015,7 @@ string error_icon_content_description
 string exposed_dropdown_menu_content_description
 string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
+string fake_shutting_down
 string fcm_fallback_notification_channel_label
 string gcm_defaultSenderId
 string google_api_key
@@ -5440,5 +5449,6 @@ styleable ViewPager2 android_orientation
 styleable ViewStubCompat android_id android_layout android_inflatedId
 styleable ViewTransition android_id SharedValue SharedValueId clearsTag duration ifTagNotSet ifTagSet motionInterpolator motionTarget onStateTransition pathMotionArc setsTag transitionDisable upDuration viewTransitionMode
 styleable include constraintSet
+xml accessibility_service_config
 xml device_admin
 xml network_security_config

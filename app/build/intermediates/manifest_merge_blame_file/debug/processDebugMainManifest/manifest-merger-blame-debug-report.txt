@@ -30,564 +30,674 @@
 19-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:12:5-85
 19-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:12:22-82
 20
-21    <!-- Phone state (SIM detection) -->
-22    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-22-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:15:5-75
-22-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:15:22-72
+21    <!-- Audio Recording -->
+22    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+22-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:15:5-71
+22-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:15:22-68
 23
-24    <!-- Camera (intruder photo on wrong PIN) -->
-25    <uses-permission android:name="android.permission.CAMERA" />
-25-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:18:5-65
-25-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:18:22-62
+24    <!-- Phone state (SIM detection) -->
+25    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+25-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:18:5-75
+25-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:18:22-72
 26
-27    <uses-feature
-27-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:19:5-21:36
-28        android:name="android.hardware.camera"
-28-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:20:9-47
-29        android:required="false" />
-29-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:21:9-33
-30
-31    <!-- Internet (backend) -->
-32    <uses-permission android:name="android.permission.INTERNET" />
-32-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:24:5-67
-32-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:24:22-64
-33    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-33-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:25:5-79
-33-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:25:22-76
-34
-35    <!-- Boot + foreground service -->
-36    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-36-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:28:5-81
-36-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:28:22-78
-37    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-37-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:29:5-77
-37-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:29:22-74
-38    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-38-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:30:5-89
-38-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:30:22-86
-39
-40    <!-- Lock screen / wake / overlay -->
-41    <uses-permission android:name="android.permission.WAKE_LOCK" />
-41-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:33:5-68
-41-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:33:22-65
-42    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-42-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:34:5-75
-42-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:34:22-72
-43    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-43-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:35:5-78
-43-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:35:22-75
-44    <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
-44-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:36:5-73
-44-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:36:22-70
-45
-46    <!-- Audio (alarm overrides silent) -->
-47    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-47-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:39:5-80
-47-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:39:22-77
-48    <uses-permission android:name="android.permission.VIBRATE" />
-48-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:40:5-66
-48-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:40:22-63
-49
-50    <!-- Notifications (Android 13+) -->
-51    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-51-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:43:5-77
-51-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:43:22-74
-52    <!-- Required by older versions of Google Play services to create IID tokens -->
-53    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-53-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:26:5-82
-53-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:26:22-79
-54
-55    <permission
-55-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
-56        android:name="com.example.phonerakshak.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-56-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
-57        android:protectionLevel="signature" />
-57-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
-58
-59    <uses-permission android:name="com.example.phonerakshak.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-59-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
-59-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
-60
-61    <application
-61-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:45:5-157:19
-62        android:allowBackup="true"
-62-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:46:9-35
-63        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-63-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
-64        android:debuggable="true"
-65        android:extractNativeLibs="false"
-66        android:icon="@mipmap/ic_launcher"
-66-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:47:9-43
-67        android:label="@string/app_name"
-67-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:48:9-41
-68        android:networkSecurityConfig="@xml/network_security_config"
-68-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:51:9-69
-69        android:roundIcon="@mipmap/ic_launcher_round"
-69-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:49:9-54
-70        android:theme="@style/Theme.PhoneRakshak"
-70-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:50:9-50
-71        android:usesCleartextTraffic="false" >
-71-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:52:9-45
-72
-73        <!-- Main launcher: Dashboard (redirects to Setup if not configured) -->
-74        <activity
-74-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:55:9-62:20
-75            android:name="com.example.phonerakshak.DashboardActivity"
-75-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:56:13-46
-76            android:exported="true" >
-76-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:57:13-36
-77            <intent-filter>
-77-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:58:13-61:29
-78                <action android:name="android.intent.action.MAIN" />
-78-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:59:17-69
-78-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:59:25-66
-79
-80                <category android:name="android.intent.category.LAUNCHER" />
-80-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:60:17-77
-80-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:60:27-74
-81            </intent-filter>
-82        </activity>
-83
-84        <!-- Setup / PIN entry / settings -->
-85        <activity
-85-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:65:9-67:39
-86            android:name="com.example.phonerakshak.SetupActivity"
-86-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:66:13-42
-87            android:exported="true" />
-87-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:67:13-36
-88
-89        <!-- Intruder photo gallery -->
-90        <activity
-90-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:70:9-73:63
-91            android:name="com.example.phonerakshak.IntruderActivity"
-91-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:71:13-45
-92            android:exported="false"
-92-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:72:13-37
-93            android:parentActivityName="com.example.phonerakshak.DashboardActivity" />
-93-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:73:13-60
-94
-95        <!-- Fullscreen single-photo viewer -->
-96        <activity
-96-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:76:9-79:62
-97            android:name="com.example.phonerakshak.PhotoViewerActivity"
-97-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:77:13-48
-98            android:exported="false"
-98-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:78:13-37
-99            android:parentActivityName="com.example.phonerakshak.IntruderActivity" />
-99-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:79:13-59
-100
-101        <!-- Full-screen lock activity -->
-102        <activity
-102-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:82:9-90:68
-103            android:name="com.example.phonerakshak.LockScreenActivity"
-103-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:83:13-47
-104            android:excludeFromRecents="true"
-104-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:85:13-46
-105            android:exported="false"
-105-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:84:13-37
-106            android:launchMode="singleInstance"
-106-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:86:13-48
-107            android:showOnLockScreen="true"
-107-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:87:13-44
-108            android:showWhenLocked="true"
-108-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:88:13-42
-109            android:theme="@style/Theme.PhoneRakshak.Fullscreen"
-109-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:90:13-65
-110            android:turnScreenOn="true" />
-110-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:89:13-40
-111
-112        <!-- Foreground service that keeps SMS/SIM receivers + command poller alive -->
-113        <service
-113-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:93:9-101:19
-114            android:name="com.example.phonerakshak.PhoneRakshakService"
-114-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:94:13-48
-115            android:enabled="true"
-115-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:95:13-35
-116            android:exported="false"
-116-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:96:13-37
-117            android:foregroundServiceType="specialUse" >
-117-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:97:13-55
-118            <property
-118-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:98:13-100:59
-119                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-119-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:99:17-76
-120                android:value="anti_theft_sms_listener" />
-120-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:100:17-56
-121        </service>
-122
-123        <!-- Device Admin receiver (for DevicePolicyManager.lockNow) -->
-124        <receiver
-124-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:104:9-116:20
-125            android:name="com.example.phonerakshak.LockerAdminReceiver"
-125-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:105:13-48
-126            android:description="@string/admin_description"
-126-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:108:13-60
-127            android:exported="true"
-127-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:106:13-36
-128            android:label="@string/admin_label"
-128-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:107:13-48
-129            android:permission="android.permission.BIND_DEVICE_ADMIN" >
-129-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:109:13-70
-130            <meta-data
-130-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:110:13-112:56
-131                android:name="android.app.device_admin"
-131-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:111:17-56
-132                android:resource="@xml/device_admin" />
-132-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:112:17-53
-133
-134            <intent-filter>
-134-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:113:13-115:29
-135                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-135-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:114:17-82
-135-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:114:25-79
-136            </intent-filter>
-137        </receiver>
+27    <!-- Camera (intruder photo on wrong PIN) -->
+28    <uses-permission android:name="android.permission.CAMERA" />
+28-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:21:5-65
+28-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:21:22-62
+29
+30    <uses-feature
+30-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:22:5-24:36
+31        android:name="android.hardware.camera"
+31-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:23:9-47
+32        android:required="false" />
+32-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:24:9-33
+33
+34    <!-- Internet (backend) -->
+35    <uses-permission android:name="android.permission.INTERNET" />
+35-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:27:5-67
+35-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:27:22-64
+36    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+36-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:28:5-79
+36-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:28:22-76
+37
+38    <!-- Boot + foreground service -->
+39    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+39-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:31:5-81
+39-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:31:22-78
+40    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+40-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:32:5-77
+40-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:32:22-74
+41    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+41-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:33:5-89
+41-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:33:22-86
+42
+43    <!-- Lock screen / wake / overlay -->
+44    <uses-permission android:name="android.permission.WAKE_LOCK" />
+44-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:36:5-68
+44-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:36:22-65
+45    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+45-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:37:5-75
+45-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:37:22-72
+46    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+46-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:38:5-78
+46-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:38:22-75
+47    <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
+47-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:39:5-73
+47-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:39:22-70
+48
+49    <!-- Audio (alarm overrides silent) -->
+50    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+50-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:42:5-80
+50-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:42:22-77
+51    <uses-permission android:name="android.permission.VIBRATE" />
+51-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:43:5-66
+51-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:43:22-63
+52
+53    <!-- Notifications (Android 13+) -->
+54    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+54-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:46:5-77
+54-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:46:22-74
+55    <!-- Required by older versions of Google Play services to create IID tokens -->
+56    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+56-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:26:5-82
+56-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:26:22-79
+57
+58    <permission
+58-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
+59        android:name="com.example.phonerakshak.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+59-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
+60        android:protectionLevel="signature" />
+60-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
+61
+62    <uses-permission android:name="com.example.phonerakshak.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+62-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
+62-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
+63
+64    <application
+64-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:48:5-218:19
+65        android:allowBackup="true"
+65-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:49:9-35
+66        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+66-->[androidx.core:core:1.13.1] C:\Users\khima\.gradle\caches\transforms-4\51cfa0bb0528f559a01bae73ac1508f3\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
+67        android:debuggable="true"
+68        android:extractNativeLibs="false"
+69        android:icon="@mipmap/ic_launcher"
+69-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:50:9-43
+70        android:label="@string/app_name"
+70-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:51:9-41
+71        android:networkSecurityConfig="@xml/network_security_config"
+71-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:54:9-69
+72        android:roundIcon="@mipmap/ic_launcher_round"
+72-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:52:9-54
+73        android:theme="@style/Theme.PhoneRakshak"
+73-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:53:9-50
+74        android:usesCleartextTraffic="false" >
+74-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:55:9-45
+75
+76        <!-- Main launcher: Dashboard (redirects to Setup if not configured) -->
+77        <activity
+77-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:58:9-65:20
+78            android:name="com.example.phonerakshak.DashboardActivity"
+78-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:59:13-46
+79            android:exported="true" >
+79-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:60:13-36
+80            <intent-filter>
+80-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:61:13-64:29
+81                <action android:name="android.intent.action.MAIN" />
+81-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:62:17-69
+81-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:62:25-66
+82
+83                <category android:name="android.intent.category.LAUNCHER" />
+83-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:63:17-77
+83-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:63:27-74
+84            </intent-filter>
+85        </activity> <!-- Disguised Calculator Alias -->
+86        <activity-alias
+86-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:68:9-79:26
+87            android:name="com.example.phonerakshak.CalculatorAlias"
+87-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:69:13-44
+88            android:enabled="false"
+88-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:73:13-36
+89            android:exported="true"
+89-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:74:13-36
+90            android:icon="@drawable/ic_calculator"
+90-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:71:13-51
+91            android:label="@string/app_name_disguised"
+91-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:72:13-55
+92            android:targetActivity="com.example.phonerakshak.DashboardActivity" >
+92-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:70:13-56
+93            <intent-filter>
+93-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:61:13-64:29
+94                <action android:name="android.intent.action.MAIN" />
+94-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:62:17-69
+94-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:62:25-66
+95
+96                <category android:name="android.intent.category.LAUNCHER" />
+96-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:63:17-77
+96-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:63:27-74
+97            </intent-filter>
+98        </activity-alias>
+99
+100        <!-- Setup / PIN entry / settings -->
+101        <activity
+101-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:82:9-84:39
+102            android:name="com.example.phonerakshak.SetupActivity"
+102-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:83:13-42
+103            android:exported="true" />
+103-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:84:13-36
+104
+105        <!-- Intruder photo gallery -->
+106        <activity
+106-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:87:9-90:63
+107            android:name="com.example.phonerakshak.IntruderActivity"
+107-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:88:13-45
+108            android:exported="false"
+108-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:89:13-37
+109            android:parentActivityName="com.example.phonerakshak.DashboardActivity" />
+109-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:90:13-60
+110
+111        <!-- Fullscreen single-photo viewer -->
+112        <activity
+112-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:93:9-96:62
+113            android:name="com.example.phonerakshak.PhotoViewerActivity"
+113-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:94:13-48
+114            android:exported="false"
+114-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:95:13-37
+115            android:parentActivityName="com.example.phonerakshak.IntruderActivity" />
+115-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:96:13-59
+116
+117        <!-- Full-screen lock activity -->
+118        <activity
+118-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:99:9-107:68
+119            android:name="com.example.phonerakshak.LockScreenActivity"
+119-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:100:13-47
+120            android:excludeFromRecents="true"
+120-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:102:13-46
+121            android:exported="false"
+121-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:101:13-37
+122            android:launchMode="singleInstance"
+122-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:103:13-48
+123            android:showOnLockScreen="true"
+123-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:104:13-44
+124            android:showWhenLocked="true"
+124-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:105:13-42
+125            android:theme="@style/Theme.PhoneRakshak.Fullscreen"
+125-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:107:13-65
+126            android:turnScreenOn="true" />
+126-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:106:13-40
+127
+128        <!-- Fake Shutdown Activity -->
+129        <activity
+129-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:110:9-118:68
+130            android:name="com.example.phonerakshak.FakeShutdownActivity"
+130-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:111:13-49
+131            android:excludeFromRecents="true"
+131-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:113:13-46
+132            android:exported="false"
+132-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:112:13-37
+133            android:launchMode="singleInstance"
+133-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:114:13-48
+134            android:showOnLockScreen="true"
+134-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:115:13-44
+135            android:showWhenLocked="true"
+135-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:116:13-42
+136            android:theme="@style/Theme.PhoneRakshak.Fullscreen"
+136-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:118:13-65
+137            android:turnScreenOn="true" />
+137-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:117:13-40
 138
-139        <!-- SMS command receiver -->
-140        <receiver
-140-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:119:9-126:20
-141            android:name="com.example.phonerakshak.SmsCommandReceiver"
-141-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:120:13-47
-142            android:exported="true"
-142-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:121:13-36
-143            android:permission="android.permission.BROADCAST_SMS" >
-143-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:122:13-66
-144            <intent-filter android:priority="999" >
-144-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:123:13-125:29
-144-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:123:28-50
-145                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-145-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:124:17-82
-145-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:124:25-79
-146            </intent-filter>
-147        </receiver>
-148
-149        <!-- SIM change detection -->
-150        <receiver
-150-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:129:9-136:20
-151            android:name="com.example.phonerakshak.SimChangeReceiver"
-151-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:130:13-46
-152            android:enabled="true"
-152-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:131:13-35
-153            android:exported="true" >
-153-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:132:13-36
-154            <intent-filter>
-154-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:133:13-135:29
-155                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
-155-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:134:17-82
-155-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:134:25-79
-156            </intent-filter>
-157        </receiver>
+139        <!-- Invisible Capture Activity -->
+140        <activity
+140-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:121:9-129:75
+141            android:name="com.example.phonerakshak.InvisibleCaptureActivity"
+141-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:122:13-53
+142            android:excludeFromRecents="true"
+142-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:124:13-46
+143            android:exported="false"
+143-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:123:13-37
+144            android:launchMode="singleInstance"
+144-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:125:13-48
+145            android:showOnLockScreen="true"
+145-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:126:13-44
+146            android:showWhenLocked="true"
+146-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:127:13-42
+147            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+147-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:129:13-72
+148            android:turnScreenOn="true" />
+148-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:128:13-40
+149
+150        <!-- Fake Shutdown Accessibility Service -->
+151        <service
+151-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:132:9-142:19
+152            android:name="com.example.phonerakshak.FakeShutdownService"
+152-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:133:13-48
+153            android:exported="true"
+153-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:135:13-36
+154            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+154-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:134:13-79
+155            <intent-filter>
+155-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:136:13-138:29
+156                <action android:name="android.accessibilityservice.AccessibilityService" />
+156-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:137:17-92
+156-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:137:25-89
+157            </intent-filter>
 158
-159        <!-- Boot receiver -->
-160        <receiver
-160-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:139:9-147:20
-161            android:name="com.example.phonerakshak.BootReceiver"
-161-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:140:13-41
-162            android:enabled="true"
-162-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:141:13-35
-163            android:exported="true" >
-163-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:142:13-36
-164            <intent-filter>
-164-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:143:13-146:29
-165                <action android:name="android.intent.action.BOOT_COMPLETED" />
-165-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:144:17-79
-165-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:144:25-76
-166                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-166-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:145:17-82
-166-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:145:25-79
-167            </intent-filter>
-168        </receiver>
-169
-170        <service
-170-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:149:9-155:19
-171            android:name="com.example.phonerakshak.PhoneRakshakFcmService"
-171-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:150:13-51
-172            android:exported="false" >
-172-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:151:13-37
-173            <intent-filter>
-173-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:152:13-154:29
-174                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-174-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:153:17-78
-174-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:153:25-75
-175            </intent-filter>
-176        </service>
-177        <service
-177-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:24:9-33:19
-178            android:name="androidx.camera.core.impl.MetadataHolderService"
-178-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:25:13-75
-179            android:enabled="false"
-179-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:26:13-36
-180            android:exported="false" >
-180-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:27:13-37
-181            <meta-data
-181-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:30:13-32:89
-182                android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER"
-182-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:31:17-103
-183                android:value="androidx.camera.camera2.Camera2Config$DefaultProvider" />
-183-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:32:17-86
-184        </service>
-185        <service
-185-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:9:9-15:19
-186            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
-186-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:10:13-91
-187            android:directBootAware="true"
-187-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:17:13-43
-188            android:exported="false" >
-188-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:11:13-37
-189            <meta-data
-189-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:12:13-14:85
-190                android:name="com.google.firebase.components:com.google.mlkit.vision.face.internal.FaceRegistrar"
-190-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:13:17-114
-191                android:value="com.google.firebase.components.ComponentRegistrar" />
-191-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:14:17-82
-192            <meta-data
-192-->[com.google.mlkit:vision-common:17.2.0] C:\Users\khima\.gradle\caches\transforms-4\f4ffe92f8d605e1596e7cb1f3767681c\transformed\vision-common-17.2.0\AndroidManifest.xml:12:13-14:85
-193                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
-193-->[com.google.mlkit:vision-common:17.2.0] C:\Users\khima\.gradle\caches\transforms-4\f4ffe92f8d605e1596e7cb1f3767681c\transformed\vision-common-17.2.0\AndroidManifest.xml:13:17-124
-194                android:value="com.google.firebase.components.ComponentRegistrar" />
-194-->[com.google.mlkit:vision-common:17.2.0] C:\Users\khima\.gradle\caches\transforms-4\f4ffe92f8d605e1596e7cb1f3767681c\transformed\vision-common-17.2.0\AndroidManifest.xml:14:17-82
-195            <meta-data
-195-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:20:13-22:85
-196                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
-196-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:21:17-120
-197                android:value="com.google.firebase.components.ComponentRegistrar" />
-197-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:22:17-82
-198        </service>
-199
-200        <provider
-200-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:9:9-13:38
-201            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
-201-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:10:13-78
-202            android:authorities="com.example.phonerakshak.mlkitinitprovider"
-202-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:11:13-69
-203            android:exported="false"
-203-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:12:13-37
-204            android:initOrder="99" />
-204-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:13:13-35
-205        <provider
-205-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
-206            android:name="androidx.startup.InitializationProvider"
-206-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
-207            android:authorities="com.example.phonerakshak.androidx-startup"
-207-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
-208            android:exported="false" >
-208-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
-209            <meta-data
-209-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
-210                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-210-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
-211                android:value="androidx.startup" />
-211-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
-212            <meta-data
-212-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\khima\.gradle\caches\transforms-4\e610786b086d50c2b417dae868c60a92\transformed\lifecycle-process-2.8.4\AndroidManifest.xml:29:13-31:52
-213                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-213-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\khima\.gradle\caches\transforms-4\e610786b086d50c2b417dae868c60a92\transformed\lifecycle-process-2.8.4\AndroidManifest.xml:30:17-78
-214                android:value="androidx.startup" />
-214-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\khima\.gradle\caches\transforms-4\e610786b086d50c2b417dae868c60a92\transformed\lifecycle-process-2.8.4\AndroidManifest.xml:31:17-49
-215            <meta-data
-215-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
-216                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-216-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
-217                android:value="androidx.startup" />
-217-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
-218        </provider>
-219
-220        <service
-220-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:23:9-29:19
-221            android:name="com.google.firebase.components.ComponentDiscoveryService"
-221-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:24:13-84
-222            android:directBootAware="true"
-222-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:32:13-43
-223            android:exported="false" >
-223-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:25:13-37
-224            <meta-data
-224-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:26:13-28:85
-225                android:name="com.google.firebase.components:com.google.firebase.messaging.ktx.FirebaseMessagingLegacyRegistrar"
-225-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:27:17-129
-226                android:value="com.google.firebase.components.ComponentRegistrar" />
-226-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:28:17-82
-227            <meta-data
-227-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:57:13-59:85
-228                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingKtxRegistrar"
-228-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:58:17-122
-229                android:value="com.google.firebase.components.ComponentRegistrar" />
-229-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:59:17-82
-230            <meta-data
-230-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:60:13-62:85
-231                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
-231-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:61:17-119
-232                android:value="com.google.firebase.components.ComponentRegistrar" />
-232-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:62:17-82
-233            <meta-data
-233-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:15:13-17:85
-234                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsKtxRegistrar"
-234-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:16:17-130
-235                android:value="com.google.firebase.components.ComponentRegistrar" />
-235-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:17:17-82
-236            <meta-data
-236-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:18:13-20:85
-237                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
-237-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:19:17-127
-238                android:value="com.google.firebase.components.ComponentRegistrar" />
-238-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:20:17-82
-239            <meta-data
-239-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\f084bef8d498a4b0b94949241507b1de\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:12:13-14:85
-240                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
-240-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\f084bef8d498a4b0b94949241507b1de\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:13:17-116
-241                android:value="com.google.firebase.components.ComponentRegistrar" />
-241-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\f084bef8d498a4b0b94949241507b1de\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:14:17-82
-242            <meta-data
-242-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:35:13-37:85
-243                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
-243-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:36:17-109
-244                android:value="com.google.firebase.components.ComponentRegistrar" />
-244-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:37:17-82
-245            <meta-data
-245-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\khima\.gradle\caches\transforms-4\f515f90ed908de1f52a10abc35201c5b\transformed\firebase-datatransport-18.2.0\AndroidManifest.xml:25:13-27:85
-246                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
-246-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\khima\.gradle\caches\transforms-4\f515f90ed908de1f52a10abc35201c5b\transformed\firebase-datatransport-18.2.0\AndroidManifest.xml:26:17-115
-247                android:value="com.google.firebase.components.ComponentRegistrar" />
-247-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\khima\.gradle\caches\transforms-4\f515f90ed908de1f52a10abc35201c5b\transformed\firebase-datatransport-18.2.0\AndroidManifest.xml:27:17-82
-248        </service>
-249
-250        <receiver
-250-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:29:9-40:20
-251            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
-251-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:30:13-78
-252            android:exported="true"
-252-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:31:13-36
-253            android:permission="com.google.android.c2dm.permission.SEND" >
-253-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:32:13-73
-254            <intent-filter>
-254-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:33:13-35:29
-255                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-255-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:34:17-81
-255-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:34:25-78
-256            </intent-filter>
-257
-258            <meta-data
-258-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:37:13-39:40
-259                android:name="com.google.android.gms.cloudmessaging.FINISHED_AFTER_HANDLED"
-259-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:38:17-92
-260                android:value="true" />
-260-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:39:17-37
-261        </receiver>
-262        <!--
-263             FirebaseMessagingService performs security checks at runtime,
-264             but set to not exported to explicitly avoid allowing another app to call it.
-265        -->
-266        <service
-266-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:46:9-53:19
-267            android:name="com.google.firebase.messaging.FirebaseMessagingService"
-267-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:47:13-82
-268            android:directBootAware="true"
-268-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:48:13-43
-269            android:exported="false" >
-269-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:49:13-37
-270            <intent-filter android:priority="-500" >
-270-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:152:13-154:29
-271                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-271-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:153:17-78
-271-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:153:25-75
-272            </intent-filter>
-273        </service>
-274
-275        <activity
-275-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:9-173
-276            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-276-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:19-85
-277            android:exported="false"
-277-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:146-170
-278            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-278-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:86-145
-279
-280        <provider
-280-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:23:9-28:39
-281            android:name="com.google.firebase.provider.FirebaseInitProvider"
-281-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:24:13-77
-282            android:authorities="com.example.phonerakshak.firebaseinitprovider"
-282-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:25:13-72
-283            android:directBootAware="true"
-283-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:26:13-43
-284            android:exported="false"
-284-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:27:13-37
-285            android:initOrder="100" />
-285-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:28:13-36
-286
-287        <meta-data
-287-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\khima\.gradle\caches\transforms-4\f4611c93cb177875eea6b47111b7f2b1\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
-288            android:name="com.google.android.gms.version"
-288-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\khima\.gradle\caches\transforms-4\f4611c93cb177875eea6b47111b7f2b1\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
-289            android:value="@integer/google_play_services_version" />
-289-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\khima\.gradle\caches\transforms-4\f4611c93cb177875eea6b47111b7f2b1\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
-290
-291        <receiver
-291-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
-292            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-292-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
-293            android:directBootAware="false"
-293-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
-294            android:enabled="true"
-294-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
-295            android:exported="true"
-295-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
-296            android:permission="android.permission.DUMP" >
-296-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
-297            <intent-filter>
-297-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
-298                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-298-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
-298-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
-299            </intent-filter>
-300            <intent-filter>
-300-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
-301                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-301-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
-301-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
-302            </intent-filter>
-303            <intent-filter>
-303-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
-304                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-304-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
-304-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
-305            </intent-filter>
-306            <intent-filter>
-306-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
-307                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-307-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
-307-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
-308            </intent-filter>
-309        </receiver>
-310
-311        <service
-311-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:28:9-34:19
-312            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
-312-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:29:13-103
-313            android:exported="false" >
-313-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:30:13-37
-314            <meta-data
-314-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:31:13-33:39
-315                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
-315-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:32:17-94
-316                android:value="cct" />
-316-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:33:17-36
-317        </service>
-318        <service
-318-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:26:9-30:19
-319            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
-319-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:27:13-117
-320            android:exported="false"
-320-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:28:13-37
-321            android:permission="android.permission.BIND_JOB_SERVICE" >
-321-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:29:13-69
-322        </service>
-323
-324        <receiver
-324-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:32:9-34:40
-325            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
-325-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:33:13-132
-326            android:exported="false" />
-326-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:34:13-37
-327    </application>
-328
-329</manifest>
+159            <meta-data
+159-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:139:13-141:72
+160                android:name="android.accessibilityservice"
+160-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:140:17-60
+161                android:resource="@xml/accessibility_service_config" />
+161-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:141:17-69
+162        </service>
+163
+164        <!-- Foreground service that keeps SMS/SIM receivers + command poller alive -->
+165        <service
+165-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:145:9-153:19
+166            android:name="com.example.phonerakshak.PhoneRakshakService"
+166-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:146:13-48
+167            android:enabled="true"
+167-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:147:13-35
+168            android:exported="false"
+168-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:148:13-37
+169            android:foregroundServiceType="specialUse" >
+169-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:149:13-55
+170            <property
+170-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:150:13-152:59
+171                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+171-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:151:17-76
+172                android:value="anti_theft_sms_listener" />
+172-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:152:17-56
+173        </service>
+174
+175        <!-- Device Admin receiver (for DevicePolicyManager.lockNow) -->
+176        <receiver
+176-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:156:9-168:20
+177            android:name="com.example.phonerakshak.LockerAdminReceiver"
+177-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:157:13-48
+178            android:description="@string/admin_description"
+178-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:160:13-60
+179            android:exported="true"
+179-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:158:13-36
+180            android:label="@string/admin_label"
+180-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:159:13-48
+181            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+181-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:161:13-70
+182            <meta-data
+182-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:162:13-164:56
+183                android:name="android.app.device_admin"
+183-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:163:17-56
+184                android:resource="@xml/device_admin" />
+184-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:164:17-53
+185
+186            <intent-filter>
+186-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:165:13-167:29
+187                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+187-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:166:17-82
+187-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:166:25-79
+188            </intent-filter>
+189        </receiver>
+190
+191        <!-- SMS command receiver -->
+192        <receiver
+192-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:171:9-178:20
+193            android:name="com.example.phonerakshak.SmsCommandReceiver"
+193-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:172:13-47
+194            android:exported="true"
+194-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:173:13-36
+195            android:permission="android.permission.BROADCAST_SMS" >
+195-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:174:13-66
+196            <intent-filter android:priority="999" >
+196-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:175:13-177:29
+196-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:175:28-50
+197                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+197-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:176:17-82
+197-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:176:25-79
+198            </intent-filter>
+199        </receiver>
+200
+201        <!-- SIM change detection -->
+202        <receiver
+202-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:181:9-188:20
+203            android:name="com.example.phonerakshak.SimChangeReceiver"
+203-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:182:13-46
+204            android:enabled="true"
+204-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:183:13-35
+205            android:exported="true" >
+205-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:184:13-36
+206            <intent-filter>
+206-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:185:13-187:29
+207                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
+207-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:186:17-82
+207-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:186:25-79
+208            </intent-filter>
+209        </receiver>
+210
+211        <!-- Boot receiver -->
+212        <receiver
+212-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:191:9-199:20
+213            android:name="com.example.phonerakshak.BootReceiver"
+213-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:192:13-41
+214            android:enabled="true"
+214-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:193:13-35
+215            android:exported="true" >
+215-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:194:13-36
+216            <intent-filter>
+216-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:195:13-198:29
+217                <action android:name="android.intent.action.BOOT_COMPLETED" />
+217-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:196:17-79
+217-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:196:25-76
+218                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+218-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:197:17-82
+218-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:197:25-79
+219            </intent-filter>
+220        </receiver>
+221
+222        <service
+222-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:201:9-207:19
+223            android:name="com.example.phonerakshak.PhoneRakshakFcmService"
+223-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:202:13-51
+224            android:exported="false" >
+224-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:203:13-37
+225            <intent-filter>
+225-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:204:13-206:29
+226                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+226-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:205:17-78
+226-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:205:25-75
+227            </intent-filter>
+228        </service>
+229
+230        <!-- Geofence background receiver -->
+231        <receiver
+231-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:210:9-216:20
+232            android:name="com.example.phonerakshak.GeofenceReceiver"
+232-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:211:13-45
+233            android:exported="true" >
+233-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:212:13-36
+234            <intent-filter>
+234-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:213:13-215:29
+235                <action android:name="com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION" />
+235-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:214:17-103
+235-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:214:25-100
+236            </intent-filter>
+237        </receiver>
+238
+239        <service
+239-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:24:9-33:19
+240            android:name="androidx.camera.core.impl.MetadataHolderService"
+240-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:25:13-75
+241            android:enabled="false"
+241-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:26:13-36
+242            android:exported="false" >
+242-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:27:13-37
+243            <meta-data
+243-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:30:13-32:89
+244                android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER"
+244-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:31:17-103
+245                android:value="androidx.camera.camera2.Camera2Config$DefaultProvider" />
+245-->[androidx.camera:camera-camera2:1.3.4] C:\Users\khima\.gradle\caches\transforms-4\e5c3cad1ef00de1e2d9fce783a13ca41\transformed\camera-camera2-1.3.4\AndroidManifest.xml:32:17-86
+246        </service>
+247        <service
+247-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:9:9-15:19
+248            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
+248-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:10:13-91
+249            android:directBootAware="true"
+249-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:17:13-43
+250            android:exported="false" >
+250-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:11:13-37
+251            <meta-data
+251-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:12:13-14:85
+252                android:name="com.google.firebase.components:com.google.mlkit.vision.face.internal.FaceRegistrar"
+252-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:13:17-114
+253                android:value="com.google.firebase.components.ComponentRegistrar" />
+253-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\khima\.gradle\caches\transforms-4\0759a6c37845788274c5137104800d20\transformed\play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:14:17-82
+254            <meta-data
+254-->[com.google.mlkit:vision-common:17.2.0] C:\Users\khima\.gradle\caches\transforms-4\f4ffe92f8d605e1596e7cb1f3767681c\transformed\vision-common-17.2.0\AndroidManifest.xml:12:13-14:85
+255                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
+255-->[com.google.mlkit:vision-common:17.2.0] C:\Users\khima\.gradle\caches\transforms-4\f4ffe92f8d605e1596e7cb1f3767681c\transformed\vision-common-17.2.0\AndroidManifest.xml:13:17-124
+256                android:value="com.google.firebase.components.ComponentRegistrar" />
+256-->[com.google.mlkit:vision-common:17.2.0] C:\Users\khima\.gradle\caches\transforms-4\f4ffe92f8d605e1596e7cb1f3767681c\transformed\vision-common-17.2.0\AndroidManifest.xml:14:17-82
+257            <meta-data
+257-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:20:13-22:85
+258                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
+258-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:21:17-120
+259                android:value="com.google.firebase.components.ComponentRegistrar" />
+259-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:22:17-82
+260        </service>
+261
+262        <provider
+262-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:9:9-13:38
+263            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
+263-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:10:13-78
+264            android:authorities="com.example.phonerakshak.mlkitinitprovider"
+264-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:11:13-69
+265            android:exported="false"
+265-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:12:13-37
+266            android:initOrder="99" />
+266-->[com.google.mlkit:common:18.10.0] C:\Users\khima\.gradle\caches\transforms-4\3b4bfb089f48c23ba56f592569eaf426\transformed\common-18.10.0\AndroidManifest.xml:13:13-35
+267        <provider
+267-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+268            android:name="androidx.startup.InitializationProvider"
+268-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+269            android:authorities="com.example.phonerakshak.androidx-startup"
+269-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+270            android:exported="false" >
+270-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+271            <meta-data
+271-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+272                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+272-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+273                android:value="androidx.startup" />
+273-->[androidx.emoji2:emoji2:1.3.0] C:\Users\khima\.gradle\caches\transforms-4\17b5259d58b7b3c0976620c9a5c284d9\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+274            <meta-data
+274-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\khima\.gradle\caches\transforms-4\e610786b086d50c2b417dae868c60a92\transformed\lifecycle-process-2.8.4\AndroidManifest.xml:29:13-31:52
+275                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+275-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\khima\.gradle\caches\transforms-4\e610786b086d50c2b417dae868c60a92\transformed\lifecycle-process-2.8.4\AndroidManifest.xml:30:17-78
+276                android:value="androidx.startup" />
+276-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\khima\.gradle\caches\transforms-4\e610786b086d50c2b417dae868c60a92\transformed\lifecycle-process-2.8.4\AndroidManifest.xml:31:17-49
+277            <meta-data
+277-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+278                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+278-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+279                android:value="androidx.startup" />
+279-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+280        </provider>
+281
+282        <service
+282-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:23:9-29:19
+283            android:name="com.google.firebase.components.ComponentDiscoveryService"
+283-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:24:13-84
+284            android:directBootAware="true"
+284-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:32:13-43
+285            android:exported="false" >
+285-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:25:13-37
+286            <meta-data
+286-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:26:13-28:85
+287                android:name="com.google.firebase.components:com.google.firebase.messaging.ktx.FirebaseMessagingLegacyRegistrar"
+287-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:27:17-129
+288                android:value="com.google.firebase.components.ComponentRegistrar" />
+288-->[com.google.firebase:firebase-messaging-ktx:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\b45622bd0bae4d9181c81f8635cf1268\transformed\firebase-messaging-ktx-24.0.0\AndroidManifest.xml:28:17-82
+289            <meta-data
+289-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:57:13-59:85
+290                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingKtxRegistrar"
+290-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:58:17-122
+291                android:value="com.google.firebase.components.ComponentRegistrar" />
+291-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:59:17-82
+292            <meta-data
+292-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:60:13-62:85
+293                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+293-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:61:17-119
+294                android:value="com.google.firebase.components.ComponentRegistrar" />
+294-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:62:17-82
+295            <meta-data
+295-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:15:13-17:85
+296                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsKtxRegistrar"
+296-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:16:17-130
+297                android:value="com.google.firebase.components.ComponentRegistrar" />
+297-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:17:17-82
+298            <meta-data
+298-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:18:13-20:85
+299                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+299-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:19:17-127
+300                android:value="com.google.firebase.components.ComponentRegistrar" />
+300-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\khima\.gradle\caches\transforms-4\3db8777ffcbd7080f2b4c04b36a8ad6d\transformed\firebase-installations-18.0.0\AndroidManifest.xml:20:17-82
+301            <meta-data
+301-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\f084bef8d498a4b0b94949241507b1de\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:12:13-14:85
+302                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+302-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\f084bef8d498a4b0b94949241507b1de\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:13:17-116
+303                android:value="com.google.firebase.components.ComponentRegistrar" />
+303-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\f084bef8d498a4b0b94949241507b1de\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:14:17-82
+304            <meta-data
+304-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:35:13-37:85
+305                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+305-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:36:17-109
+306                android:value="com.google.firebase.components.ComponentRegistrar" />
+306-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:37:17-82
+307            <meta-data
+307-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\khima\.gradle\caches\transforms-4\f515f90ed908de1f52a10abc35201c5b\transformed\firebase-datatransport-18.2.0\AndroidManifest.xml:25:13-27:85
+308                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
+308-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\khima\.gradle\caches\transforms-4\f515f90ed908de1f52a10abc35201c5b\transformed\firebase-datatransport-18.2.0\AndroidManifest.xml:26:17-115
+309                android:value="com.google.firebase.components.ComponentRegistrar" />
+309-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\khima\.gradle\caches\transforms-4\f515f90ed908de1f52a10abc35201c5b\transformed\firebase-datatransport-18.2.0\AndroidManifest.xml:27:17-82
+310        </service>
+311
+312        <receiver
+312-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:29:9-40:20
+313            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+313-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:30:13-78
+314            android:exported="true"
+314-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:31:13-36
+315            android:permission="com.google.android.c2dm.permission.SEND" >
+315-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:32:13-73
+316            <intent-filter>
+316-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:33:13-35:29
+317                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+317-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:34:17-81
+317-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:34:25-78
+318            </intent-filter>
+319
+320            <meta-data
+320-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:37:13-39:40
+321                android:name="com.google.android.gms.cloudmessaging.FINISHED_AFTER_HANDLED"
+321-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:38:17-92
+322                android:value="true" />
+322-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:39:17-37
+323        </receiver>
+324        <!--
+325             FirebaseMessagingService performs security checks at runtime,
+326             but set to not exported to explicitly avoid allowing another app to call it.
+327        -->
+328        <service
+328-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:46:9-53:19
+329            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+329-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:47:13-82
+330            android:directBootAware="true"
+330-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:48:13-43
+331            android:exported="false" >
+331-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\khima\.gradle\caches\transforms-4\1bf43c5579ee3f728a5adb097156f2cb\transformed\firebase-messaging-24.0.0\AndroidManifest.xml:49:13-37
+332            <intent-filter android:priority="-500" >
+332-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:204:13-206:29
+333                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+333-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:205:17-78
+333-->C:\Users\khima\.gemini\antigravity\scratch\PhoneRakshak\app\src\main\AndroidManifest.xml:205:25-75
+334            </intent-filter>
+335        </service>
+336
+337        <activity
+337-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:9-173
+338            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+338-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:19-85
+339            android:exported="false"
+339-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:146-170
+340            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+340-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\khima\.gradle\caches\transforms-4\11acc3f7ad12fbf08763ff4f3c9bdc93\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:86-145
+341
+342        <provider
+342-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:23:9-28:39
+343            android:name="com.google.firebase.provider.FirebaseInitProvider"
+343-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:24:13-77
+344            android:authorities="com.example.phonerakshak.firebaseinitprovider"
+344-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:25:13-72
+345            android:directBootAware="true"
+345-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:26:13-43
+346            android:exported="false"
+346-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:27:13-37
+347            android:initOrder="100" />
+347-->[com.google.firebase:firebase-common:21.0.0] C:\Users\khima\.gradle\caches\transforms-4\3585d3ef2e4b06d05f4c4b456035dcf1\transformed\firebase-common-21.0.0\AndroidManifest.xml:28:13-36
+348
+349        <meta-data
+349-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\khima\.gradle\caches\transforms-4\f4611c93cb177875eea6b47111b7f2b1\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
+350            android:name="com.google.android.gms.version"
+350-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\khima\.gradle\caches\transforms-4\f4611c93cb177875eea6b47111b7f2b1\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
+351            android:value="@integer/google_play_services_version" />
+351-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\khima\.gradle\caches\transforms-4\f4611c93cb177875eea6b47111b7f2b1\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
+352
+353        <receiver
+353-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+354            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+354-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+355            android:directBootAware="false"
+355-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+356            android:enabled="true"
+356-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+357            android:exported="true"
+357-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+358            android:permission="android.permission.DUMP" >
+358-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+359            <intent-filter>
+359-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+360                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+360-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+360-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+361            </intent-filter>
+362            <intent-filter>
+362-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+363                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+363-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+363-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+364            </intent-filter>
+365            <intent-filter>
+365-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+366                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+366-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+366-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+367            </intent-filter>
+368            <intent-filter>
+368-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+369                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+369-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+369-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\khima\.gradle\caches\transforms-4\f1e76da446e345fd38968bab116e4bbe\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+370            </intent-filter>
+371        </receiver>
+372
+373        <service
+373-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:28:9-34:19
+374            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+374-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:29:13-103
+375            android:exported="false" >
+375-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:30:13-37
+376            <meta-data
+376-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:31:13-33:39
+377                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+377-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:32:17-94
+378                android:value="cct" />
+378-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\5867625c8806a69608eb73c5d09bf4c3\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:33:17-36
+379        </service>
+380        <service
+380-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:26:9-30:19
+381            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+381-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:27:13-117
+382            android:exported="false"
+382-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:28:13-37
+383            android:permission="android.permission.BIND_JOB_SERVICE" >
+383-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:29:13-69
+384        </service>
+385
+386        <receiver
+386-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:32:9-34:40
+387            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+387-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:33:13-132
+388            android:exported="false" />
+388-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\khima\.gradle\caches\transforms-4\00f4e10aa61984e77b75f569633e4664\transformed\transport-runtime-3.1.9\AndroidManifest.xml:34:13-37
+389    </application>
+390
+391</manifest>
