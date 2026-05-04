@@ -444,7 +444,8 @@
         
         if (data.ticket && data.ticket.messages && data.ticket.messages.length > 0) {
           data.ticket.messages.forEach(m => {
-            const el = createMessageElement(m.text, m.isBot, m.timestamp);
+            const isBotStyle = m.isBot || m.sender === 'admin' || m.sender === 'bot';
+            const el = createMessageElement(m.text, isBotStyle, m.timestamp);
             chatArea.insertBefore(el, typingIndicator);
           });
           scrollToBottom();
@@ -501,17 +502,24 @@
            const msgs = data.ticket.messages;
            
            // Replace optimistic user message with confirmed one
-           if (msgs.length >= 2) {
-             const userMsg = msgs[msgs.length - 2];
-             if (!userMsg.isBot && userMsg.text === text) {
-               const confirmedUserEl = createMessageElement(userMsg.text, false, userMsg.timestamp, false);
-               chatArea.replaceChild(confirmedUserEl, userEl);
-               userEl = confirmedUserEl; // update reference for error handling edge cases
+           let confirmedMsg = null;
+           for (let i = msgs.length - 1; i >= 0; i--) {
+             if ((msgs[i].sender === 'user' || !msgs[i].isBot) && msgs[i].text === text) {
+               confirmedMsg = msgs[i];
+               break;
              }
+           }
+           
+           if (confirmedMsg) {
+             const confirmedUserEl = createMessageElement(confirmedMsg.text, false, confirmedMsg.timestamp, false);
+             chatArea.replaceChild(confirmedUserEl, userEl);
+             userEl = confirmedUserEl; // update reference
            }
 
            const lastMsg = msgs[msgs.length - 1];
-           if (lastMsg && lastMsg.isBot) {
+           const isBotReply = lastMsg && (lastMsg.isBot || lastMsg.sender === 'bot' || lastMsg.sender === 'admin');
+           
+           if (isBotReply && (!confirmedMsg || lastMsg._id !== confirmedMsg._id)) {
              // Simulate typing delay (500-1000ms)
              const delay = Math.floor(Math.random() * 500) + 500;
              setTimeout(() => {
