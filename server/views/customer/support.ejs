@@ -193,6 +193,33 @@
       50% { transform: scale(1.2); opacity: 1; background: #c4b5fd; }
     }
 
+    /* LOADER */
+    .chat-loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+    .chat-loader svg {
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* ERROR RETRY */
+    .retry-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 0.7rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      margin-left: 0.5rem;
+    }
+
     /* QUICK ACTIONS */
     .quick-actions {
       display: flex;
@@ -328,6 +355,10 @@
 
     <!-- Chat Messages Area -->
     <main class="chat-messages" id="chatArea">
+      <div id="historyLoader" class="chat-loader">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        Loading messages...
+      </div>
       <!-- Messages injected here -->
       <div class="typing-indicator" id="typingIndicator">
         <div class="typing-dot"></div>
@@ -383,7 +414,7 @@
       group.className = `msg-group ${isBot ? 'bot' : 'user'}`;
       
       const timeStr = formatTime(timestamp);
-      const ticks = !isBot ? '<span class="msg-status-icon">✔✔</span>' : '';
+      const ticks = !isBot ? '<span class="msg-status-icon status-indicator-txt">✔✔</span>' : '';
       
       group.innerHTML = `
         <div class="msg-bubble">${text}</div>
@@ -395,9 +426,13 @@
     }
 
     async function loadHistory() {
+      const loader = document.getElementById('historyLoader');
       try {
         const res = await fetch('/api/support/history');
+        if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
+        
+        loader.style.display = 'none';
         
         if (data.ticket && data.ticket.messages && data.ticket.messages.length > 0) {
           data.ticket.messages.forEach(m => {
@@ -413,19 +448,28 @@
         }
       } catch (err) {
         console.error(err);
+        loader.innerHTML = '<span style="color: #ef4444">Failed to load chat history. Please refresh.</span>';
       }
     }
 
-    async function sendMessage() {
-      const text = msgInput.value.trim();
+    async function sendMessage(retryText = null, retryGroupEl = null) {
+      const text = retryText || msgInput.value.trim();
       if (!text) return;
 
-      // Render user message immediately
-      const userEl = createMessageElement(text, false, Date.now());
-      chatArea.insertBefore(userEl, typingIndicator);
-      msgInput.value = '';
+      let userEl = retryGroupEl;
+      if (!userEl) {
+        // Render user message immediately (optimistic)
+        userEl = createMessageElement(text, false, Date.now());
+        chatArea.insertBefore(userEl, typingIndicator);
+        msgInput.value = '';
+        scrollToBottom();
+      } else {
+        // Clear retry state if retrying
+        const statusEl = userEl.querySelector('.status-indicator-txt');
+        if(statusEl) statusEl.innerHTML = '✔✔';
+      }
+
       sendBtn.disabled = true;
-      scrollToBottom();
 
       // Show typing indicator
       typingIndicator.style.display = 'flex';
@@ -437,6 +481,9 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text })
         });
+        
+        if (!res.ok) throw new Error('Failed to send');
+        
         const data = await res.json();
         
         // Hide typing indicator
@@ -454,9 +501,16 @@
       } catch (err) {
         console.error(err);
         typingIndicator.style.display = 'none';
+        
+        // Update user message to show failed state
+        const timeEl = userEl.querySelector('.msg-time');
+        if (timeEl) {
+          timeEl.innerHTML = `<span style="color: #ef4444;">Failed to send</span> <button class="retry-btn">Retry</button>`;
+          timeEl.querySelector('.retry-btn').onclick = () => sendMessage(text, userEl);
+        }
       } finally {
         sendBtn.disabled = false;
-        msgInput.focus();
+        if(!retryText) msgInput.focus();
       }
     }
 
