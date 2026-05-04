@@ -1,245 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <%- include('_layout-head', { title: 'Support - PhoneRakshak' }) %>
+  <%- include('_layout-head', { title: 'Support Chat - PhoneRakshak' }) %>
   <style>
-    .support-container {
+    :root {
+      --chat-bg-start: #0b1220;
+      --chat-bg-end: #0a0f1c;
+      --bubble-user-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --bubble-bot-bg: #121a2b;
+      --glow-purple: rgba(139, 92, 246, 0.4);
+      --glow-red: rgba(239, 68, 68, 0.4);
+      --glow-green: rgba(16, 185, 129, 0.4);
+      --msg-radius: 20px;
+    }
+
+    body.dark-theme {
+      background: linear-gradient(180deg, var(--chat-bg-start), var(--chat-bg-end)) !important;
+      font-family: 'Inter', 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .chat-wrapper {
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 120px);
-      background: var(--surface);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      overflow: hidden;
-      margin-bottom: 2rem;
+      height: 100vh; /* Mobile full height */
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(11, 18, 32, 0.8);
+      backdrop-filter: blur(12px);
+      position: relative;
     }
-    .chat-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-hover);
+
+    /* HEADER */
+    .chat-top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(18, 26, 43, 0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 10;
     }
-    .chat-header h2 {
-      margin: 0;
-      font-size: 1.25rem;
+
+    .chat-back-btn {
       color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      transition: color 0.2s;
     }
-    .support-status {
-      font-size: 0.85rem;
-      padding: 0.25rem 0.75rem;
+    .chat-back-btn:hover { color: #a78bfa; }
+
+    .chat-header-info {
+      text-align: center;
+    }
+    .chat-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 0.2rem;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .status-dot.online { background: #10b981; box-shadow: 0 0 8px var(--glow-green); }
+    .status-dot.offline { background: #6b7280; }
+
+    .priority-badge {
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.3);
       border-radius: 12px;
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      box-shadow: 0 0 10px var(--glow-purple);
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      white-space: nowrap;
     }
-    .support-status.escalated {
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--warning);
-      border-color: rgba(245, 158, 11, 0.2);
-    }
-    .chat-history {
+
+    /* CHAT HISTORY */
+    .chat-messages {
       flex: 1;
-      padding: 1.5rem;
+      padding: 1.5rem 1rem;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
+      scrollbar-width: none; /* Firefox */
     }
-    .msg {
-      max-width: 80%;
-      padding: 1rem;
-      border-radius: 1rem;
-      line-height: 1.5;
+    .chat-messages::-webkit-scrollbar { display: none; } /* Chrome */
+
+    .msg-group {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+      animation: fadeInSlide 0.3s ease-out forwards;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    @keyframes fadeInSlide {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-group.bot { align-self: flex-start; }
+    .msg-group.user { align-self: flex-end; align-items: flex-end; }
+
+    .msg-bubble {
+      padding: 0.85rem 1.25rem;
       font-size: 0.95rem;
+      line-height: 1.4;
       word-wrap: break-word;
       position: relative;
     }
-    .msg.bot {
-      align-self: flex-start;
-      background: var(--surface-hover);
-      color: var(--text-primary);
-      border-bottom-left-radius: 0.25rem;
-    }
-    .msg.user {
-      align-self: flex-end;
-      background: var(--primary);
+
+    .msg-group.user .msg-bubble {
+      background: var(--bubble-user-gradient);
       color: #fff;
-      border-bottom-right-radius: 0.25rem;
+      border-radius: var(--msg-radius) var(--msg-radius) 4px var(--msg-radius);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
     }
+
+    .msg-group.bot .msg-bubble {
+      background: var(--bubble-bot-bg);
+      color: #e5e7eb;
+      border-radius: var(--msg-radius) var(--msg-radius) var(--msg-radius) 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .premium-glow .msg-group.bot .msg-bubble {
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.1) inset, 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
     .msg-time {
-      display: block;
-      font-size: 0.7rem;
-      margin-top: 0.5rem;
-      opacity: 0.7;
-    }
-    .quick-options {
-      padding: 1rem 1.5rem;
+      font-size: 0.65rem;
+      color: #6b7280;
+      margin-top: 0.3rem;
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
+      align-items: center;
+      gap: 0.3rem;
     }
-    .quick-opt-btn {
-      background: var(--surface);
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
+
+    .msg-status-icon {
+      font-size: 0.6rem;
+      color: #8b5cf6;
+    }
+
+    /* TYPING INDICATOR */
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 1rem 1.25rem;
+      background: var(--bubble-bot-bg);
+      border-radius: var(--msg-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      width: fit-content;
+      align-self: flex-start;
+      margin-bottom: 1rem;
+    }
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #9ca3af;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.2); opacity: 1; background: #c4b5fd; }
+    }
+
+    /* QUICK ACTIONS */
+    .quick-actions {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(18, 26, 43, 0.4);
+    }
+    .quick-actions::-webkit-scrollbar { display: none; }
+    
+    .quick-btn {
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e5e7eb;
       padding: 0.5rem 1rem;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
-    }
-    .quick-opt-btn:hover {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-    .escalate-wrapper {
-      padding: 0 1.5rem 1rem;
-      background: var(--bg);
-      text-align: center;
-      display: none;
-    }
-    .escalate-btn {
-      background: rgba(139, 92, 246, 0.1);
-      color: #a78bfa;
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      padding: 0.75rem 2rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-      max-width: 300px;
-    }
-    .escalate-btn:hover {
-      background: #8b5cf6;
-      color: #fff;
-    }
-    .chat-input-area {
-      padding: 1.5rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
       display: flex;
-      gap: 1rem;
+      align-items: center;
+      gap: 0.4rem;
     }
-    .chat-input {
+    .quick-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+    .quick-btn.urgent {
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+    .quick-btn.urgent:hover {
+      background: rgba(239, 68, 68, 0.1);
+      box-shadow: 0 0 10px var(--glow-red);
+    }
+
+    /* INPUT AREA */
+    .chat-input-wrapper {
+      padding: 1rem;
+      background: rgba(18, 26, 43, 0.8);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .chat-input-box {
       flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      outline: none;
-    }
-    .chat-input:focus {
-      border-color: var(--primary);
-    }
-    .chat-send-btn {
-      background: var(--primary);
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 0.85rem 1.25rem;
       color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .chat-input-box:focus {
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+    }
+    .chat-input-box::placeholder { color: #6b7280; }
+
+    .chat-send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bubble-user-gradient);
       border: none;
-      padding: 0 1.5rem;
-      border-radius: var(--radius);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s;
+      box-shadow: 0 4px 10px var(--glow-purple);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .chat-send-btn:hover {
-      background: var(--primary-hover);
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px var(--glow-purple);
     }
     .chat-send-btn:disabled {
-      opacity: 0.5;
+      background: #4b5563;
+      box-shadow: none;
       cursor: not-allowed;
+      transform: none;
     }
-    @media (max-width: 768px) {
-      .support-container {
-        height: calc(100vh - 80px);
-        margin-bottom: 0;
-        border-radius: 0;
-        border: none;
-      }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
     }
+    .icon-btn:hover { color: #fff; }
+
   </style>
 </head>
-<body class="dark-theme">
-  <div class="layout-wrapper">
-    <%- include('_sidebar', { active: 'support' }) %>
-    <div class="main-content">
-      <%- include('_topbar', { user: user }) %>
+<body class="dark-theme <%= ctx.isPremium ? 'premium-glow' : '' %>">
+  
+  <div class="chat-wrapper">
+    <!-- Header -->
+    <header class="chat-top-header">
+      <div style="flex: 1;">
+        <a href="/customer" class="chat-back-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+      </div>
       
-      <div class="content-body">
-        <div class="support-container">
-          <div class="chat-header">
-            <h2>Support Chat</h2>
-            <span class="support-status" id="ticketStatus">Bot Active</span>
-          </div>
-          
-          <div class="chat-history" id="chatHistory">
-            <!-- Messages will be injected here -->
-          </div>
-          
-          <div class="escalate-wrapper" id="escalateWrapper">
-            <button class="escalate-btn" onclick="escalateTicket()">👉 Talk to Human</button>
-          </div>
-          
-          <div class="quick-options" id="quickOptions">
-            <button class="quick-opt-btn" onclick="sendChat('Lost phone')">Lost phone</button>
-            <button class="quick-opt-btn" onclick="sendChat('Lock device')">Lock device</button>
-            <button class="quick-opt-btn" onclick="sendChat('Track location')">Track location</button>
-            <button class="quick-opt-btn" onclick="sendChat('Alarm not working')">Alarm not working</button>
-            <button class="quick-opt-btn" onclick="sendChat('SIM changed')">SIM changed</button>
-            <button class="quick-opt-btn" onclick="sendChat('Other issue')">Other issue</button>
-          </div>
-          
-          <div class="chat-input-area" id="inputArea">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." onkeypress="handleEnter(event)">
-            <button class="chat-send-btn" id="sendBtn" onclick="sendChat()">Send</button>
-          </div>
+      <div class="chat-header-info">
+        <h1 class="chat-title">Support Chat</h1>
+        <div class="status-indicator">
+          <div class="status-dot online"></div>
+          <span>Online</span>
         </div>
       </div>
+      
+      <div style="flex: 1; display: flex; justify-content: flex-end;">
+        <% if (ctx.isPremium) { %>
+          <div class="priority-badge">⚡ Priority</div>
+        <% } %>
+      </div>
+    </header>
+
+    <!-- Chat Messages Area -->
+    <main class="chat-messages" id="chatArea">
+      <!-- Messages injected here -->
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </main>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions" id="quickActions">
+      <% if (ctx.isPremium) { %>
+        <button class="quick-btn urgent" onclick="prefill('URGENT: Report Lost Phone')">🔴 Report Lost Phone</button>
+      <% } %>
+      <button class="quick-btn" onclick="prefill('Technical Issue')">⚠️ Technical Issue</button>
+      <button class="quick-btn" onclick="prefill('General Help')">💬 General Help</button>
     </div>
+
+    <!-- Input Area -->
+    <footer class="chat-input-wrapper">
+      <button class="icon-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      
+      <input type="text" id="msgInput" class="chat-input-box" placeholder="Type your message..." autocomplete="off">
+      
+      <button id="sendBtn" class="chat-send-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      </button>
+    </footer>
   </div>
 
   <script>
-    const chatHistory = document.getElementById('chatHistory');
-    const chatInput = document.getElementById('chatInput');
+    const chatArea = document.getElementById('chatArea');
+    const msgInput = document.getElementById('msgInput');
     const sendBtn = document.getElementById('sendBtn');
-    const escalateWrapper = document.getElementById('escalateWrapper');
-    const quickOptions = document.getElementById('quickOptions');
-    const ticketStatus = document.getElementById('ticketStatus');
+    const typingIndicator = document.getElementById('typingIndicator');
     
-    let isEscalated = false;
-
-    function renderMessage(msg) {
-      const div = document.createElement('div');
-      div.className = 'msg ' + (msg.isBot ? 'bot' : 'user');
-      
-      const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
-      div.innerHTML = `
-        ${msg.text}
-        <span class="msg-time">${time}</span>
-      `;
-      chatHistory.appendChild(div);
-      chatHistory.scrollTop = chatHistory.scrollHeight;
+    function prefill(text) {
+      msgInput.value = text;
+      msgInput.focus();
     }
 
-    function updateUIStatus(status, botCount) {
-      if (status === 'escalated') {
-        isEscalated = true;
-        ticketStatus.textContent = 'Awaiting Human Agent';
-        ticketStatus.className = 'support-status escalated';
-        escalateWrapper.style.display = 'none';
-        quickOptions.style.display = 'none';
-      } else {
-        if (botCount >= 1) {
-          escalateWrapper.style.display = 'block';
-        }
-      }
+    function formatTime(ts) {
+      return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scrollToBottom() {
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function createMessageElement(text, isBot, timestamp) {
+      const group = document.createElement('div');
+      group.className = `msg-group ${isBot ? 'bot' : 'user'}`;
+      
+      const timeStr = formatTime(timestamp);
+      const ticks = !isBot ? '<span class="msg-status-icon">✔✔</span>' : '';
+      
+      group.innerHTML = `
+        <div class="msg-bubble">${text}</div>
+        <div class="msg-time">
+          ${timeStr} ${ticks}
+        </div>
+      `;
+      return group;
     }
 
     async function loadHistory() {
@@ -247,32 +399,38 @@
         const res = await fetch('/api/support/history');
         const data = await res.json();
         
-        if (data.messages && data.messages.length > 0) {
-          data.messages.forEach(renderMessage);
-          updateUIStatus(data.status, data.botResponseCount);
+        if (data.ticket && data.ticket.messages && data.ticket.messages.length > 0) {
+          data.ticket.messages.forEach(m => {
+            const el = createMessageElement(m.text, m.isBot, m.timestamp);
+            chatArea.insertBefore(el, typingIndicator);
+          });
+          scrollToBottom();
         } else {
-          // Send initial greeting to backend if there's no history
-          sendChat("Hello", true);
+          // Welcome message if new
+          const welcome = createMessageElement("Hello! How can PhoneRakshak support assist you today?", true, Date.now());
+          chatArea.insertBefore(welcome, typingIndicator);
+          scrollToBottom();
         }
       } catch (err) {
-        console.error('Failed to load chat history', err);
+        console.error(err);
       }
     }
 
-    function handleEnter(e) {
-      if (e.key === 'Enter') sendChat();
-    }
-
-    async function sendChat(textOverride, isInit = false) {
-      const text = textOverride || chatInput.value.trim();
+    async function sendMessage() {
+      const text = msgInput.value.trim();
       if (!text) return;
-      
-      if (!textOverride && !isInit) {
-        chatInput.value = '';
-      }
 
+      // Render user message immediately
+      const userEl = createMessageElement(text, false, Date.now());
+      chatArea.insertBefore(userEl, typingIndicator);
+      msgInput.value = '';
       sendBtn.disabled = true;
-      
+      scrollToBottom();
+
+      // Show typing indicator
+      typingIndicator.style.display = 'flex';
+      scrollToBottom();
+
       try {
         const res = await fetch('/api/support/chat', {
           method: 'POST',
@@ -281,39 +439,34 @@
         });
         const data = await res.json();
         
-        chatHistory.innerHTML = '';
-        if (data.messages) {
-          data.messages.forEach(renderMessage);
+        // Hide typing indicator
+        typingIndicator.style.display = 'none';
+        
+        // The backend returns the whole ticket, so we just get the last message if it's from the bot
+        if (data.ticket && data.ticket.messages) {
+           const lastMsg = data.ticket.messages[data.ticket.messages.length - 1];
+           if (lastMsg && lastMsg.isBot) {
+             const botEl = createMessageElement(lastMsg.text, true, lastMsg.timestamp);
+             chatArea.insertBefore(botEl, typingIndicator);
+             scrollToBottom();
+           }
         }
-        updateUIStatus(data.status, data.botResponseCount);
       } catch (err) {
-        console.error('Failed to send message', err);
+        console.error(err);
+        typingIndicator.style.display = 'none';
       } finally {
         sendBtn.disabled = false;
-        chatInput.focus();
+        msgInput.focus();
       }
     }
 
-    async function escalateTicket() {
-      try {
-        const res = await fetch('/api/support/escalate', { method: 'POST' });
-        const data = await res.json();
-        if (data.success) {
-          // Refresh history to see the new bot message
-          const histRes = await fetch('/api/support/history');
-          const histData = await histRes.json();
-          chatHistory.innerHTML = '';
-          if (histData.messages) {
-            histData.messages.forEach(renderMessage);
-          }
-          updateUIStatus(histData.status, histData.botResponseCount);
-        }
-      } catch (err) {
-        console.error('Failed to escalate ticket', err);
-      }
-    }
+    msgInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+    
+    sendBtn.addEventListener('click', sendMessage);
 
-    // Initialize
+    // Init
     loadHistory();
   </script>
 </body>
