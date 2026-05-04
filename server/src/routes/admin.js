@@ -20,4 +20,20 @@ router.get('/setup-2fa', requireAuth, adminController.getSetup2FA);
 router.post('/setup-2fa', requireAuth, adminController.postSetup2FA);
 router.post('/disable-2fa', requireAuth, adminController.disable2FA);
 
+// New Routes for sidebar links
+router.get('/users', requireAuth, adminController.getUsers);
+router.get('/subscriptions', requireAuth, adminController.getSubscriptions);
+router.get('/sim', requireAuth, adminController.getSim);
+router.get('/plans', requireAuth, adminController.getPlans);
+router.get('/alerts', requireAuth, adminController.getAlerts); // Renamed from /reports
+router.get('/logs', requireAuth, adminController.getLogs); // Renamed from /security
+router.get('/lock-alarm', requireAuth, adminController.getLockAlarm);
+router.get('/geofence', requireAuth, adminController.getGeofence);
+router.get('/commands', requireAuth, adminController.getCommands);
+router.get('/health', requireAuth, adminController.getHealth);
+router.get('/account', requireAuth, adminController.getAccount);
+router.get('/broadcast', requireAuth, adminController.getBroadcast);
+router.post('/broadcast', requireAuth, adminController.postBroadcast);
+router.get('/support', requireAuth, adminController.getSupport);
+
 module.exports = router;

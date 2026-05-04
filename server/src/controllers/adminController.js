@@ -8,8 +8,17 @@ const Report = require('../models/Report');
 const SecurityLog = require('../models/SecurityLog');
 const AudioRecording = require('../models/AudioRecording');
 const Config = require('../models/Config');
+const Customer = require('../models/Customer');
+const SupportTicket = require('../models/SupportTicket');
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
 
 const isOnline = (device, windowMs = 5 * 60 * 1000) => {
   return device && device.lastSeen && (Date.now() - new Date(device.lastSeen).getTime()) < windowMs;
@@ -228,5 +237,151 @@ exports.disable2FA = async (req, res, next) => {
       await Config.deleteOne({ key: 'admin_2fa_secret' });
     }
     res.redirect('/admin/setup-2fa');
+  } catch (err) { next(err); }
+};
+
+// --- NEW MVC ROUTES FOR SIDEBAR ---
+
+exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await Customer.find().sort({ createdAt: -1 }).lean();
+    const rows = users.map(u => [
+      `<span class="mono">${u.phone}</span>`,
+      u.name || '—',
+      u.isPremium ? '<span class="status status-active">Premium</span>' : '<span class="status status-inactive">Free</span>',
+      u.devices ? u.devices.length : 0,
+      formatDate(u.createdAt)
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'users', pageTitle: 'Users', count: users.length, columns: ['Phone', 'Name', 'Tier', 'Devices', 'Joined'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getSubscriptions = async (req, res, next) => {
+  try {
+    const users = await Customer.find({ isPremium: true }).sort({ createdAt: -1 }).lean();
+    const rows = users.map(u => [
+      `<span class="mono">${u.phone}</span>`,
+      u.name || '—',
+      '<span class="status status-active">Active</span>',
+      'Auto-renews',
+      formatDate(u.createdAt)
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'subscriptions', pageTitle: 'Subscriptions', count: users.length, columns: ['Phone', 'Name', 'Status', 'Billing', 'Subscribed On'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getSim = async (req, res, next) => {
+  try {
+    const alerts = await Alert.find({ type: 'sim_change' }).sort({ timestamp: -1 }).limit(200).lean();
+    const rows = alerts.map(a => [
+      `<span class="mono">${a.deviceId}</span>`,
+      'SIM Card Swapped',
+      `<span class="status status-${a.status}">${a.status}</span>`,
+      new Date(a.timestamp).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'sim', pageTitle: 'SIM Management', count: alerts.length, columns: ['Device ID', 'Event', 'Status', 'Time'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getPlans = (req, res) => {
+  res.render('plans', { user: req.session.user, active: 'plans' });
+};
+
+exports.getAlerts = async (req, res, next) => {
+  try {
+    const alerts = await Alert.find().sort({ timestamp: -1 }).limit(200).lean();
+    const rows = alerts.map(a => [
+      `<span class="pill pill-grey">${(a.type || '').replace(/_/g, ' ')}</span>`,
+      `<span class="mono">${a.deviceId}</span>`,
+      a.message || '—',
+      `<span class="status status-${a.status}">${a.status}</span>`,
+      new Date(a.timestamp).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'alerts', pageTitle: 'Alerts & Incidents', count: alerts.length, columns: ['Type', 'Device', 'Message', 'Status', 'Time'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getLogs = async (req, res, next) => {
+  try {
+    const logs = await SecurityLog.find().sort({ timestamp: -1 }).limit(300).lean();
+    const rows = logs.map(l => [
+      `<span class="pill pill-grey">${(l.type || 'Log').replace(/_/g, ' ')}</span>`,
+      `<span class="mono">${l.ip || '—'}</span>`,
+      l.message || '—',
+      new Date(l.timestamp || l.createdAt).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'logs', pageTitle: 'Security Logs', count: logs.length, columns: ['Event', 'IP / Device', 'Details', 'Time'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getLockAlarm = async (req, res, next) => {
+  try {
+    const cmds = await Command.find({ type: { $in: ['lock', 'alarm'] } }).sort({ queuedAt: -1 }).limit(200).lean();
+    const rows = cmds.map(c => [
+      `<span class="pill pill-grey">${c.type}</span>`,
+      `<span class="mono">${c.deviceId}</span>`,
+      `<span class="status status-${c.status === 'pending' || c.status === 'queued' ? 'warning' : 'active'}">${c.status}</span>`,
+      new Date(c.queuedAt || c.createdAt).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'lock-alarm', pageTitle: 'Lock & Alarm', count: cmds.length, columns: ['Command', 'Device', 'Status', 'Issued At'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getGeofence = async (req, res, next) => {
+  try {
+    const alerts = await Alert.find({ type: 'geofence' }).sort({ timestamp: -1 }).limit(200).lean();
+    const rows = alerts.map(a => [
+      `<span class="mono">${a.deviceId}</span>`,
+      a.message || 'Left safe zone',
+      `<span class="status status-${a.status}">${a.status}</span>`,
+      new Date(a.timestamp).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'geofence', pageTitle: 'Geo-Fence Violations', count: alerts.length, columns: ['Device ID', 'Event', 'Status', 'Time'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getCommands = async (req, res, next) => {
+  try {
+    const cmds = await Command.find().sort({ queuedAt: -1 }).limit(200).lean();
+    const rows = cmds.map(c => [
+      `<span class="pill pill-grey">${c.type}</span>`,
+      `<span class="mono">${c.deviceId}</span>`,
+      `<span class="status status-${c.status === 'pending' || c.status === 'queued' ? 'warning' : 'active'}">${c.status}</span>`,
+      new Date(c.queuedAt || c.createdAt).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'commands', pageTitle: 'Commands History', count: cmds.length, columns: ['Command', 'Device', 'Status', 'Issued At'], rows });
+  } catch (err) { next(err); }
+};
+
+exports.getHealth = async (req, res, next) => {
+  try {
+    const stats = {
+      totalUsers: await Customer.countDocuments(),
+      devicesRegistered: await Device.countDocuments(),
+      sosAlerts: await Alert.countDocuments(),
+      callsMonitored: (await Device.aggregate([{ $group: { _id: null, total: { $sum: "$callsMonitored" } } }]))[0]?.total || 0,
+      blockedNumbers: await BlockedNumber.countDocuments()
+    };
+    res.render('health', { user: req.session.user, active: 'health', stats });
+  } catch (err) { next(err); }
+};
+
+exports.getAccount = (req, res) => res.render('account', { user: req.session.user, active: 'settings' });
+
+exports.getBroadcast = (req, res) => res.render('broadcast', { user: req.session.user, active: 'broadcast' });
+
+exports.postBroadcast = (req, res) => res.redirect('/admin/broadcast?sent=1');
+
+exports.getSupport = async (req, res, next) => {
+  try {
+    const tickets = await SupportTicket.find().sort({ updatedAt: -1 }).lean();
+    const rows = tickets.map(t => [
+      `<span class="mono">${t._id}</span>`,
+      `<span class="mono">${t.phone}</span>`,
+      `<span class="status status-${t.priority === 'high' ? 'warning' : 'active'}">${t.priority}</span>`,
+      `<span class="status status-${t.status === 'open' ? 'inactive' : 'active'}">${t.status}</span>`,
+      new Date(t.updatedAt || t.createdAt).toLocaleString()
+    ]);
+    res.render('generic-list', { user: req.session.user, active: 'support', pageTitle: 'Support Tickets', count: tickets.length, columns: ['Ticket ID', 'Customer Phone', 'Priority', 'Status', 'Last Updated'], rows });
   } catch (err) { next(err); }
 };
