@@ -168,6 +168,70 @@ exports.getDashboard = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.getSecurity = async (req, res, next) => {
+  try {
+    const c = await Customer.findOne({ phone: req.session.customer.phone });
+    const ctx = await buildCustomerContext(req.session.customer.phone);
+    res.render('customer/security', {
+      user: c || req.session.customer,
+      active: 'security',
+      ctx,
+      notice: req.session.notice || null,
+      timeAgo,
+    });
+    if (req.session.notice) delete req.session.notice;
+  } catch (err) { next(err); }
+};
+
+exports.getActivity = async (req, res, next) => {
+  try {
+    const c = await Customer.findOne({ phone: req.session.customer.phone });
+    const ctx = await buildCustomerContext(req.session.customer.phone);
+    res.render('customer/activity', {
+      user: c || req.session.customer,
+      active: 'activity',
+      ctx,
+      notice: req.session.notice || null,
+      timeAgo,
+    });
+    if (req.session.notice) delete req.session.notice;
+  } catch (err) { next(err); }
+};
+
+exports.getSettings = async (req, res, next) => {
+  try {
+    const c = await Customer.findOne({ phone: req.session.customer.phone });
+    const ctx = await buildCustomerContext(req.session.customer.phone);
+    res.render('customer/settings', {
+      user: c || req.session.customer,
+      active: 'settings',
+      ctx,
+      notice: req.session.notice || null,
+      timeAgo,
+    });
+    if (req.session.notice) delete req.session.notice;
+  } catch (err) { next(err); }
+};
+
+exports.postUpdateSettings = async (req, res, next) => {
+  try {
+    const phone = req.session.customer.phone;
+    const c = await Customer.findOne({ phone });
+    
+    if (!c.settings) c.settings = {};
+    
+    c.settings.pushNotifications = req.body.pushNotifications === 'on';
+    c.settings.alertSounds = req.body.alertSounds === 'on';
+    c.settings.dataSync = req.body.dataSync === 'on';
+    c.settings.locationSharing = req.body.locationSharing === 'on';
+    c.settings.autoBackup = req.body.autoBackup === 'on';
+    c.settings.advancedAlerts = req.body.advancedAlerts === 'on';
+    
+    await c.save();
+    res.redirect('/customer/settings');
+  } catch (err) { next(err); }
+};
+
 exports.getPoll = async (req, res, next) => {
   try {
     const ctx = await buildCustomerContext(req.session.customer.phone);

@@ -11,7 +11,15 @@ const customerSchema = new mongoose.Schema({
   name: { type: String, default: '' },
   passwordHash: { type: String, required: true },
   isPremium: { type: Boolean, default: false },
-  trustedContacts: [trustedContactSchema]
+  trustedContacts: [trustedContactSchema],
+  settings: {
+    pushNotifications: { type: Boolean, default: true },
+    alertSounds: { type: Boolean, default: true },
+    dataSync: { type: Boolean, default: true },
+    locationSharing: { type: Boolean, default: false },
+    autoBackup: { type: Boolean, default: false },
+    advancedAlerts: { type: Boolean, default: false }
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Customer', customerSchema);

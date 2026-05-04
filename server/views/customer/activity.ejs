@@ -1,0 +1,86 @@
+<% 
+  const isPremium = ctx && ctx.isPremium;
+%>
+<%- include('_layout-head', { title: 'Activity - PhoneRakshak' }) %>
+<body class="mobile-theme">
+  <div class="mobile-container">
+    
+    <header class="mobile-header">
+      <div class="header-brand">
+        <div class="brand-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="header-text-group">
+          <div class="brand-name">
+            Activity Logs
+          </div>
+          <div class="brand-tagline">Timeline of device events</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mobile-content">
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px;">
+        <button style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap;">All Logs</button>
+        <button style="background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap;">Security</button>
+        <button style="background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap;">Location</button>
+        <button style="background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap;">Alerts</button>
+      </div>
+
+      <div class="mobile-card">
+        <div class="activity-list">
+          <% if (ctx.activityLogs && ctx.activityLogs.length > 0) { %>
+            <% ctx.activityLogs.forEach(log => { 
+                 let iconPath = ''; let colorClass = '';
+                 if (log.type === 'photo') { iconPath = '<circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>'; colorClass = 'bg-purple'; }
+                 else if (log.type === 'lock') { iconPath = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>'; colorClass = 'bg-green'; }
+                 else if (log.type === 'alarm') { iconPath = '<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>'; colorClass = 'bg-red'; }
+                 else if (log.type === 'location') { iconPath = '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>'; colorClass = 'bg-blue'; }
+                 else { iconPath = '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'; colorClass = 'bg-red'; }
+            %>
+            <div class="act-item">
+              <div class="act-icon <%= colorClass %>"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><%- iconPath %></svg></div>
+              <div class="act-content">
+                <div class="act-title"><%= log.message %></div>
+                <div class="act-time"><%= timeAgo(log.timestamp) %></div>
+              </div>
+              <% if (log.type === 'photo' && log.image) { %>
+                <div class="act-thumbnail"><img src="/uploads/<%= log.image %>" alt="Intruder"></div>
+              <% } %>
+            </div>
+            <% }) %>
+          <% } else { %>
+            <div style="padding: 40px 20px; text-align: center; color: var(--color-muted); font-size: 0.9rem;">
+              <svg style="margin: 0 auto 12px; display: block; color: rgba(255,255,255,0.2);" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              No activity logs found.
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </main>
+
+    <nav class="mobile-nav">
+      <a href="/customer" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+        <span>Home</span>
+      </a>
+      <a href="/customer/security" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <span>Security</span>
+      </a>
+      <a href="/customer/activity" class="nav-item active">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span>Activity</span>
+      </a>
+      <a href="/customer/settings" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        <span>Settings</span>
+      </a>
+      <a href="/customer/account" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

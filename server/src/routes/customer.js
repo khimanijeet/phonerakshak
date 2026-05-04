@@ -11,8 +11,12 @@ router.get('/register', customerController.getRegister);
 router.post('/register', customerController.postRegister);
 router.get('/logout', customerController.getLogout);
 
-// Dashboard
+// Dashboard & Tabs
 router.get('/', requireCustomer, customerController.getDashboard);
+router.get('/security', requireCustomer, customerController.getSecurity);
+router.get('/activity', requireCustomer, customerController.getActivity);
+router.get('/settings', requireCustomer, customerController.getSettings);
+router.post('/settings/update', requireCustomer, customerController.postUpdateSettings);
 
 // Polling
 router.get('/api/poll', requireCustomer, customerController.getPoll);

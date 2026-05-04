@@ -243,8 +243,9 @@ body.mobile-theme {
 .mobile-header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 24px 20px 16px;
-  background: transparent;
-  position: sticky; top: 0; z-index: 100;
+  background: #0f1322;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: sticky; top: 0; z-index: 999;
 }
 .header-brand { display: flex; align-items: center; gap: 12px; }
 .brand-shield {
