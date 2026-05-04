@@ -393,6 +393,11 @@ body.mobile-theme {
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 16px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+  text-decoration: none; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease;
+}
+.pf-item:hover {
+  transform: translateY(-2px);
+  background: rgba(30, 41, 59, 0.6);
 }
 .pf-badge { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #3b0764; border: 1px solid #7e22ce; color: #d8b4fe; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 999px; letter-spacing: 0.5px; white-space: nowrap; }
 .pf-icon { margin-bottom: 8px; margin-top: 6px; color: #cbd5e1; }
