@@ -1,0 +1,331 @@
+<% 
+  const isPremium = ctx && ctx.isPremium;
+%>
+<%- include('_layout-head', { title: 'PhoneRakshak', leaflet: true }) %>
+<body class="mobile-theme">
+  <div class="mobile-container">
+    
+    <header class="mobile-header">
+      <div class="header-brand">
+        <div class="brand-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        </div>
+        <div class="header-text-group">
+          <div class="brand-name">
+            PhoneRakshak
+            <% if (isPremium) { %>
+              <span class="premium-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg> Premium</span>
+            <% } %>
+          </div>
+          <div class="brand-tagline">Your Device. Our Protection.</div>
+        </div>
+      </div>
+      <button class="icon-btn notif-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <% const unreadAlerts = ctx.alerts ? ctx.alerts.length : 0; %>
+        <% if (unreadAlerts > 0) { %>
+          <span class="notif-badge-num"><%= unreadAlerts > 99 ? '99+' : unreadAlerts %></span>
+        <% } %>
+      </button>
+    </header>
+
+    <main class="mobile-content">
+      
+      <% 
+        const isSecure = ctx.protection ? ctx.protection.mode === 'normal' : true; 
+        const heroIconColor = isSecure ? 'text-green' : 'text-red';
+        const heroDot = isSecure ? 'dot-green' : 'dot-red';
+      %>
+      <div class="mobile-card status-hero">
+        <div class="status-hero-icon <%= isSecure ? '' : 'danger-pulse' %>">
+          <div class="shield-glow <%= isSecure ? '' : 'bg-red-glow' %>"></div>
+          <div class="shield-rings <%= isSecure ? '' : 'border-red-glow' %>"></div>
+          <div class="shield-inner <%= heroIconColor %>">
+            <% if (isSecure) { %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <% } else { %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <% } %>
+          </div>
+        </div>
+        <div class="status-hero-text">
+          <div class="sh-label"><span class="<%= heroDot %>"></span> <%= isSecure ? 'Device Protected' : 'Warning' %></div>
+          <div class="sh-title"><%= isSecure ? 'Everything is Secure' : 'Action Required' %></div>
+          <div class="sh-desc">Last scan: <%= ctx.device ? timeAgo(ctx.device.lastSeen) : 'Never' %></div>
+        </div>
+        <div class="status-hero-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+
+      <div class="quick-actions-grid">
+        <form action="/customer/command" method="POST" style="display: contents;">
+          <input type="hidden" name="type" value="locate">
+          <button type="submit" class="qa-item btn-clear">
+            <div class="qa-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-purple"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            </div>
+            <div class="qa-title">Location</div>
+            <div class="qa-sub text-green">Live</div>
+          </button>
+        </form>
+
+        <form action="/customer/command" method="POST" style="display: contents;">
+          <input type="hidden" name="type" value="alarm">
+          <button type="submit" class="qa-item btn-clear">
+            <div class="qa-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-orange"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+            </div>
+            <div class="qa-title">Play Alarm</div>
+            <div class="qa-sub text-green">Sound</div>
+          </button>
+        </form>
+
+        <form action="/customer/command" method="POST" style="display: contents;">
+          <input type="hidden" name="type" value="lock">
+          <button type="submit" class="qa-item btn-clear">
+            <div class="qa-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-blue"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            </div>
+            <div class="qa-title">Lock Device</div>
+            <div class="qa-sub text-green">Secure</div>
+          </button>
+        </form>
+
+        <form action="/customer/command" method="POST" style="display: contents;">
+          <input type="hidden" name="type" value="emergency">
+          <button type="submit" class="qa-item btn-clear">
+            <div class="qa-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-red"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+            </div>
+            <div class="qa-title">Take Photo</div>
+            <div class="qa-sub text-green">Intruder</div>
+          </button>
+        </form>
+      </div>
+
+      <% if (isPremium) { %>
+      <div class="mobile-card premium-banner-active">
+        <div class="pba-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>
+        </div>
+        <div class="pba-content">
+          <div class="pba-top">
+            <div class="pba-title">Premium Plan Active</div>
+            <div class="pba-status-badge">Active</div>
+          </div>
+          <div class="pba-date">Valid until 12 May 2026</div>
+          <div class="pba-bottom">
+            <div class="pba-desc">Auto-renews on 12 May 2026</div>
+            <button class="btn-manage-plan"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg> Manage Plan <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <div class="mobile-card">
+        <div class="card-header-flex">
+          <h2>Security Summary</h2>
+          <a href="#" class="view-all-link">View All</a>
+        </div>
+        <div class="security-summary-grid">
+          <%
+            const sumThreats = ctx.alerts ? ctx.alerts.filter(a => (Date.now() - a.timestamp) < 86400000).length : 0;
+            const sumLocks = ctx.activityLogs ? ctx.activityLogs.filter(a => a.type === 'lock' && (Date.now() - a.timestamp) < 86400000).length : 0;
+            const sumPhotos = ctx.photos ? ctx.photos.length : 0;
+            const sumSim = ctx.simAlerts ? ctx.simAlerts.length : 0;
+          %>
+          <div class="ss-item">
+            <div class="ss-icon bg-red"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="ss-val"><%= sumThreats %></div>
+            <div class="ss-label">Threats<br>(24h)</div>
+          </div>
+          <div class="ss-item">
+            <div class="ss-icon bg-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div>
+            <div class="ss-val"><%= sumLocks %></div>
+            <div class="ss-label">Lock Events<br>(24h)</div>
+          </div>
+          <div class="ss-item">
+            <div class="ss-icon bg-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg></div>
+            <div class="ss-val"><%= sumPhotos %></div>
+            <div class="ss-label">Intruder Photos<br>(24h)</div>
+          </div>
+          <div class="ss-item">
+            <div class="ss-icon bg-purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div class="ss-val"><%= sumSim %></div>
+            <div class="ss-label">SIM Changes<br>(24h)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-card">
+        <div class="card-header-flex">
+          <h2>Last Known Location</h2>
+          <div class="live-status"><span class="dot-green"></span> Live <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="loc-map-container">
+          <div id="map" class="loc-map"></div>
+          <div class="loc-map-overlay">
+            <div class="loc-radar"></div>
+            <div class="loc-pin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div>
+          </div>
+        </div>
+        <div class="loc-footer">
+          <div class="loc-text">
+            <% if (ctx.latest && ctx.latest.latitude) { %>
+              <div class="loc-address">Lat: <%= ctx.latest.latitude.toFixed(4) %>, Lng: <%= ctx.latest.longitude.toFixed(4) %></div>
+              <div class="loc-updated">Updated: <%= timeAgo(ctx.latest.timestamp) %></div>
+            <% } else { %>
+              <div class="loc-address">Location unknown</div>
+              <div class="loc-updated">Updated: Never</div>
+            <% } %>
+          </div>
+          <button class="btn-navigate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> Navigate</button>
+        </div>
+      </div>
+
+      <div class="mobile-card">
+        <div class="card-header-flex">
+          <h2>Recent Activity</h2>
+          <a href="#" class="view-all-link">View All</a>
+        </div>
+        <div class="activity-list">
+          <% if (ctx.activityLogs && ctx.activityLogs.length > 0) { %>
+            <% ctx.activityLogs.slice(0, 5).forEach(log => { 
+                 let iconPath = ''; let colorClass = '';
+                 if (log.type === 'photo') { iconPath = '<circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>'; colorClass = 'bg-purple'; }
+                 else if (log.type === 'lock') { iconPath = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>'; colorClass = 'bg-green'; }
+                 else if (log.type === 'alarm') { iconPath = '<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>'; colorClass = 'bg-red'; }
+                 else if (log.type === 'location') { iconPath = '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>'; colorClass = 'bg-blue'; }
+                 else { iconPath = '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'; colorClass = 'bg-red'; }
+            %>
+            <div class="act-item">
+              <div class="act-icon <%= colorClass %>"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><%- iconPath %></svg></div>
+              <div class="act-content">
+                <div class="act-title"><%= log.message %></div>
+                <div class="act-time"><%= timeAgo(log.timestamp) %></div>
+              </div>
+              <% if (log.type === 'photo' && log.image) { %>
+                <div class="act-thumbnail"><img src="/uploads/<%= log.image %>" alt="Intruder"></div>
+              <% } %>
+              <div class="act-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+            <% }) %>
+          <% } else { %>
+            <div style="padding: 20px; text-align: center; color: var(--color-muted); font-size: 0.9rem;">No recent activity found.</div>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (isPremium) { %>
+      <div class="premium-features-grid">
+        <div class="pf-item">
+          <div class="pf-badge">PREMIUM</div>
+          <div class="pf-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <div class="pf-title">Safe Zone</div>
+          <div class="pf-status text-green">Enabled</div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-badge">PREMIUM</div>
+          <div class="pf-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg></div>
+          <div class="pf-title">Cloud Backup</div>
+          <div class="pf-status text-green">Active</div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-badge">PREMIUM</div>
+          <div class="pf-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="pf-title">Activity Report</div>
+          <div class="pf-status text-green">Weekly</div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-badge">PREMIUM</div>
+          <div class="pf-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="pf-title">Priority Support</div>
+          <div class="pf-status text-green">24/7</div>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="mobile-card premium-upgrade-banner">
+        <div class="pub-icon">
+          <div class="shield-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        </div>
+        <div class="pub-content">
+          <div class="pub-title">Premium Protection</div>
+          <div class="pub-desc">Get advanced protection features and priority support.</div>
+        </div>
+        <button class="btn-upgrade">Upgrade Now</button>
+      </div>
+      <% } %>
+      
+    </main>
+
+    <nav class="mobile-nav">
+      <a href="/customer/dashboard" class="nav-item active">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+        <span>Home</span>
+      </a>
+      <a href="/customer/security" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <span>Security</span>
+      </a>
+      <a href="/customer/activity" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span>Activity</span>
+      </a>
+      <a href="/customer/settings" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        <span>Settings</span>
+      </a>
+      <a href="/customer/account" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+  <% if (ctx.latest) { %>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    (function(){
+      var mapContainer = document.getElementById('map');
+      if (mapContainer) {
+        var m = L.map('map', { zoomControl: false, attributionControl: false }).setView([<%= ctx.latest.latitude %>, <%= ctx.latest.longitude %>], 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd',
+          maxZoom: 19
+        }).addTo(m);
+        m.dragging.disable();
+        m.touchZoom.disable();
+        m.doubleClickZoom.disable();
+        m.scrollWheelZoom.disable();
+        m.boxZoom.disable();
+        m.keyboard.disable();
+      }
+    })();
+  </script>
+  <% } %>
+
+  <script>
+    // Real-time polling for customer dashboard
+    setInterval(async () => {
+      try {
+        const res = await fetch('/customer/api/poll');
+        if (res.ok) {
+          // If we receive new data, reload the page seamlessly or dynamically update DOM.
+          // For a mobile dashboard with maps, a silent reload handles everything cleanly if there are new alerts.
+          const data = await res.json();
+          const unread = data.alerts ? data.alerts.filter(a => a.status !== 'read').length : 0;
+          const currentBadge = document.querySelector('.notif-badge-num');
+          const currentUnread = currentBadge ? parseInt(currentBadge.innerText) : 0;
+          
+          if (unread > currentUnread) {
+            // New alert detected! Hard refresh to load new maps and logs
+            window.location.reload();
+          }
+        }
+      } catch(e) {
+        console.error('Polling failed', e);
+      }
+    }, 10000);
+  </script>
+</body>
+</html>

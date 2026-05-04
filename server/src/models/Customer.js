@@ -1,0 +1,17 @@
+const mongoose = require('mongoose');
+
+const trustedContactSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: { type: String, default: '' }
+}, { _id: true });
+
+const customerSchema = new mongoose.Schema({
+  phone: { type: String, required: true, unique: true },
+  name: { type: String, default: '' },
+  passwordHash: { type: String, required: true },
+  isPremium: { type: Boolean, default: false },
+  trustedContacts: [trustedContactSchema]
+}, { timestamps: true });
+
+module.exports = mongoose.model('Customer', customerSchema);

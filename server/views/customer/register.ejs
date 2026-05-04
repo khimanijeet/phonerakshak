@@ -1,0 +1,33 @@
+<%- include('_layout-head', { title: 'Create account — PhoneRakshak Customer' }) %>
+<body>
+<div class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-icon big">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <div class="brand-title big">Create your account</div>
+        <div class="brand-sub">Use the same phone number you set in the PhoneRakshak app</div>
+      </div>
+    </div>
+    <% if (error) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/customer/register" class="login-form">
+      <label>Your name</label>
+      <input name="name" value="<%= form.name || '' %>" placeholder="Aarav Sharma" autocomplete="name" />
+      <label>Phone number</label>
+      <input name="phone" required value="<%= form.phone || '' %>" placeholder="+91 98xxxxxxxx" autocomplete="tel" />
+      <label>Password</label>
+      <input name="password" type="password" required autocomplete="new-password" />
+      <label>Confirm password</label>
+      <input name="confirmPassword" type="password" required autocomplete="new-password" />
+      <button class="btn-primary" type="submit">Create account</button>
+    </form>
+    <p class="login-hint">
+      Already have an account? <a href="/customer/login" class="forgot-link">Sign in</a>
+    </p>
+  </div>
+</div>
+</body></html>

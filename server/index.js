@@ -17,6 +17,7 @@ const errorHandler = require('./src/middlewares/errorHandler');
 
 const apiRoutes = require('./src/routes/api');
 const adminRoutes = require('./src/routes/admin');
+const customerRoutes = require('./src/routes/customer');
 
 // Initialize Express and Connect to DB
 const app = express();
@@ -171,9 +172,11 @@ app.get('/logout', (req, res) => {
 });
 
 app.use('/admin', adminRoutes);
+app.use('/customer', customerRoutes);
 
 app.get('/', (req, res) => {
   if (req.session && req.session.user) return res.redirect('/admin');
+  if (req.session && req.session.customer) return res.redirect('/customer');
   res.redirect('/login');
 });
 

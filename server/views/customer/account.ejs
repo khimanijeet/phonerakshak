@@ -1,0 +1,46 @@
+<%- include('_layout-head', { title: 'Account — PhoneRakshak Customer' }) %>
+<body>
+<div class="app-shell">
+<%- include('_sidebar', { active }) %>
+<main class="app-main">
+  <%- include('_topbar', { user, pageTitle: 'Account', subtitle: 'Your profile and password' }) %>
+  <div class="content">
+
+    <% if (error) { %><div class="alert error"><%= error %></div><% } %>
+    <% if (notice) { %><div class="alert success"><%= notice %></div><% } %>
+
+    <div class="grid-two">
+      <div class="card">
+        <div class="card-head"><h2>Profile</h2></div>
+        <form method="POST" action="/customer/account/profile" class="form-stack">
+          <label>Full name</label>
+          <input name="name" value="<%= customer && customer.name || '' %>" placeholder="Your name" />
+          <label>Phone (login)</label>
+          <input value="<%= customer && customer.phone || user.phone %>" disabled />
+          <button class="btn-primary" type="submit">Save profile</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Change password</h2></div>
+        <form method="POST" action="/customer/account/change-password" class="form-stack">
+          <label>Current password</label>
+          <input name="currentPassword" type="password" required autocomplete="current-password" />
+          <label>New password</label>
+          <input name="newPassword" type="password" required minlength="6" autocomplete="new-password" />
+          <label>Confirm new password</label>
+          <input name="confirmPassword" type="password" required minlength="6" autocomplete="new-password" />
+          <button class="btn-primary" type="submit">Update password</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <div class="card-head"><h2>Linked phones</h2></div>
+      <p class="muted small">Any device that registers with your phone number (<strong><%= user.phone %></strong>) shows up here automatically.</p>
+    </div>
+
+  </div>
+</main>
+</div>
+</body></html>

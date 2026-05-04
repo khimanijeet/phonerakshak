@@ -1,0 +1,28 @@
+<%- include('_layout-head', { title: 'Intruder Photos — PhoneRakshak Customer' }) %>
+<body>
+<div class="app-shell">
+<%- include('_sidebar', { active }) %>
+<main class="app-main">
+  <%- include('_topbar', { user, ctx, pageTitle: 'Intruder Photos', subtitle: 'Front-camera captures from wrong-PIN attempts' }) %>
+  <div class="content">
+    <% if (!ctx.device) { %>
+      <div class="card empty-state"><h2>No device linked yet.</h2></div>
+    <% } else if (!photos.length) { %>
+      <div class="card empty-state"><div class="empty-icon">📷</div><h2>No intruder photos yet</h2><p class="muted">Whenever someone enters the wrong PIN on your locked phone, the front camera captures a photo silently and uploads it here.</p></div>
+    <% } else { %>
+      <div class="card">
+        <div class="muted small" style="margin-bottom:14px;"><%= photos.length %> photo<%= photos.length === 1 ? '' : 's' %></div>
+        <div class="photo-grid">
+          <% photos.forEach(p => { %>
+            <a class="photo-tile big" href="/api/intruders/<%= p.filename %>" target="_blank">
+              <img src="/api/intruders/<%= p.filename %>" alt="Intruder photo" />
+              <div class="photo-ts"><%= timeAgo(p.timestamp) %></div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>
+</div>
+</body></html>
