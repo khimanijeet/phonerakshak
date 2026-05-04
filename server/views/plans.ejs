@@ -1,0 +1,47 @@
+<% const leaflet = false; const chartjs = false; %>
+<%- include('partials/header', { title: 'Plans — PhoneRakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active: 'plans' }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Plans Overview' }) %>
+    <div class="content">
+      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <section class="card">
+          <div class="card-header">
+            <h2>Free Tier</h2>
+            <span class="status status-active">Active</span>
+          </div>
+          <div class="card-body" style="padding: 1rem;">
+            <p>Basic tracking and remote alarms.</p>
+            <h3 style="margin-top: 1rem; color: var(--primary);">0 / month</h3>
+            <ul style="margin-top: 1rem; line-height: 1.8;">
+              <li>✔ Location Tracking</li>
+              <li>✔ Remote Alarm</li>
+              <li>✖ Geo-fencing</li>
+              <li>✖ Live Camera Access</li>
+            </ul>
+          </div>
+        </section>
+        
+        <section class="card" style="border: 1px solid var(--primary);">
+          <div class="card-header">
+            <h2>Premium Tier</h2>
+            <span class="status status-warning">Popular</span>
+          </div>
+          <div class="card-body" style="padding: 1rem;">
+            <p>Full suite of security and tracking features.</p>
+            <h3 style="margin-top: 1rem; color: var(--primary);">$4.99 / month</h3>
+            <ul style="margin-top: 1rem; line-height: 1.8;">
+              <li>✔ Location Tracking</li>
+              <li>✔ Remote Alarm</li>
+              <li>✔ Geo-fencing</li>
+              <li>✔ Live Camera Access</li>
+              <li>✔ Priority Support</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

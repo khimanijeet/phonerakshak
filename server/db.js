@@ -1199,6 +1199,27 @@ function escalateTicket(phone, isPremium) {
   return tkt;
 }
 
+function getAllSupportTickets() {
+  if (!db.supportTickets) return [];
+  return Object.values(db.supportTickets).sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+function getSecurityLogs(limit = 100) {
+  let logs = [];
+  if (db.alerts) {
+    Object.values(db.alerts).forEach(alertsList => {
+      logs.push(...alertsList.map(a => ({ ...a, logType: 'alert' })));
+    });
+  }
+  if (db.commands) {
+    Object.values(db.commands).forEach(cmdList => {
+      logs.push(...cmdList.map(c => ({ ...c, logType: 'command' })));
+    });
+  }
+  logs.sort((a, b) => (b.timestamp || b.createdAt || 0) - (a.timestamp || a.createdAt || 0));
+  return logs.slice(0, limit);
+}
+
 module.exports = {
   INTRUDERS_DIR,
   getAdminAuth,
@@ -1268,4 +1289,6 @@ module.exports = {
   getSupportTicket,
   addSupportMessage,
   escalateTicket,
+  getAllSupportTickets,
+  getSecurityLogs
 };

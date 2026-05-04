@@ -4,10 +4,38 @@
     <div class="topbar-sub">Monitor and protect your system</div>
   </div>
   <div class="topbar-right">
-    <div class="topbar-date-picker">
-      <span>May 3 – May 9, 2026</span>
+    <div class="topbar-date-picker" id="datePickerBtn" style="cursor: pointer; position: relative;">
+      <span id="currentDateRange">May 3 – May 9, 2026</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      
+      <div id="dateDropdown" class="date-dropdown" style="display: none; position: absolute; top: 120%; right: 0; background: #1a1f36; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem; width: 180px; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+        <div class="date-option" onclick="setDateRange('Today')" style="padding: 0.75rem 1rem; cursor: pointer; border-radius: 6px; transition: background 0.2s; font-size: 0.9rem; color: #fff;">Today</div>
+        <div class="date-option" onclick="setDateRange('Last 7 Days')" style="padding: 0.75rem 1rem; cursor: pointer; border-radius: 6px; transition: background 0.2s; font-size: 0.9rem; color: #fff;">Last 7 Days</div>
+        <div class="date-option" onclick="setDateRange('Last 30 Days')" style="padding: 0.75rem 1rem; cursor: pointer; border-radius: 6px; transition: background 0.2s; font-size: 0.9rem; color: #fff;">Last 30 Days</div>
+        <div class="date-option" onclick="setDateRange('This Month')" style="padding: 0.75rem 1rem; cursor: pointer; border-radius: 6px; transition: background 0.2s; font-size: 0.9rem; color: #fff;">This Month</div>
+      </div>
     </div>
+    <style>
+      .date-option:hover { background: rgba(139, 92, 246, 0.2); color: #a78bfa !important; }
+    </style>
+    <script>
+      const dpBtn = document.getElementById('datePickerBtn');
+      const dd = document.getElementById('dateDropdown');
+      const curTxt = document.getElementById('currentDateRange');
+      dpBtn.addEventListener('click', (e) => {
+        if(e.target.closest('.date-option')) return;
+        dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+      });
+      document.addEventListener('click', (e) => {
+        if(!dpBtn.contains(e.target)) dd.style.display = 'none';
+      });
+      function setDateRange(range) {
+        if(range === 'Last 7 Days') curTxt.textContent = 'May 3 – May 9, 2026';
+        else curTxt.textContent = range;
+        dd.style.display = 'none';
+        // Optional: reload data based on range
+      }
+    </script>
     
     <button class="topbar-icon-btn notif-btn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>

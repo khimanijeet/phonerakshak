@@ -1,0 +1,42 @@
+<% const leaflet = false; const chartjs = false; %>
+<%- include('partials/header', { title: 'System Health — PhoneRakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active: 'health' }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'System Health' }) %>
+    <div class="content">
+      <section class="card" style="margin-bottom: 2rem;">
+        <header class="card-header">
+          <h2>Server Status</h2>
+          <span class="status status-active">Online</span>
+        </header>
+        <div class="card-body" style="padding: 1rem;">
+          <p><strong>Uptime:</strong> <%= Math.floor(process.uptime() / 3600) %> hours, <%= Math.floor((process.uptime() % 3600) / 60) %> minutes</p>
+          <p><strong>Memory Usage:</strong> <%= Math.round(process.memoryUsage().heapUsed / 1024 / 1024) %> MB</p>
+          <p><strong>Node Version:</strong> <%= process.version %></p>
+        </div>
+      </section>
+
+      <section class="card">
+        <header class="card-header">
+          <h2>Database Stats</h2>
+        </header>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Metric</th><th>Count</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Total Users</td><td><%= stats.totalUsers %></td></tr>
+              <tr><td>Total Devices</td><td><%= stats.devicesRegistered %></td></tr>
+              <tr><td>Alerts Processed</td><td><%= stats.sosAlerts %></td></tr>
+              <tr><td>Calls Monitored</td><td><%= stats.callsMonitored %></td></tr>
+              <tr><td>Blocked Numbers</td><td><%= stats.blockedNumbers %></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

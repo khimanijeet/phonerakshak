@@ -1,0 +1,27 @@
+<% const leaflet = false; const chartjs = false; %>
+<%- include('partials/header', { title: 'Settings — PhoneRakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active: 'settings' }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Admin Account Settings' }) %>
+    <div class="content">
+      <section class="card">
+        <header class="card-header">
+          <h2>Account Details</h2>
+        </header>
+        <div class="card-body" style="padding: 1rem;">
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--muted);">Username</label>
+            <input type="text" class="input-field" value="<%= user.username %>" readonly style="width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text);">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--muted);">Role</label>
+            <input type="text" class="input-field" value="Super Admin" readonly style="width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text);">
+          </div>
+          <button class="btn btn-primary" style="margin-top: 1rem;">Change Password</button>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

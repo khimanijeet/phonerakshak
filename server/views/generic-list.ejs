@@ -1,0 +1,40 @@
+<% const leaflet = false; const chartjs = false; %>
+<%- include('partials/header', { title: pageTitle + ' — PhoneRakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle }) %>
+    <div class="content">
+      <section class="card">
+        <header class="card-header">
+          <h2><%= pageTitle %></h2>
+          <% if (typeof count !== 'undefined') { %><span class="muted"><%= count %> total</span><% } %>
+        </header>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <% columns.forEach(function(col){ %>
+                  <th><%= col %></th>
+                <% }); %>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (rows.length === 0) { %>
+                <tr><td colspan="<%= columns.length %>" class="empty" style="text-align: center; padding: 2rem;">No records found</td></tr>
+              <% } %>
+              <% rows.forEach(function(row){ %>
+                <tr>
+                  <% row.forEach(function(cell){ %>
+                    <td><%- cell %></td>
+                  <% }); %>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>

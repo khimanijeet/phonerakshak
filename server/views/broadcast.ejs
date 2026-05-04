@@ -1,0 +1,30 @@
+<% const leaflet = false; const chartjs = false; %>
+<%- include('partials/header', { title: 'Broadcast — PhoneRakshak Admin', leaflet }) %>
+<div class="app-shell">
+  <%- include('partials/sidebar', { active: 'broadcast' }) %>
+  <main class="app-main">
+    <%- include('partials/topbar', { pageTitle: 'Broadcast Message' }) %>
+    <div class="content">
+      <section class="card">
+        <header class="card-header">
+          <h2>Send Push Notification</h2>
+          <span class="muted">To all registered devices</span>
+        </header>
+        <div class="card-body" style="padding: 1rem;">
+          <form action="/admin/broadcast" method="POST">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: var(--muted);">Message Title</label>
+              <input type="text" name="title" class="input-field" placeholder="E.g., System Update" required style="width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text);">
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: var(--muted);">Message Body</label>
+              <textarea name="message" class="input-field" rows="4" placeholder="Enter your message here..." required style="width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); resize: vertical;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%; padding: 0.75rem;">Send Broadcast</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<%- include('partials/footer') %>
