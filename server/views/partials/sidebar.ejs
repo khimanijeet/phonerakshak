@@ -1,49 +1,111 @@
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><rect x="9" y="8" width="6" height="10" rx="1" ry="1"></rect><path d="M12 15h.01"></path></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     </div>
     <div>
       <div class="brand-title">PhoneRakshak</div>
-      <div class="brand-sub">Anti-Theft Admin Panel (Pro)</div>
+      <div class="brand-sub">Admin Panel</div>
     </div>
   </div>
+  
   <nav class="sidebar-nav">
+    <div class="sidebar-section-title" style="margin-top: 0;">OVERVIEW</div>
     <a href="/admin" class="<%= active === 'dashboard' ? 'active' : '' %>">
-      <span class="nav-icon">⚏</span> Dashboard
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      </span> Dashboard
     </a>
-    <a href="#location" class="">
-      <span class="nav-icon">📍</span> Location
+
+    <div class="sidebar-section-title">MANAGEMENT</div>
+    <a href="/admin/users" class="<%= active === 'users' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      </span> Users
     </a>
-    <a href="#lock" class="">
-      <span class="nav-icon">🔒</span> Lock Device
+    <a href="/admin/devices" class="<%= active === 'devices' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+      </span> Devices
     </a>
-    <a href="#alarm" class="">
-      <span class="nav-icon">🔔</span> Play Alarm
+    <a href="/admin/subscriptions" class="<%= active === 'subscriptions' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      </span> Subscriptions
     </a>
-    <a href="#photos" class="">
-      <span class="nav-icon">📸</span> Photos
+    <a href="/admin/sim" class="<%= active === 'sim' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="10" x2="16" y2="14"></line><line x1="8" y1="10" x2="8" y2="14"></line><line x1="12" y1="10" x2="12" y2="14"></line></svg>
+      </span> SIM Management
     </a>
-    <a href="#sim" class="">
-      <span class="nav-icon">📋</span> SIM Alerts
+    <a href="/admin/plans" class="<%= active === 'plans' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      </span> Plans
     </a>
-    <a href="#device" class="">
-      <span class="nav-icon">ℹ️</span> Device Info
+
+    <div class="sidebar-section-title">SECURITY</div>
+    <a href="/admin/alerts" class="<%= active === 'alerts' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </span> Alerts & Incidents
     </a>
-    <a href="/admin/setup-2fa" class="<%= typeof active !== 'undefined' && active === 'settings' ? 'active' : '' %>">
-      <span class="nav-icon">⚙️</span> Settings
+    <a href="/admin/logs" class="<%= active === 'logs' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </span> Security Logs
     </a>
-    <a href="/install" target="_blank" class="">
-      <span class="nav-icon">📲</span> Install App (QR)
+    <a href="/admin/lock-alarm" class="<%= active === 'lock-alarm' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </span> Lock & Alarm
     </a>
-    <a href="/admin/security" class="<%= typeof active !== 'undefined' && active === 'security' ? 'active' : '' %>">
-      <span class="nav-icon">🛡️</span> Security Logs
+    <a href="/admin/geofence" class="<%= active === 'geofence' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      </span> Geo-Fence Violations
     </a>
-    <a href="/admin-qr" class="<%= active === 'admin-qr' ? 'active' : '' %>">
-      <span class="nav-icon">🔐</span> Admin QR
+
+    <div class="sidebar-section-title">SYSTEM</div>
+    <a href="/admin/commands" class="<%= active === 'commands' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+      </span> Commands
     </a>
-    <a href="/logout" class="logout-link">
-      <span class="nav-icon">↪️</span> Logout
+    <a href="/admin/health" class="<%= active === 'health' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </span> System Health
+    </a>
+    <a href="/admin/account" class="<%= active === 'settings' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </span> Settings
+    </a>
+
+    <div class="sidebar-section-title">TOOLS</div>
+    <a href="/admin/broadcast" class="<%= active === 'broadcast' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </span> Broadcast Message
+    </a>
+    <a href="/admin/support" class="<%= active === 'support' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+      </span> Support Tickets
     </a>
   </nav>
+
+  <div class="sidebar-profile">
+    <div class="sidebar-profile-avatar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </div>
+    <div class="sidebar-profile-info">
+      <div class="sidebar-profile-name">Admin User</div>
+      <div class="sidebar-profile-role">Super Admin</div>
+    </div>
+    <a href="/logout" class="sidebar-profile-logout" title="Logout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </a>
+  </div>
 </aside>
