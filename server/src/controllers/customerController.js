@@ -420,10 +420,38 @@ exports.postSupportChat = async (req, res, next) => {
     
     let botMsg = "Thanks for reaching out. Our support team will assist you shortly.";
     const l = text.toLowerCase();
-    if (l.includes('lost')) botMsg = "⚠️ Your device may be at risk. Do you want to lock it or track location?";
-    else if (l.includes('lock')) botMsg = "🔒 You can lock your device immediately from the dashboard. Do you want me to trigger it?";
-    else if (l.includes('alarm')) botMsg = "🔊 Alarm can be triggered remotely. Confirm if you want to proceed.";
-    else if (l.includes('location')) botMsg = "📍 Fetching your device location...";
+    
+    // 1. Detect Intent
+    let intent = null;
+    if (l.includes('lost') || l.includes('stolen')) intent = "lost_device";
+    else if (l.includes('lock')) intent = "lock_device";
+    else if (l.includes('alarm')) intent = "alarm";
+    else if (l.includes('location') || l.includes('where')) intent = "location";
+    else if (l.includes('when') || l.includes('how') || l.includes('status')) intent = "follow_up";
+    
+    const lastIntent = req.session.lastIntent || null;
+    console.log("Detected intent:", intent);
+    console.log("Last intent:", lastIntent);
+
+    // 2. Context-Aware Responses
+    if (intent === "follow_up") {
+      if (lastIntent === "lost_device") botMsg = "We recommend locking your device immediately. Do you want me to do it now?";
+      else if (lastIntent === "lock_device") botMsg = "Device lock is instant. It will be secured within seconds.";
+      else if (lastIntent === "location") botMsg = "Location updates every few seconds. You can track it live.";
+    } else if (intent === "lost_device") {
+      botMsg = "⚠️ Your phone may be at risk. You can lock it or track location immediately.";
+    } else if (intent === "lock_device") {
+      botMsg = "🔒 Device can be locked remotely. Confirm to proceed.";
+    } else if (intent === "alarm") {
+      botMsg = "🔊 Alarm will ring at max volume even in silent mode.";
+    } else if (intent === "location") {
+      botMsg = "📍 Fetching your device location...";
+    }
+    
+    // 3. Save Context
+    if (intent && intent !== "follow_up") {
+      req.session.lastIntent = intent;
+    }
     
     tkt.messages.push({ text: botMsg, isBot: true, timestamp: Date.now() });
     tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;
