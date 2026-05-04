@@ -5,6 +5,7 @@ const Alert = require('../models/Alert');
 const Command = require('../models/Command');
 const Intruder = require('../models/Intruder');
 const SecurityLog = require('../models/SecurityLog');
+const SupportTicket = require('../models/SupportTicket');
 const bcrypt = require('bcryptjs');
 
 const isOnline = (device, windowMs = 5 * 60 * 1000) => {
@@ -385,5 +386,70 @@ exports.postProfile = async (req, res, next) => {
     await c.save();
     req.session.customer.name = c.name;
     res.render('customer/account', { user: req.session.customer, active: 'account', customer: c, error: null, notice: 'Profile saved.' });
+  } catch (err) { next(err); }
+};
+
+exports.getSupport = async (req, res, next) => {
+  try {
+    const c = await Customer.findOne({ phone: req.session.customer.phone }).lean();
+    let tkt = await SupportTicket.findOne({ phone: c.phone });
+    if (!tkt) {
+      tkt = await SupportTicket.create({ phone: c.phone });
+    }
+    const ctx = await buildCustomerContext(req.session.customer.phone);
+    res.render('customer/support', { 
+      user: c || req.session.customer, 
+      active: 'support', 
+      ctx,
+      ticket: tkt
+    });
+  } catch (err) { next(err); }
+};
+
+exports.postSupportChat = async (req, res, next) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).send('Text required');
+    
+    let tkt = await SupportTicket.findOne({ phone: req.session.customer.phone });
+    if (!tkt) {
+      tkt = await SupportTicket.create({ phone: req.session.customer.phone });
+    }
+    
+    tkt.messages.push({ text, isBot: false, timestamp: Date.now() });
+    
+    let botMsg = "I understand you need help. How can I assist you further?";
+    const l = text.toLowerCase();
+    if (l.includes('cancel')) botMsg = "To cancel, go to Settings > Billing and click 'Cancel Subscription'.";
+    else if (l.includes('refund')) botMsg = "For refunds, please wait to speak to a human representative.";
+    else if (l.includes('password')) botMsg = "You can change your password in the Settings menu.";
+    else if (l.includes('location')) botMsg = "Make sure location permissions are set to 'Always Allow' in your phone's settings.";
+    
+    tkt.messages.push({ text: botMsg, isBot: true, timestamp: Date.now() });
+    tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;
+    
+    await tkt.save();
+    res.json({ ticket: tkt });
+  } catch (err) { next(err); }
+};
+
+exports.postSupportEscalate = async (req, res, next) => {
+  try {
+    const c = await Customer.findOne({ phone: req.session.customer.phone });
+    let tkt = await SupportTicket.findOne({ phone: c.phone });
+    if (!tkt) return res.status(404).send('Not found');
+    
+    tkt.status = 'escalated';
+    tkt.priority = c.isPremium ? 'high' : 'normal';
+    await tkt.save();
+    
+    res.json({ ticket: tkt });
+  } catch (err) { next(err); }
+};
+
+exports.getSupportHistory = async (req, res, next) => {
+  try {
+    const tkt = await SupportTicket.findOne({ phone: req.session.customer.phone }).lean();
+    res.json({ ticket: tkt || null });
   } catch (err) { next(err); }
 };

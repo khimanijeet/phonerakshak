@@ -39,4 +39,10 @@ router.get('/account', requireCustomer, customerController.getAccount);
 router.post('/account/change-password', requireCustomer, customerController.postChangePassword);
 router.post('/account/profile', requireCustomer, customerController.postProfile);
 
+// Support
+router.get('/support', requireCustomer, customerController.getSupport);
+router.post('/api/support/chat', requireCustomer, customerController.postSupportChat);
+router.post('/api/support/escalate', requireCustomer, customerController.postSupportEscalate);
+router.get('/api/support/history', requireCustomer, customerController.getSupportHistory);
+
 module.exports = router;
