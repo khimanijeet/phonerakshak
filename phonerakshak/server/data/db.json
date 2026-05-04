@@ -2,14 +2,14 @@
   "devices": {
     "demo_device_000222": {
       "deviceId": "demo_device_000222",
-      "phoneNumber": "+919811000222",
+      "phoneNumber": "9811000222",
       "emergencyNumber": "+919811000111",
       "deviceModel": "Pixel 7",
       "city": "Delhi",
       "batteryLevel": 78,
       "appVersion": "v1.3.2",
       "registeredAt": 1777524285489,
-      "lastSeen": 1777524298590,
+      "lastSeen": 1777883542872,
       "mode": "theft",
       "modeReason": "Customer test re-arm",
       "modeSince": 1777524298680
@@ -243,6 +243,13 @@
       "passwordHash": "$2a$10$Lwoacj/kCiQp6dCxILhOses4CPHcBy6I847yJaApapX5X3B1RTgO2",
       "createdAt": 1777841581632,
       "updatedAt": 1777841581632
+    },
+    "9811000222": {
+      "phone": "9811000222",
+      "name": "Aarav Sharma",
+      "passwordHash": "$2a$10$QMSvUWDL5I.4gDZkb.EvgONpBnUyQo99qSabEdu3ALvG0Oc3Ajy7G",
+      "createdAt": 1777883542871,
+      "updatedAt": 1777883542871
     }
   },
   "trustedContacts": [
@@ -255,6 +262,16 @@
       "token": "v8EjmU2mZQFtrKxwmHN8xAx4",
       "createdAt": 1777524285491,
       "lastNotifiedAt": 1777524285491
+    },
+    {
+      "id": "tc_moqxyhco_6aro7l",
+      "ownerPhone": "9811000222",
+      "name": "Priya Sharma (Mom)",
+      "phone": "+919811000333",
+      "email": "priya@example.com",
+      "token": "fcY2EryjEU6gZ98amdadqbga",
+      "createdAt": 1777883542872,
+      "lastNotifiedAt": 1777883542873
     }
   ],
   "notifications": [
@@ -271,6 +288,20 @@
       },
       "createdAt": 1777524285491,
       "viewedAt": 1777524306826
+    },
+    {
+      "id": "ntf_moqxyhcp_2nc0kd",
+      "contactId": "tc_moqxyhco_6aro7l",
+      "ownerPhone": "9811000222",
+      "type": "emergency",
+      "payload": {
+        "deviceModel": "Pixel 7",
+        "ownerName": "Aarav Sharma",
+        "latitude": 28.6135,
+        "longitude": 77.2295
+      },
+      "createdAt": 1777883542873,
+      "viewedAt": null
     }
   ],
   "batterySamples": [

@@ -138,7 +138,7 @@ router.get('/logout', (req, res) => {
 // ---------- Dev-only auto-login for canvas previews ----------
 router.get('/__preview-login', (req, res) => {
   if (process.env.NODE_ENV === 'production') return res.status(404).send('Not found');
-  const demoPhone = '+919811000222';
+  const demoPhone = '9811000222';
   const demoPass = 'demo1234';
   const passwordHash = bcrypt.hashSync(demoPass, 10);
   const { customer } = db.ensureDemoCustomer({

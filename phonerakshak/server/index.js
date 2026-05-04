@@ -281,6 +281,14 @@ app.use((err, req, res, next) => {
   res.status(500).send('Internal server error');
 });
 
+// Ensure a demo customer exists for review and testing
+db.ensureDemoCustomer({
+  phone: '9811000222',
+  name: 'Aarav Sharma',
+  passwordHash: bcrypt.hashSync('demo1234', 10),
+  deviceModel: 'Pixel 7',
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`PhoneRakshak admin running on http://0.0.0.0:${PORT}`);
   console.log(`Login: ${ADMIN_USERNAME} / ${ADMIN_PASSWORD}`);

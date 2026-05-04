@@ -90,7 +90,7 @@ The legacy multi-device admin views (`/admin/devices`, `/admin/blocked`,
 ## Customer portal & Trusted Contacts (Family Circle)
 
 The customer-facing portal lives under `/customer/*` (login by phone + password,
-demo: `+919811000222` / `demo1234`).
+demo: `9811000222` / `demo1234`).
 
 - **Trusted Contacts** (`/customer/contacts`): owner can add up to 5 trusted
   contacts (name + phone + optional email). Each contact gets a unique tokenized
