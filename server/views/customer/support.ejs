@@ -436,7 +436,7 @@
     async function loadHistory() {
       const loader = document.getElementById('historyLoader');
       try {
-        const res = await fetch('/api/support/history');
+        const res = await fetch('/customer/api/support/history');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         
@@ -460,8 +460,8 @@
       }
     }
 
-    async function sendMessage(retryText = null, retryGroupEl = null) {
-      const text = retryText || msgInput.value.trim();
+    async function sendMessage(retryText, retryGroupEl) {
+      const text = (typeof retryText === 'string' ? retryText : null) || msgInput.value.trim();
       if (!text) return;
 
       let userEl = retryGroupEl;
@@ -484,7 +484,7 @@
       scrollToBottom();
 
       try {
-        const res = await fetch('/api/support/chat', {
+        const res = await fetch('/customer/api/support/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text })
@@ -537,7 +537,7 @@
       if (e.key === 'Enter') sendMessage();
     });
     
-    sendBtn.addEventListener('click', sendMessage);
+    sendBtn.addEventListener('click', () => sendMessage());
 
     // Init
     loadHistory();
