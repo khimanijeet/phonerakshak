@@ -245,6 +245,8 @@
             <div style="display: flex; gap: 0.5rem;">
               <select id="statusFilter" style="flex:1;">
                 <option value="all">All Status</option>
+                <option value="bot_active">Bot Active</option>
+                <option value="human_assigned">Human Assigned</option>
                 <option value="open">Open</option>
                 <option value="in_progress">In Progress</option>
                 <option value="resolved">Resolved</option>
@@ -274,6 +276,8 @@
             </div>
             <div class="chat-actions">
               <select id="chatStatusSelect">
+                <option value="bot_active">Bot Active</option>
+                <option value="human_assigned">Human Assigned</option>
                 <option value="open">Open</option>
                 <option value="in_progress">In Progress</option>
                 <option value="resolved">Resolved</option>
@@ -358,11 +362,23 @@
       const urgentIcon = t.priority === 'urgent' ? '🔥 ' : '';
       const preview = t.lastMessage ? (t.lastMessage.length > 50 ? t.lastMessage.substring(0, 47) + '...' : t.lastMessage) : 'No messages yet';
       
+      let statusIcon = '';
+      let statusClass = 'status-' + t.status;
+      let statusText = t.status.replace('_', ' ');
+      
+      if (t.status === 'bot_active') {
+        statusIcon = '🤖 ';
+        statusClass = 'status-in_progress';
+      } else if (t.status === 'human_assigned') {
+        statusIcon = '👨‍💻 ';
+        statusClass = 'status-open';
+      }
+      
       return \`
         <div class="ticket-item \${t.ticketId === currentTicketId ? 'active' : ''}" onclick="openChat('\${t.ticketId}', '\${t.phone}')">
           <div style="margin-bottom: 0.3rem;">
             <span class="badge \${t.priority}">\${urgentIcon}\${t.priority}</span>
-            <span class="badge status-\${t.status}">\${t.status.replace('_', ' ')}</span>
+            <span class="badge \${statusClass}">\${statusIcon}\${statusText}</span>
           </div>
           <div class="phone">\${t.phone}</div>
           <div class="preview">\${preview}</div>

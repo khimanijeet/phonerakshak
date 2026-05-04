@@ -414,33 +414,39 @@ exports.postSupportChat = async (req, res, next) => {
     const c = await Customer.findOne({ phone: req.session.customer.phone });
     let tkt = await SupportTicket.findOne({ phone: req.session.customer.phone });
     if (!tkt) {
-      tkt = await SupportTicket.create({ phone: req.session.customer.phone });
+      tkt = await SupportTicket.create({ phone: req.session.customer.phone, status: 'bot_active' });
     }
     
-    tkt.messages.push({ text, isBot: false, sender: 'user', timestamp: Date.now() });
+    // Count user messages prior to this one
+    const pastUserMsgs = tkt.messages.filter(m => m.sender === 'user').length;
+    
+    tkt.messages.push({ text, isBot: false, sender: 'user', type: 'text', timestamp: Date.now() });
     
     let botMsg = "Thanks for reaching out. Our support team will assist you shortly.";
     const l = text.toLowerCase();
     
     // 1. Detect Intent
     let intent = null;
-    if (l.includes('lost') || l.includes('stolen')) intent = "lost_device";
+    if (l.includes('lost') || l.includes('stolen') || l.includes('phone missing')) intent = "lost_device";
     else if (l.includes('lock')) intent = "lock_device";
     else if (l.includes('alarm')) intent = "alarm";
     else if (l.includes('location') || l.includes('where')) intent = "location";
-    else if (l.includes('when') || l.includes('how') || l.includes('status')) intent = "follow_up";
+    else if (l.includes('not working') || l.includes('error') || l.includes('bug')) intent = "technical";
+    else if (l.includes('help') || l.includes('how') || l.includes('what')) intent = "help";
+    else if (l.includes('when') || l.includes('status')) intent = "follow_up";
     
-    const lastIntent = req.session.lastIntent || null;
-    console.log("Detected intent:", intent);
-    console.log("Last intent:", lastIntent);
+    // 2. Escalation Logic
+    if (pastUserMsgs >= 1 || l.includes('urgent') || intent === 'lost_device') {
+      tkt.status = 'human_assigned';
+    }
 
-    // 2. Context-Aware Responses
-    if (intent === "follow_up") {
-      if (lastIntent === "lost_device") botMsg = "We recommend locking your device immediately. Do you want me to do it now?";
-      else if (lastIntent === "lock_device") botMsg = "Device lock is instant. It will be secured within seconds.";
-      else if (lastIntent === "location") botMsg = "Location updates every few seconds. You can track it live.";
-    } else if (intent === "lost_device") {
-      botMsg = "⚠️ Your phone may be at risk. You can lock it or track location immediately.";
+    // 3. Smart Bot Responses
+    if (intent === "lost_device") {
+      botMsg = "⚠️ Your device may be at risk. We recommend locking it immediately. Escalating to human support...";
+    } else if (intent === "technical") {
+      botMsg = "It looks like you're facing a technical issue. Please try restarting the app or clearing the cache.";
+    } else if (intent === "help") {
+      botMsg = "I'm the AI Assistant. I can help you locate, lock, or secure your phone.";
     } else if (intent === "lock_device") {
       botMsg = "🔒 Device can be locked remotely. Confirm to proceed.";
     } else if (intent === "alarm") {
@@ -449,14 +455,9 @@ exports.postSupportChat = async (req, res, next) => {
       botMsg = "📍 Fetching your device location...";
     }
     
-    // 3. Save Context
-    if (intent && intent !== "follow_up") {
-      req.session.lastIntent = intent;
-    }
-    
     // 4. Update Ticket metadata
     if (intent === 'lost_device') tkt.issueType = 'lost_phone';
-    else if (intent && tkt.issueType === 'unknown') tkt.issueType = 'technical';
+    else if (intent === 'technical' && tkt.issueType === 'unknown') tkt.issueType = 'technical';
     else if (tkt.issueType === 'unknown') tkt.issueType = 'general';
     
     const priorityLevels = ['low', 'normal', 'high', 'urgent'];
@@ -466,14 +467,23 @@ exports.postSupportChat = async (req, res, next) => {
     if (c && c.isPremium) priorityIndex = Math.min(3, priorityIndex + 1);
     tkt.priority = priorityLevels[priorityIndex];
     
-    // 5. Smart bot reply logic
+    // 5. Bot Halt & Reply Logic
     let shouldReply = false;
-    if (intent) shouldReply = true;
-    else if ((tkt.botResponseCount || 0) === 0) shouldReply = true;
+    
+    if (tkt.status === 'bot_active') {
+      // Bot is active, so it can reply.
+      if (!tkt.botHandled) shouldReply = true;
+      else if (intent) shouldReply = true;
+    } else if (tkt.status === 'human_assigned') {
+      // Only allow the bot to send the final escalation message once
+      if (intent === 'lost_device' && !tkt.botHandled) shouldReply = true;
+      else shouldReply = false;
+    }
     
     if (shouldReply) {
-      tkt.messages.push({ text: botMsg, isBot: true, sender: 'bot', timestamp: Date.now() });
+      tkt.messages.push({ text: botMsg, isBot: true, sender: 'bot', type: 'text', timestamp: Date.now() });
       tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;
+      tkt.botHandled = true;
     }
     
     await tkt.save();

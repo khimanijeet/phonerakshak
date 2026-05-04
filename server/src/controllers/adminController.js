@@ -432,10 +432,13 @@ exports.postApiSupportChat = async (req, res, next) => {
       text: message,
       isBot: false,
       sender: 'admin',
+      type: 'text',
       timestamp: Date.now()
     });
     
-    if (tkt.status === 'closed') tkt.status = 'open';
+    if (tkt.status !== 'resolved' && tkt.status !== 'in_progress') {
+      tkt.status = 'human_assigned';
+    }
     
     await tkt.save();
     res.json({ ticket: tkt });

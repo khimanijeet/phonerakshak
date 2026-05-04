@@ -409,23 +409,32 @@
       chatArea.scrollTop = chatArea.scrollHeight;
     }
 
-    function createMessageElement(text, isBot, timestamp, isOptimistic = false) {
+    function createMessageElement(msgObj, isOptimistic = false) {
+      const isBotStyle = msgObj.isBot || msgObj.sender === 'bot' || msgObj.sender === 'admin';
       const group = document.createElement('div');
-      group.className = `msg-group ${isBot ? 'bot' : 'user'}`;
+      group.className = `msg-group ${isBotStyle ? 'bot' : 'user'}`;
       
-      const timeStr = formatTime(timestamp);
+      const timeStr = formatTime(msgObj.timestamp);
       
       let ticks = '';
-      if (!isBot) {
+      if (!isBotStyle) {
         if (isOptimistic) {
           ticks = '<span class="msg-status-icon status-indicator-txt" style="color:#9ca3af;">✔</span>';
         } else {
           ticks = '<span class="msg-status-icon status-indicator-txt">✔✔</span>';
         }
       }
+
+      let labelHTML = '';
+      if (msgObj.sender === 'admin') {
+        labelHTML = '<div style="font-size: 0.7rem; color: #8b5cf6; margin-bottom: 2px; font-weight: 600;">Support Agent 👨‍💻</div>';
+      } else if (msgObj.sender === 'bot' || msgObj.isBot) {
+        labelHTML = '<div style="font-size: 0.7rem; color: #3b82f6; margin-bottom: 2px; font-weight: 600;">AI Assistant 🤖</div>';
+      }
       
       group.innerHTML = `
-        <div class="msg-bubble">${text}</div>
+        ${labelHTML}
+        <div class="msg-bubble">${msgObj.text}</div>
         <div class="msg-time">
           ${timeStr} ${ticks}
         </div>
@@ -444,14 +453,13 @@
         
         if (data.ticket && data.ticket.messages && data.ticket.messages.length > 0) {
           data.ticket.messages.forEach(m => {
-            const isBotStyle = m.isBot || m.sender === 'admin' || m.sender === 'bot';
-            const el = createMessageElement(m.text, isBotStyle, m.timestamp);
+            const el = createMessageElement(m);
             chatArea.insertBefore(el, typingIndicator);
           });
           scrollToBottom();
         } else {
           // Welcome message if new
-          const welcome = createMessageElement("Hello! How can PhoneRakshak support assist you today?", true, Date.now());
+          const welcome = createMessageElement({ text: "Hello! How can PhoneRakshak support assist you today?", isBot: true, timestamp: Date.now() });
           chatArea.insertBefore(welcome, typingIndicator);
           scrollToBottom();
         }
@@ -468,7 +476,7 @@
       let userEl = retryGroupEl;
       if (!userEl) {
         // Render user message immediately (optimistic)
-        userEl = createMessageElement(text, false, Date.now(), true);
+        userEl = createMessageElement({ text, isBot: false, sender: 'user', timestamp: Date.now() }, true);
         chatArea.insertBefore(userEl, typingIndicator);
         msgInput.value = '';
         scrollToBottom();
@@ -511,7 +519,7 @@
            }
            
            if (confirmedMsg) {
-             const confirmedUserEl = createMessageElement(confirmedMsg.text, false, confirmedMsg.timestamp, false);
+             const confirmedUserEl = createMessageElement(confirmedMsg, false);
              chatArea.replaceChild(confirmedUserEl, userEl);
              userEl = confirmedUserEl; // update reference
            }
@@ -524,7 +532,7 @@
              const delay = Math.floor(Math.random() * 500) + 500;
              setTimeout(() => {
                typingIndicator.style.display = 'none';
-               const botEl = createMessageElement(lastMsg.text, true, lastMsg.timestamp);
+               const botEl = createMessageElement(lastMsg);
                chatArea.insertBefore(botEl, typingIndicator);
                scrollToBottom();
              }, delay);
