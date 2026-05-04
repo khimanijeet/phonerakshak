@@ -410,6 +410,18 @@ exports.getApiTickets = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.getApiUnreadCount = async (req, res, next) => {
+  try {
+    const tickets = await SupportTicket.find({ status: { $in: ['bot_active', 'human_assigned', 'open', 'in_progress'] } }).lean();
+    let unreadCount = 0;
+    tickets.forEach(t => {
+      const lastMsg = t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1] : null;
+      if (lastMsg && lastMsg.sender === 'user') unreadCount++;
+    });
+    res.json({ unreadCount });
+  } catch (err) { next(err); }
+};
+
 exports.getApiTicketHistory = async (req, res, next) => {
   try {
     const { ticketId } = req.query;

@@ -38,6 +38,7 @@ router.get('/support', requireAuth, adminController.getSupport);
 
 // Support API endpoints
 router.get('/api/support/tickets', requireAuth, adminController.getApiTickets);
+router.get('/api/support/unread-count', requireAuth, adminController.getApiUnreadCount);
 router.get('/api/support/history', requireAuth, adminController.getApiTicketHistory);
 router.post('/api/support/chat', requireAuth, adminController.postApiSupportChat);
 router.patch('/api/support/ticket/:id/status', requireAuth, adminController.patchApiTicketStatus);
