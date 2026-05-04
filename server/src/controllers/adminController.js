@@ -374,14 +374,84 @@ exports.postBroadcast = (req, res) => res.redirect('/admin/broadcast?sent=1');
 
 exports.getSupport = async (req, res, next) => {
   try {
+    res.render('admin/support', { user: req.session.user, active: 'support' });
+  } catch (err) { next(err); }
+};
+
+exports.getApiTickets = async (req, res, next) => {
+  try {
     const tickets = await SupportTicket.find().sort({ updatedAt: -1 }).lean();
-    const rows = tickets.map(t => [
-      `<span class="mono">${t._id}</span>`,
-      `<span class="mono">${t.phone}</span>`,
-      `<span class="status status-${t.priority === 'high' ? 'warning' : 'active'}">${t.priority}</span>`,
-      `<span class="status status-${t.status === 'open' ? 'inactive' : 'active'}">${t.status}</span>`,
-      new Date(t.updatedAt || t.createdAt).toLocaleString()
-    ]);
-    res.render('generic-list', { user: req.session.user, active: 'support', pageTitle: 'Support Tickets', count: tickets.length, columns: ['Ticket ID', 'Customer Phone', 'Priority', 'Status', 'Last Updated'], rows });
+    
+    const list = tickets.map(t => {
+      const lastMsg = t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1] : null;
+      const unread = lastMsg && lastMsg.sender === 'user';
+      
+      return {
+        ticketId: t._id,
+        phone: t.phone,
+        issueType: t.issueType,
+        priority: t.priority,
+        status: t.status,
+        lastMessage: lastMsg ? lastMsg.text : '',
+        unread: unread,
+        updatedAt: t.updatedAt,
+        createdAt: t.createdAt
+      };
+    });
+    
+    const stats = {
+      total: tickets.length,
+      open: tickets.filter(t => t.status === 'open').length,
+      urgent: tickets.filter(t => t.priority === 'urgent').length,
+      avgResponse: '14m' 
+    };
+    
+    res.json({ tickets: list, stats });
+  } catch (err) { next(err); }
+};
+
+exports.getApiTicketHistory = async (req, res, next) => {
+  try {
+    const { ticketId } = req.query;
+    if (!ticketId) return res.status(400).send('ticketId required');
+    const tkt = await SupportTicket.findById(ticketId).lean();
+    if (!tkt) return res.status(404).send('Not found');
+    res.json({ ticket: tkt });
+  } catch (err) { next(err); }
+};
+
+exports.postApiSupportChat = async (req, res, next) => {
+  try {
+    const { ticketId, message } = req.body;
+    if (!ticketId || !message) return res.status(400).send('ticketId and message required');
+    
+    const tkt = await SupportTicket.findById(ticketId);
+    if (!tkt) return res.status(404).send('Not found');
+    
+    tkt.messages.push({
+      text: message,
+      isBot: false,
+      sender: 'admin',
+      timestamp: Date.now()
+    });
+    
+    if (tkt.status === 'closed') tkt.status = 'open';
+    
+    await tkt.save();
+    res.json({ ticket: tkt });
+  } catch (err) { next(err); }
+};
+
+exports.patchApiTicketStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    const tkt = await SupportTicket.findById(id);
+    if (!tkt) return res.status(404).send('Not found');
+    
+    tkt.status = status;
+    await tkt.save();
+    res.json({ success: true, ticket: tkt });
   } catch (err) { next(err); }
 };

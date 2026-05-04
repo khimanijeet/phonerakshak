@@ -411,12 +411,13 @@ exports.postSupportChat = async (req, res, next) => {
     const { text } = req.body;
     if (!text) return res.status(400).send('Text required');
     
+    const c = await Customer.findOne({ phone: req.session.customer.phone });
     let tkt = await SupportTicket.findOne({ phone: req.session.customer.phone });
     if (!tkt) {
       tkt = await SupportTicket.create({ phone: req.session.customer.phone });
     }
     
-    tkt.messages.push({ text, isBot: false, timestamp: Date.now() });
+    tkt.messages.push({ text, isBot: false, sender: 'user', timestamp: Date.now() });
     
     let botMsg = "Thanks for reaching out. Our support team will assist you shortly.";
     const l = text.toLowerCase();
@@ -453,8 +454,27 @@ exports.postSupportChat = async (req, res, next) => {
       req.session.lastIntent = intent;
     }
     
-    tkt.messages.push({ text: botMsg, isBot: true, timestamp: Date.now() });
-    tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;
+    // 4. Update Ticket metadata
+    if (intent === 'lost_device') tkt.issueType = 'lost_phone';
+    else if (intent && tkt.issueType === 'unknown') tkt.issueType = 'technical';
+    else if (tkt.issueType === 'unknown') tkt.issueType = 'general';
+    
+    const priorityLevels = ['low', 'normal', 'high', 'urgent'];
+    let priorityIndex = 1; // normal
+    if (tkt.issueType === 'lost_phone') priorityIndex = 3;
+    else if (tkt.issueType === 'technical') priorityIndex = 2;
+    if (c && c.isPremium) priorityIndex = Math.min(3, priorityIndex + 1);
+    tkt.priority = priorityLevels[priorityIndex];
+    
+    // 5. Smart bot reply logic
+    let shouldReply = false;
+    if (intent) shouldReply = true;
+    else if ((tkt.botResponseCount || 0) === 0) shouldReply = true;
+    
+    if (shouldReply) {
+      tkt.messages.push({ text: botMsg, isBot: true, sender: 'bot', timestamp: Date.now() });
+      tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;
+    }
     
     await tkt.save();
     res.json({ ticket: tkt });
