@@ -604,6 +604,14 @@ function createCustomer({ phone, name, passwordHash }) {
     passwordHash,
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    settings: {
+      pushNotifications: true,
+      alertSounds: true,
+      dataSync: true,
+      locationSharing: true,
+      autoBackup: false,
+      advancedAlerts: false
+    }
   };
   db.customers[key] = c;
   persist();

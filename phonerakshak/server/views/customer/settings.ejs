@@ -1,0 +1,168 @@
+<% 
+  const isPremium = ctx && ctx.isPremium;
+  const settings = user.settings || {
+    pushNotifications: true,
+    alertSounds: true,
+    dataSync: true,
+    locationSharing: true,
+    autoBackup: false,
+    advancedAlerts: false
+  };
+%>
+<%- include('_layout-head', { title: 'Settings - PhoneRakshak' }) %>
+<style>
+.settings-section { margin-top: 24px; }
+.settings-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 12px; margin-left: 8px; }
+.settings-group { background: rgba(20, 25, 40, 0.4); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.settings-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.settings-item:last-child { border-bottom: none; }
+.settings-label { font-size: 15px; color: #fff; font-weight: 500; }
+.settings-sub { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+
+/* Toggle Switch CSS */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: #94a3b8; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: rgba(99, 102, 241, 0.8); border-color: rgba(99, 102, 241, 1); }
+input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
+
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); width: 100%; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; margin-top: 8px; cursor: pointer; transition: all 0.2s; }
+.btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+</style>
+<body class="mobile-theme">
+  <div class="mobile-container">
+    
+    <header class="mobile-header">
+      <div class="header-brand">
+        <div class="brand-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+        <div class="header-text-group">
+          <div class="brand-name">
+            Settings
+          </div>
+          <div class="brand-tagline">Preferences & Account</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mobile-content">
+      <form action="/customer/settings/update" method="POST" id="settingsForm">
+        
+        <div class="settings-section">
+          <h3>Notifications</h3>
+          <div class="settings-group">
+            <div class="settings-item">
+              <div>
+                <div class="settings-label">Push Notifications</div>
+                <div class="settings-sub">Receive alerts on this device</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" name="pushNotifications" <%= settings.pushNotifications ? 'checked' : '' %> onchange="document.getElementById('settingsForm').submit()">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="settings-item">
+              <div>
+                <div class="settings-label">Alert Sounds</div>
+                <div class="settings-sub">Play sounds for critical alerts</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" name="alertSounds" <%= settings.alertSounds ? 'checked' : '' %> onchange="document.getElementById('settingsForm').submit()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Privacy</h3>
+          <div class="settings-group">
+            <div class="settings-item">
+              <div>
+                <div class="settings-label">Location Sharing</div>
+                <div class="settings-sub">Allow background tracking</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" name="locationSharing" <%= settings.locationSharing ? 'checked' : '' %> onchange="document.getElementById('settingsForm').submit()">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="settings-item">
+              <div>
+                <div class="settings-label">Data Sync</div>
+                <div class="settings-sub">Sync activity logs to cloud</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" name="dataSync" <%= settings.dataSync ? 'checked' : '' %> onchange="document.getElementById('settingsForm').submit()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <% if (isPremium) { %>
+        <div class="settings-section">
+          <h3>Premium Features</h3>
+          <div class="settings-group">
+            <div class="settings-item">
+              <div>
+                <div class="settings-label">Auto Cloud Backup</div>
+                <div class="settings-sub">Backup media automatically</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" name="autoBackup" <%= settings.autoBackup ? 'checked' : '' %> onchange="document.getElementById('settingsForm').submit()">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="settings-item">
+              <div>
+                <div class="settings-label">Advanced Alerts</div>
+                <div class="settings-sub">AI-powered threat detection</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" name="advancedAlerts" <%= settings.advancedAlerts ? 'checked' : '' %> onchange="document.getElementById('settingsForm').submit()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+      </form>
+
+      <div class="settings-section">
+        <h3>Danger Zone</h3>
+        <a href="/customer/logout" style="text-decoration: none;">
+          <button class="btn-danger">Sign Out</button>
+        </a>
+      </div>
+
+    </main>
+
+    <nav class="mobile-nav">
+      <a href="/customer" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+        <span>Home</span>
+      </a>
+      <a href="/customer/security" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <span>Security</span>
+      </a>
+      <a href="/customer/activity" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span>Activity</span>
+      </a>
+      <a href="/customer/settings" class="nav-item active">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        <span>Settings</span>
+      </a>
+      <a href="/customer/account" class="nav-item">
+        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

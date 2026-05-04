@@ -155,7 +155,24 @@ router.get('/__preview-login', (req, res) => {
   res.redirect(next);
 });
 
-// ---------- Dashboard ----------
+router.post('/settings/update', requireCustomer, (req, res) => {
+  const phone = req.session.customer.phone;
+  const currentCustomer = db.getCustomerByPhone(phone);
+  const settings = currentCustomer.settings || {};
+  
+  settings.pushNotifications = req.body.pushNotifications === 'on';
+  settings.alertSounds = req.body.alertSounds === 'on';
+  settings.dataSync = req.body.dataSync === 'on';
+  settings.locationSharing = req.body.locationSharing === 'on';
+  settings.autoBackup = req.body.autoBackup === 'on';
+  settings.advancedAlerts = req.body.advancedAlerts === 'on';
+  
+  db.updateCustomer(phone, { settings });
+  
+  res.redirect('/customer/settings');
+});
+
+// ---------- Device Commands ----------
 router.get('/', requireCustomer, (req, res) => {
   const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
   const c = dbCustomer || req.session.customer;
@@ -163,6 +180,48 @@ router.get('/', requireCustomer, (req, res) => {
   res.render('customer/dashboard', {
     user: c,
     active: 'dashboard',
+    ctx,
+    notice: req.session.notice || null,
+    timeAgo,
+  });
+  if (req.session.notice) delete req.session.notice;
+});
+
+router.get('/security', requireCustomer, (req, res) => {
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const c = dbCustomer || req.session.customer;
+  const ctx = buildCustomerContext(c);
+  res.render('customer/security', {
+    user: c,
+    active: 'security',
+    ctx,
+    notice: req.session.notice || null,
+    timeAgo,
+  });
+  if (req.session.notice) delete req.session.notice;
+});
+
+router.get('/activity', requireCustomer, (req, res) => {
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const c = dbCustomer || req.session.customer;
+  const ctx = buildCustomerContext(c);
+  res.render('customer/activity', {
+    user: c,
+    active: 'activity',
+    ctx,
+    notice: req.session.notice || null,
+    timeAgo,
+  });
+  if (req.session.notice) delete req.session.notice;
+});
+
+router.get('/settings', requireCustomer, (req, res) => {
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const c = dbCustomer || req.session.customer;
+  const ctx = buildCustomerContext(c);
+  res.render('customer/settings', {
+    user: c,
+    active: 'settings',
     ctx,
     notice: req.session.notice || null,
     timeAgo,
