@@ -418,12 +418,12 @@ exports.postSupportChat = async (req, res, next) => {
     
     tkt.messages.push({ text, isBot: false, timestamp: Date.now() });
     
-    let botMsg = "I understand you need help. How can I assist you further?";
+    let botMsg = "Thanks for reaching out. Our support team will assist you shortly.";
     const l = text.toLowerCase();
-    if (l.includes('cancel')) botMsg = "To cancel, go to Settings > Billing and click 'Cancel Subscription'.";
-    else if (l.includes('refund')) botMsg = "For refunds, please wait to speak to a human representative.";
-    else if (l.includes('password')) botMsg = "You can change your password in the Settings menu.";
-    else if (l.includes('location')) botMsg = "Make sure location permissions are set to 'Always Allow' in your phone's settings.";
+    if (l.includes('lost')) botMsg = "⚠️ Your device may be at risk. Do you want to lock it or track location?";
+    else if (l.includes('lock')) botMsg = "🔒 You can lock your device immediately from the dashboard. Do you want me to trigger it?";
+    else if (l.includes('alarm')) botMsg = "🔊 Alarm can be triggered remotely. Confirm if you want to proceed.";
+    else if (l.includes('location')) botMsg = "📍 Fetching your device location...";
     
     tkt.messages.push({ text: botMsg, isBot: true, timestamp: Date.now() });
     tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;

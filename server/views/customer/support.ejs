@@ -484,6 +484,8 @@
       scrollToBottom();
 
       try {
+        console.log("User message:", text);
+        
         const res = await fetch('/customer/api/support/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -493,9 +495,7 @@
         if (!res.ok) throw new Error('Failed to send');
         
         const data = await res.json();
-        
-        // Hide typing indicator
-        typingIndicator.style.display = 'none';
+        console.log("API response:", data);
         
         if (data.ticket && data.ticket.messages) {
            const msgs = data.ticket.messages;
@@ -512,10 +512,19 @@
 
            const lastMsg = msgs[msgs.length - 1];
            if (lastMsg && lastMsg.isBot) {
-             const botEl = createMessageElement(lastMsg.text, true, lastMsg.timestamp);
-             chatArea.insertBefore(botEl, typingIndicator);
-             scrollToBottom();
+             // Simulate typing delay (500-1000ms)
+             const delay = Math.floor(Math.random() * 500) + 500;
+             setTimeout(() => {
+               typingIndicator.style.display = 'none';
+               const botEl = createMessageElement(lastMsg.text, true, lastMsg.timestamp);
+               chatArea.insertBefore(botEl, typingIndicator);
+               scrollToBottom();
+             }, delay);
+           } else {
+             typingIndicator.style.display = 'none';
            }
+        } else {
+          typingIndicator.style.display = 'none';
         }
       } catch (err) {
         console.error(err);
