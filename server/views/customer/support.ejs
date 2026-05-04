@@ -409,12 +409,20 @@
       chatArea.scrollTop = chatArea.scrollHeight;
     }
 
-    function createMessageElement(text, isBot, timestamp) {
+    function createMessageElement(text, isBot, timestamp, isOptimistic = false) {
       const group = document.createElement('div');
       group.className = `msg-group ${isBot ? 'bot' : 'user'}`;
       
       const timeStr = formatTime(timestamp);
-      const ticks = !isBot ? '<span class="msg-status-icon status-indicator-txt">✔✔</span>' : '';
+      
+      let ticks = '';
+      if (!isBot) {
+        if (isOptimistic) {
+          ticks = '<span class="msg-status-icon status-indicator-txt" style="color:#9ca3af;">✔</span>';
+        } else {
+          ticks = '<span class="msg-status-icon status-indicator-txt">✔✔</span>';
+        }
+      }
       
       group.innerHTML = `
         <div class="msg-bubble">${text}</div>
@@ -459,14 +467,14 @@
       let userEl = retryGroupEl;
       if (!userEl) {
         // Render user message immediately (optimistic)
-        userEl = createMessageElement(text, false, Date.now());
+        userEl = createMessageElement(text, false, Date.now(), true);
         chatArea.insertBefore(userEl, typingIndicator);
         msgInput.value = '';
         scrollToBottom();
       } else {
         // Clear retry state if retrying
         const statusEl = userEl.querySelector('.status-indicator-txt');
-        if(statusEl) statusEl.innerHTML = '✔✔';
+        if(statusEl) statusEl.innerHTML = '<span style="color:#9ca3af;">✔</span>';
       }
 
       sendBtn.disabled = true;
@@ -489,9 +497,20 @@
         // Hide typing indicator
         typingIndicator.style.display = 'none';
         
-        // The backend returns the whole ticket, so we just get the last message if it's from the bot
         if (data.ticket && data.ticket.messages) {
-           const lastMsg = data.ticket.messages[data.ticket.messages.length - 1];
+           const msgs = data.ticket.messages;
+           
+           // Replace optimistic user message with confirmed one
+           if (msgs.length >= 2) {
+             const userMsg = msgs[msgs.length - 2];
+             if (!userMsg.isBot && userMsg.text === text) {
+               const confirmedUserEl = createMessageElement(userMsg.text, false, userMsg.timestamp, false);
+               chatArea.replaceChild(confirmedUserEl, userEl);
+               userEl = confirmedUserEl; // update reference for error handling edge cases
+             }
+           }
+
+           const lastMsg = msgs[msgs.length - 1];
            if (lastMsg && lastMsg.isBot) {
              const botEl = createMessageElement(lastMsg.text, true, lastMsg.timestamp);
              chatArea.insertBefore(botEl, typingIndicator);
