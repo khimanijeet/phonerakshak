@@ -17,23 +17,51 @@ const isOnline = (device, windowMs = 5 * 60 * 1000) => {
 
 exports.getDashboard = async (req, res, next) => {
   try {
-    const devices = await Device.find().sort({ lastSeen: -1 });
-    let device = devices.length > 0 ? devices[0].toObject() : null;
+    const devices = await Device.find().sort({ lastSeen: -1 }).lean();
+    let stats = {
+      totalUsers: devices.length,
+      activeUsers: devices.filter(d => isOnline(d)).length,
+      devicesRegistered: devices.length
+    };
     
-    if (device) {
-      device.online = isOnline(device);
+    const alerts = await Alert.find().sort({ timestamp: -1 }).limit(50).lean();
+    const commands = await Command.find().sort({ queuedAt: -1 }).limit(50).lean();
+    
+    // Calculate daily series for charts
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const recentAlerts = await Alert.find({ timestamp: { $gte: sevenDaysAgo } }).lean();
+    const dailySeries = {
+      labels: [],
+      sos: [],
+      reports: []
+    };
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const label = d.toISOString().split('T')[0];
+      dailySeries.labels.push(label);
+      
+      const dayAlerts = recentAlerts.filter(a => {
+        const aDate = new Date(a.timestamp).toISOString().split('T')[0];
+        return aDate === label;
+      });
+      
+      dailySeries.sos.push(dayAlerts.filter(a => ['brute_force', 'failed_login', 'ddos'].includes(a.type)).length);
+      dailySeries.reports.push(dayAlerts.filter(a => !['brute_force', 'failed_login', 'ddos'].includes(a.type)).length);
     }
-
-    const locations = device ? await Location.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(20) : [];
-    const latest = locations.length > 0 ? locations[0] : null;
-    const alerts = device ? await Alert.find({ deviceId: device.deviceId, type: 'sim_change' }).sort({ timestamp: -1 }).limit(10) : [];
-    const intruders = device ? await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(4) : [];
-    const audioClips = device ? await AudioRecording.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(3) : [];
-    const commands = device ? await Command.find({ deviceId: device.deviceId }).sort({ queuedAt: -1 }).limit(5) : [];
 
     res.render('dashboard', {
       user: req.session.user,
-      device, locations, latest, alerts, intruders, audioClips, commands
+      customers: devices, 
+      devices,
+      stats, 
+      alerts, 
+      commands,
+      dailySeries,
+      device: null
     });
   } catch (err) { next(err); }
 };

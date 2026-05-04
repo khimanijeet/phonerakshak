@@ -1,389 +1,391 @@
-<% const leaflet = true; const chartjs = false; const active = 'dashboard'; const pageTitle = 'Dashboard'; %>
-<%- include('partials/header', { title: 'PhoneRakshak Anti-Theft Admin Panel', leaflet }) %>
+<% const leaflet = false; const chartjs = true; const active = 'dashboard'; %>
+<%- include('partials/header', { title: 'PhoneRakshak Admin Panel', leaflet }) %>
 <div class="app-shell">
   <%- include('partials/sidebar', { active }) %>
   <main class="app-main">
-    <%- include('partials/topbar', { pageTitle: 'Dashboard' }) %>
+    <%- include('partials/topbar', { pageTitle: 'Dashboard', subtitle: "Welcome back, Admin! Here's what's happening." }) %>
 
-    <div class="content">
-      <% if (!device) { %>
-        <div style="text-align: center; padding: 60px 20px; background: var(--card); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1); margin-top: 20px;">
-          <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
-          <h2 style="margin-bottom: 8px;">Waiting for device to connect...</h2>
-          <p class="muted">Install the PhoneRakshak app on your Android device and open it to link it to this dashboard.</p>
-        </div>
-      <% } else { %>
-      <!-- Top Action Cards -->
-      <div class="action-cards" style="grid-template-columns: repeat(4, 1fr);">
-        <div class="action-card green">
-          <div class="action-card-top">
-            <div class="action-card-icon">📍</div>
-            <div>
-              <div class="action-card-title">Get Location</div>
-              <div class="action-card-desc">Get current location of your device</div>
+    <div class="content admin-dashboard">
+
+      <!-- Top Stats Row -->
+      <div class="stat-grid-4">
+        <div class="glass-card stat-card-new">
+          <div class="stat-header">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-icon-new icon-purple-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
           </div>
-          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
-            <input type="hidden" name="type" value="locate" />
-            <button class="action-btn" type="submit">GET LOCATION 📍</button>
-          </form>
-        </div>
-        
-        <div class="action-card red">
-          <div class="action-card-top">
-            <div class="action-card-icon">🔒</div>
-            <div>
-              <div class="action-card-title">Lock Device</div>
-              <div class="action-card-desc">Lock your device remotely</div>
-            </div>
+          <div class="stat-value-new"><%= stats ? stats.totalUsers : 0 %></div>
+          <div class="stat-trend trend-up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            2.1% <span class="muted">this week</span>
           </div>
-          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
-            <input type="hidden" name="type" value="lock" />
-            <button class="action-btn" type="submit">LOCK DEVICE 🔒</button>
-          </form>
         </div>
 
-        <div class="action-card orange">
-          <div class="action-card-top">
-            <div class="action-card-icon">🔊</div>
-            <div>
-              <div class="action-card-title">Play Alarm</div>
-              <div class="action-card-desc">Play loud alarm on your device</div>
+        <div class="glass-card stat-card-new">
+          <div class="stat-header">
+            <div class="stat-label">Active Devices</div>
+            <div class="stat-icon-new icon-blue-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
             </div>
           </div>
-          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
-            <input type="hidden" name="type" value="alarm" />
-            <button class="action-btn" type="submit">PLAY ALARM 🔔</button>
-          </form>
+          <div class="stat-value-new"><%= stats ? stats.activeUsers : 0 %></div>
+          <div class="stat-trend trend-up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            4.2% <span class="muted">this week</span>
+          </div>
         </div>
 
-        <div class="action-card" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
-          <div class="action-card-top">
-            <div class="action-card-icon">🎙️</div>
-            <div>
-              <div class="action-card-title">Record Audio</div>
-              <div class="action-card-desc">Secretly record 30s ambient audio</div>
+        <div class="glass-card stat-card-new">
+          <div class="stat-header">
+            <div class="stat-label">Security Alerts</div>
+            <div class="stat-icon-new icon-red-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </div>
           </div>
-          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
-            <input type="hidden" name="type" value="record_audio" />
-            <button class="action-btn" type="submit">RECORD 🎙️</button>
-          </form>
+          <% const recentAlertsCount = alerts ? alerts.filter(a => (Date.now() - a.timestamp) < 86400000).length : 0; %>
+          <div class="stat-value-new" id="metric-alerts"><%= recentAlertsCount %></div>
+          <div class="stat-trend trend-down">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            1.5% <span class="muted">this week</span>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card-new">
+          <div class="stat-header">
+            <div class="stat-label">Commands Executed</div>
+            <div class="stat-icon-new icon-green-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+          <div class="stat-value-new" id="metric-commands"><%= commands ? commands.length : 0 %></div>
+          <div class="stat-trend trend-up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            3.8% <span class="muted">this week</span>
+          </div>
         </div>
       </div>
 
-      <!-- Map and Device Info Grid -->
-      <div class="row-grid">
-        <section class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
-          <header class="card-header" style="padding: 16px 20px; margin: 0; border-bottom: 1px solid var(--border);">
-            <h2 style="display: flex; align-items: center; gap: 8px;">📍 Last Known Location <span class="status-badge-inline">Live</span></h2>
-            <div class="muted small"><span class="local-time-full" data-timestamp="<%= latest ? latest.timestamp : '' %>"><%= latest ? new Date(latest.timestamp).toLocaleString() : 'No location yet' %></span> ↻</div>
-          </header>
-          <div id="map" style="height: 250px; background: #222;"></div>
-          <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card);">
-            <div>
-              <div class="muted small" style="margin-bottom: 4px;">Address</div>
-              <div style="font-weight: 500; font-size: 14px; margin-bottom: 10px;"><%= latest && latest.address ? latest.address : 'Unknown Address' %></div>
-              <div style="display: flex; gap: 40px;">
-                <div>
-                  <div class="muted small">Latitude</div>
-                  <div style="font-size: 13px; font-family: monospace;"><%= latest ? latest.latitude.toFixed(4) : '—' %></div>
-                </div>
-                <div>
-                  <div class="muted small">Longitude</div>
-                  <div style="font-size: 13px; font-family: monospace;"><%= latest ? latest.longitude.toFixed(4) : '—' %></div>
-                </div>
+      <!-- Charts Row -->
+      <div class="dashboard-grid-2">
+        <div class="glass-card chart-card-new">
+          <div class="card-header-new">
+            <h2>Security Overview</h2>
+            <div class="dropdown-filter">Last 7 Days <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+          <div class="chart-legend-row">
+            <div class="chart-legend-item"><span class="legend-dot dot-red"></span> Threats Detected</div>
+            <div class="chart-legend-item"><span class="legend-dot dot-purple"></span> Blocked Attempts</div>
+          </div>
+          <div class="chart-container-large">
+            <canvas id="securityOverviewChart"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card chart-card-new">
+          <div class="card-header-new">
+            <h2>Top Attack Types</h2>
+            <div class="dropdown-filter">Last 7 Days <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+          <% 
+            const bfCount = alerts ? alerts.filter(a => a.type === 'brute_force').length : 0;
+            const flCount = alerts ? alerts.filter(a => a.type === 'failed_login').length : 0;
+            const ddCount = alerts ? alerts.filter(a => a.type === 'ddos').length : 0;
+            const asCount = alerts ? alerts.filter(a => !['brute_force', 'failed_login', 'ddos'].includes(a.type)).length : 0;
+            const totalAttacks = bfCount + flCount + ddCount + asCount || 1;
+            const actualTotal = bfCount + flCount + ddCount + asCount;
+          %>
+          <div class="doughnut-layout">
+            <div class="doughnut-container">
+              <canvas id="topAttackTypesChart"></canvas>
+              <div class="doughnut-center-text">
+                <div class="big"><%= actualTotal %></div>
+                <div class="small">Total</div>
               </div>
             </div>
-            <% if (latest) { %>
-              <a href="https://maps.google.com/?q=<%= latest.latitude %>,<%= latest.longitude %>" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; margin:0; background: #3b82f6;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg> OPEN IN MAPS
-              </a>
-            <% } %>
-          </div>
-        </section>
-
-        <section class="card">
-          <header class="card-header">
-            <h2 style="display: flex; align-items: center; gap: 8px;">📱 Device Information</h2>
-          </header>
-          <div class="device-info-grid">
-            <div class="info-item">
-              <span class="info-label">Device Name</span>
-              <span class="info-value"><%= device.deviceModel || 'Unknown Device' %></span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Phone Number</span>
-              <span class="info-value"><%= device.phoneNumber || '—' %></span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Battery Level</span>
-              <% const bat = device.batteryLevel != null && device.batteryLevel !== -1 ? device.batteryLevel + '%' : 'Unknown'; %>
-              <span class="info-value info-value-green"><%= bat %> 🔋</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">App Version</span>
-              <span class="info-value"><%= device.appVersion || '1.0.3' %></span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Last Seen</span>
-              <span class="info-value">2 min ago</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Status</span>
-              <% const isOnline = (Date.now() - new Date(device.lastSeen).getTime()) < 5 * 60 * 1000; %>
-              <span class="status-badge-inline" style="margin-top: 2px; <%= isOnline ? 'color: #10b981; background: rgba(16,185,129,.15);' : 'color: #f87171; background: rgba(239,68,68,.15);' %>">
-                ● <%= isOnline ? 'Online' : 'Offline' %>
-              </span>
+            <div class="doughnut-legend">
+              <div class="d-legend-item">
+                <div><span class="legend-dot dot-red"></span> Brute Force</div>
+                <div class="d-legend-val"><%= Math.round((bfCount/totalAttacks)*100) %>%</div>
+              </div>
+              <div class="d-legend-item">
+                <div><span class="legend-dot dot-purple"></span> Failed Logins</div>
+                <div class="d-legend-val"><%= Math.round((flCount/totalAttacks)*100) %>%</div>
+              </div>
+              <div class="d-legend-item">
+                <div><span class="legend-dot dot-blue"></span> DDoS Attacks</div>
+                <div class="d-legend-val"><%= Math.round((ddCount/totalAttacks)*100) %>%</div>
+              </div>
+              <div class="d-legend-item">
+                <div><span class="legend-dot dot-orange"></span> API Spam</div>
+                <div class="d-legend-val"><%= Math.round((asCount/totalAttacks)*100) %>%</div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
       </div>
 
-      <!-- Geofence Configuration -->
-      <section class="card" style="margin-top: 20px;">
-        <header class="card-header">
-          <h2 style="display: flex; align-items: center; gap: 8px;">🛡️ Geofence / Smart Safe Zone</h2>
-        </header>
-        <div style="padding: 20px;">
-          <p class="muted" style="margin-bottom: 16px;">If the device leaves this area, Theft Mode will automatically trigger (Alarm + Lock).</p>
-          <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/geofence" style="display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 16px; align-items: end;">
-            
-            <div style="display: flex; flex-direction: column;">
-              <label class="muted small" style="margin-bottom: 8px;">Status</label>
-              <select name="enabled" class="input" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;">
-                <option value="off" <%= !device.geofence || !device.geofence.enabled ? 'selected' : '' %>>Disabled</option>
-                <option value="on" <%= device.geofence && device.geofence.enabled ? 'selected' : '' %>>Enabled</option>
-              </select>
-            </div>
-            
-            <div style="display: flex; flex-direction: column;">
-              <label class="muted small" style="margin-bottom: 8px;">Latitude</label>
-              <input type="text" name="lat" id="gf_lat" class="input" value="<%= device.geofence && device.geofence.lat ? device.geofence.lat : (latest ? latest.latitude : '') %>" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;" placeholder="e.g. 21.1577" required>
-            </div>
-            
-            <div style="display: flex; flex-direction: column;">
-              <label class="muted small" style="margin-bottom: 8px;">Longitude</label>
-              <input type="text" name="lng" id="gf_lng" class="input" value="<%= device.geofence && device.geofence.lng ? device.geofence.lng : (latest ? latest.longitude : '') %>" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;" placeholder="e.g. 72.7687" required>
-            </div>
-
-            <div style="display: flex; flex-direction: column;">
-              <label class="muted small" style="margin-bottom: 8px;">Radius (meters)</label>
-              <input type="number" name="radius" class="input" value="<%= device.geofence && device.geofence.radius ? device.geofence.radius : 100 %>" style="padding: 10px; background: var(--card-2); color: white; border: 1px solid var(--border); border-radius: 8px;" placeholder="100" required>
-            </div>
-
-            <button class="btn-primary" type="submit" style="padding: 10px 24px; height: 42px;">Save Safe Zone</button>
-          </form>
-          <div style="margin-top: 12px;">
-            <button type="button" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="document.getElementById('gf_lat').value = '<%= latest ? latest.latitude : '' %>'; document.getElementById('gf_lng').value = '<%= latest ? latest.longitude : '' %>';">📍 Use Current Location</button>
+      <!-- Tables Row -->
+      <div class="dashboard-grid-2">
+        <div class="glass-card table-card-new">
+          <div class="card-header-new">
+            <h2>Recent Security Alerts</h2>
+            <a href="/admin/alerts" class="view-all-link">View All</a>
           </div>
-        </div>
-      </section>
-
-      <!-- Recent Intruder Photos -->
-      <section class="card" style="margin-top: 20px;">
-        <header class="card-header">
-          <h2 style="display: flex; align-items: center; gap: 8px;">📸 Recent Intruder Photos</h2>
-          <a href="#photos" class="link">View All</a>
-        </header>
-        <div class="photo-grid" style="grid-template-columns: repeat(4, 1fr); gap: 16px;">
-          <% if (intruders.length === 0) { %><div class="empty" style="grid-column: span 4;">No intruder photos yet</div><% } %>
-          <% intruders.slice(0, 4).forEach(function(p){ %>
-            <a class="photo-tile" href="<%= p.filename.startsWith('http') ? p.filename : '/api/intruders/' + p.filename %>" target="_blank" style="display: flex; flex-direction: column;">
-              <img src="<%= p.filename.startsWith('http') ? p.filename : (p.filename.startsWith('mock') ? 'https://images.unsplash.com/photo-1493121516709-380d32bb5e33?auto=format&fit=crop&q=80&w=200&h=200' : '/api/intruders/' + p.filename) %>" alt="intruder" loading="lazy" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;" />
-              <div class="photo-time" style="background: var(--card-2); text-align: left; padding: 10px; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                <span class="local-time-short" data-prefix="Today, " data-timestamp="<%= p.timestamp %>"></span>
-              </div>
-            </a>
-          <% }); %>
-        </div>
-      </section>
-
-      <!-- Audio Surveillance Gallery -->
-      <section class="card" style="margin-top: 20px;">
-        <header class="card-header">
-          <h2 style="display: flex; align-items: center; gap: 8px;">🎙️ Audio Surveillance Recordings</h2>
-        </header>
-        <div class="photo-grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px;">
-          <% if (typeof audioClips === 'undefined' || audioClips.length === 0) { %><div class="empty" style="grid-column: span 3;">No audio recordings yet</div><% } else { %>
-          <% audioClips.forEach(function(clip){ %>
-            <div class="photo-tile" style="padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--card-2); height: auto;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; color: #3b82f6;">🎙️</div>
-                <div>
-                  <div style="font-weight: 500; font-size: 14px;">Ambient Recording</div>
-                  <div class="muted small local-time-full" data-timestamp="<%= clip.timestamp %>"></div>
-                </div>
-              </div>
-              <audio controls style="width: 100%; height: 36px;">
-                <% if (clip.filename.startsWith('http')) { %>
-                  <source src="<%= clip.filename %>" type="audio/amr">
-                  <source src="<%= clip.filename %>" type="audio/mpeg">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>TIME</th>
+                  <th>TYPE</th>
+                  <th>DETAILS</th>
+                  <th>DEVICE / USER</th>
+                </tr>
+              </thead>
+              <tbody id="recent-alerts-tbody">
+                <% if (alerts && alerts.length > 0) { %>
+                  <% alerts.slice(0, 5).forEach(a => { 
+                       const isThreat = ['brute_force', 'failed_login', 'ddos', 'sos', 'emergency', 'wrong_pin'].includes(a.type);
+                       const colorClass = isThreat ? 'text-red' : 'text-blue';
+                       let deviceLabel = a.deviceId ? 'Device: ' + a.deviceId.slice(0,8) : 'System';
+                  %>
+                    <tr>
+                      <td class="muted"><%= new Date(a.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                      <td class="<%= colorClass %>"><%= a.type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) %></td>
+                      <td><%= a.message %></td>
+                      <td><%= deviceLabel %></td>
+                    </tr>
+                  <% }); %>
                 <% } else { %>
-                  <source src="/api/audio/<%= clip.filename %>" type="audio/amr">
-                  <source src="/api/audio/<%= clip.filename %>" type="audio/mpeg">
+                  <tr><td colspan="4" class="muted text-center" style="padding: 20px;">No alerts found.</td></tr>
                 <% } %>
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-          <% }); } %>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </section>
 
-      <!-- SIM Alerts and Commands Grid -->
-      <div class="row-grid" style="margin-top: 20px;">
-        <section class="card">
-          <header class="card-header">
-            <h2 style="display: flex; align-items: center; gap: 8px;">📋 SIM Change Alerts</h2>
-            <a href="#sim" class="link">View All</a>
-          </header>
-          <div class="table-wrap">
-            <table class="data-table">
+        <div class="glass-card table-card-new">
+          <div class="card-header-new">
+            <h2>Commands Overview</h2>
+            <a href="/admin/commands" class="view-all-link">View All</a>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Time</th>
-                  <th>Alert Details</th>
-                  <th>Status</th>
+                  <th>COMMAND</th>
+                  <th>EXECUTED</th>
+                  <th>SUCCESS</th>
                 </tr>
               </thead>
-              <tbody>
-                <% if (alerts.length === 0) { %><tr><td colspan="3" class="empty">No SIM alerts</td></tr><% } %>
-                <% alerts.forEach(function(a){ %>
-                  <tr>
-                    <td><span class="local-time-short" data-timestamp="<%= a.timestamp %>"></span></td>
-                    <td><%= a.message || 'SIM Swapped' %></td>
-                    <td><span class="status-badge-inline" style="color: #fbbf24; background: rgba(245,158,11,.15);"><%= a.status || 'SIM Changed' %></span></td>
-                  </tr>
-                <% }); %>
+              <tbody id="commands-overview-tbody">
+                <% 
+                  const cmdStats = {};
+                  if (commands) {
+                    commands.forEach(c => {
+                      if (!cmdStats[c.type]) cmdStats[c.type] = { total: 0, success: 0 };
+                      cmdStats[c.type].total++;
+                      if (c.status === 'done') cmdStats[c.type].success++;
+                    });
+                  }
+                  const cmdRows = Object.keys(cmdStats).map(k => ({
+                    name: k,
+                    total: cmdStats[k].total,
+                    pct: Math.round((cmdStats[k].success / cmdStats[k].total) * 100)
+                  })).sort((a,b) => b.total - a.total).slice(0, 5);
+                %>
+                <% if (cmdRows.length > 0) { %>
+                  <% cmdRows.forEach(cr => { 
+                       const color = cr.pct >= 90 ? 'text-green' : (cr.pct >= 70 ? 'text-orange' : 'text-red');
+                  %>
+                    <tr>
+                      <td><%= cr.name %></td>
+                      <td><%= cr.total %></td>
+                      <td class="<%= color %>"><%= cr.pct %>%</td>
+                    </tr>
+                  <% }); %>
+                <% } else { %>
+                  <tr><td colspan="3" class="muted text-center" style="padding: 20px;">No commands executed.</td></tr>
+                <% } %>
               </tbody>
             </table>
           </div>
-        </section>
-
-        <section class="card">
-          <header class="card-header">
-            <h2 style="display: flex; align-items: center; gap: 8px;">&gt;_ Recent Commands</h2>
-            <a href="#commands" class="link">View All</a>
-          </header>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Command</th>
-                  <th>Status</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if (commands.length === 0) { %><tr><td colspan="3" class="empty">No commands</td></tr><% } %>
-                <% commands.forEach(function(c){ %>
-                  <tr>
-                    <td style="font-weight: 500;"><%= c.type %></td>
-                    <td>
-                      <span class="status-badge-inline" style="<%= c.status === 'executed' ? 'color: #10b981; background: rgba(16,185,129,.15)' : (c.status === 'failed' ? 'color: #f87171; background: rgba(239,68,68,.15)' : 'color: #fbbf24; background: rgba(245,158,11,.15)') %>">
-                        <%= c.status ? c.status.charAt(0).toUpperCase() + c.status.slice(1) : 'Queued' %>
-                      </span>
-                    </td>
-                    <td><span class="local-time-short" data-prefix="Today, " data-timestamp="<%= c.timestamp || c.queuedAt %>"></span></td>
-                  </tr>
-                <% }); %>
-              </tbody>
-            </table>
-          </div>
-        </section>
+        </div>
       </div>
-      <% } %>
+
+      <!-- Bottom Stats Row -->
+      <div class="dashboard-grid-3">
+        <div class="glass-card mini-chart-card">
+          <div class="card-header-new">
+            <h2>Device Status</h2>
+            <a href="/admin/devices" class="view-all-link">View All</a>
+          </div>
+          <% 
+            const dOnline = stats ? stats.activeUsers : 0;
+            const dTotal = stats ? stats.devicesRegistered : 0;
+            const dOffline = dTotal - dOnline;
+            const pctOnline = dTotal ? Math.round((dOnline/dTotal)*100) : 0;
+            const pctOffline = dTotal ? Math.round((dOffline/dTotal)*100) : 0;
+          %>
+          <div class="mini-doughnut-layout">
+            <div class="doughnut-container-small">
+              <canvas id="deviceStatusChart" data-online="<%= dOnline %>" data-offline="<%= dOffline %>"></canvas>
+              <div class="doughnut-center-text">
+                <div class="big"><%= dTotal %></div>
+                <div class="small">Total</div>
+              </div>
+            </div>
+            <div class="mini-legend">
+              <div class="m-legend-item">
+                <div><span class="legend-dot dot-green"></span> Online</div>
+                <div class="muted"><%= dOnline %> (<%= pctOnline %>%)</div>
+              </div>
+              <div class="m-legend-item">
+                <div><span class="legend-dot dot-red"></span> Offline</div>
+                <div class="muted"><%= dOffline %> (<%= pctOffline %>%)</div>
+              </div>
+              <div class="m-legend-item">
+                <div><span class="legend-dot dot-grey"></span> Inactive</div>
+                <div class="muted">0 (0%)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card mini-chart-card">
+          <div class="card-header-new">
+            <h2>Platform Distribution</h2>
+            <a href="/admin/devices" class="view-all-link">View All</a>
+          </div>
+          <%
+            let android = 0, ios = 0, web = 0;
+            if (devices) {
+              devices.forEach(d => {
+                const m = (d.deviceModel || '').toLowerCase();
+                if (m.includes('iphone') || m.includes('ipad')) ios++;
+                else if (m.includes('web') || m.includes('browser')) web++;
+                else android++;
+              });
+            }
+            const pTotal = android + ios + web || 1;
+            const pAndroid = Math.round((android/pTotal)*100);
+            const pIos = Math.round((ios/pTotal)*100);
+            const pWeb = Math.round((web/pTotal)*100);
+          %>
+          <div class="progress-bars-container">
+            <div class="p-bar-row">
+              <div class="p-bar-label">Android</div>
+              <div class="p-bar-track"><div class="p-bar-fill bg-green" style="width: <%= pAndroid %>%"></div></div>
+              <div class="p-bar-val"><%= pAndroid %>%</div>
+            </div>
+            <div class="p-bar-row">
+              <div class="p-bar-label">iOS</div>
+              <div class="p-bar-track"><div class="p-bar-fill bg-purple" style="width: <%= pIos %>%"></div></div>
+              <div class="p-bar-val"><%= pIos %>%</div>
+            </div>
+            <div class="p-bar-row">
+              <div class="p-bar-label">Web</div>
+              <div class="p-bar-track"><div class="p-bar-fill bg-blue" style="width: <%= pWeb %>%"></div></div>
+              <div class="p-bar-val"><%= pWeb %>%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card mini-chart-card">
+          <div class="card-header-new">
+            <h2>Subscription Status</h2>
+            <a href="/admin/subscriptions" class="view-all-link">View All</a>
+          </div>
+          <%
+            let sActive = 0, sExpired = 0, sPending = 0;
+            if (devices && devices.length > 0) {
+              sActive = devices.length;
+            }
+
+            const sTotal = sActive + sExpired + sPending || 1;
+            const pctActive = Math.round((sActive/sTotal)*100);
+            const pctExpired = Math.round((sExpired/sTotal)*100);
+            const pctPending = Math.round((sPending/sTotal)*100);
+          %>
+          <div class="mini-doughnut-layout">
+            <div class="doughnut-container-small">
+              <canvas id="subscriptionStatusChart" data-active="<%= sActive %>" data-expired="<%= sExpired %>" data-pending="<%= sPending %>"></canvas>
+              <div class="doughnut-center-text">
+                <div class="big"><%= sTotal %></div>
+                <div class="small">Total</div>
+              </div>
+            </div>
+            <div class="mini-legend">
+              <div class="m-legend-item">
+                <div><span class="legend-dot dot-green"></span> Active</div>
+                <div class="muted"><%= sActive %> (<%= pctActive %>%)</div>
+              </div>
+              <div class="m-legend-item">
+                <div><span class="legend-dot dot-red"></span> Expired</div>
+                <div class="muted"><%= sExpired %> (<%= pctExpired %>%)</div>
+              </div>
+              <div class="m-legend-item">
+                <div><span class="legend-dot dot-orange"></span> Pending</div>
+                <div class="muted"><%= sPending %> (<%= pctPending %>%)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="dash-footer">© <%= (new Date()).getFullYear() %> PhoneRakshak Admin Panel. All rights reserved.</footer>
     </div>
   </main>
+
 </div>
 
+<!-- Custom dashboard charts -->
 <script>
-  const latest = <%- JSON.stringify(latest) %>;
-  const deviceId = "<%= device ? device.deviceId : '' %>";
-  let map, currentMarker;
+  window.SERVER_DATA = {
+    labels: <%- dailySeries ? JSON.stringify(dailySeries.labels.slice(-7).map(d => d.slice(5))) : "[]" %>,
+    threats: <%- dailySeries ? JSON.stringify(dailySeries.sos.slice(-7)) : "[]" %>,
+    blocked: <%- dailySeries ? JSON.stringify(dailySeries.reports.slice(-7)) : "[]" %>,
+    attackTypes: {
+      bruteForce: <%= alerts ? alerts.filter(a => a.type === 'brute_force').length : 0 %>,
+      failedLogins: <%= alerts ? alerts.filter(a => a.type === 'failed_login').length : 0 %>,
+      ddos: <%= alerts ? alerts.filter(a => a.type === 'ddos').length : 0 %>,
+      apiSpam: <%= alerts ? alerts.filter(a => !['brute_force', 'failed_login', 'ddos'].includes(a.type)).length : 0 %>
+    }
+  };
+</script>
+<script src="/js/dashboard-charts.js"></script>
 
-  window.addEventListener('DOMContentLoaded', function(){
-    const mapEl = document.getElementById('map');
-    if (!mapEl) return;
-    if (latest) {
-      const center = [latest.latitude, latest.longitude];
-      map = L.map('map', { zoomControl: false }).setView(center, 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19, attribution: '&copy; OpenStreetMap'
-      }).addTo(map);
-      currentMarker = L.marker(center).addTo(map);
-      
-      // Draw Geofence if enabled
-      if (<%= device.geofence && device.geofence.enabled ? 'true' : 'false' %>) {
-        L.circle([<%= device.geofence ? device.geofence.lat : 0 %>, <%= device.geofence ? device.geofence.lng : 0 %>], {
-          color: '#10b981',
-          fillColor: '#10b981',
-          fillOpacity: 0.2,
-          radius: <%= device.geofence ? device.geofence.radius : 100 %>
-        }).addTo(map);
-      }
-    } else {
-      document.getElementById('map').innerHTML = '<div style="color:#666; display:flex; align-items:center; justify-content:center; height:100%;">No Location Data</div>';
+<script>
+// Real-time updates polling
+setInterval(async () => {
+  try {
+    const res = await fetch('/admin/api/poll');
+    const data = await res.json();
+    
+    // Update metric cards directly
+    const recentAlertsCount = data.alerts.filter(a => (Date.now() - a.timestamp) < 86400000).length;
+    const alertEl = document.getElementById('metric-alerts');
+    if (alertEl && parseInt(alertEl.innerText) !== recentAlertsCount) {
+      alertEl.innerText = recentAlertsCount;
+      alertEl.parentElement.style.animation = 'pulseGlow 1s';
+      setTimeout(() => alertEl.parentElement.style.animation = '', 1000);
     }
 
-    // Client-side Timezone Fix
-    document.querySelectorAll('.local-time-full').forEach(el => {
-      const ts = el.getAttribute('data-timestamp');
-      if (ts && ts !== '') {
-        el.textContent = new Date(parseInt(ts) || ts).toLocaleString();
-      }
-    });
-
-    document.querySelectorAll('.local-time-short').forEach(el => {
-      const ts = el.getAttribute('data-timestamp');
-      const prefix = el.getAttribute('data-prefix') || '';
-      if (ts && ts !== '') {
-        el.textContent = prefix + new Date(parseInt(ts) || ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      }
-    });
-
-    // Real-Time Socket.io Listeners (Zero Refresh)
-    if (typeof socket !== 'undefined' && deviceId) {
-      
-      socket.on('new_location', (data) => {
-        if (data.deviceId === deviceId) {
-          const newCenter = [data.latitude, data.longitude];
-          if (!map) {
-            document.getElementById('map').innerHTML = '';
-            map = L.map('map', { zoomControl: false }).setView(newCenter, 14);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-            currentMarker = L.marker(newCenter).addTo(map);
-          } else {
-            if (currentMarker) currentMarker.setLatLng(newCenter);
-            map.setView(newCenter);
-          }
-          // Update text
-          const locText = document.querySelector('.local-time-full');
-          if (locText) {
-             locText.setAttribute('data-timestamp', data.timestamp);
-             locText.textContent = new Date(data.timestamp).toLocaleString();
-          }
-        }
-      });
-
-      socket.on('command_status_change', (data) => {
-        if (data.deviceId === deviceId) {
-          // Since we prepend on UI reload, a quick reload is the safest for complex table sync,
-          // but for zero-refresh, we just reload the page for command status to avoid complex DOM matching
-          // Or we can just find the row:
-          window.location.reload(); 
-        }
-      });
-
-      socket.on('new_alert', (data) => {
-        if (data.deviceId === deviceId) window.location.reload();
-      });
-      
-      socket.on('new_intruder', (data) => {
-        if (data.deviceId === deviceId) window.location.reload();
-      });
+    const cmdEl = document.getElementById('metric-commands');
+    if (cmdEl && parseInt(cmdEl.innerText) !== data.commands.length) {
+      cmdEl.innerText = data.commands.length;
+      cmdEl.parentElement.style.animation = 'pulseGlow 1s';
+      setTimeout(() => cmdEl.parentElement.style.animation = '', 1000);
     }
-  });
+    
+    // The tables and charts would be fully redrawn here in a reactive framework (React/Vue).
+    // For pure Vanilla JS we could manually manipulate the DOM, but typically a full refresh is safer
+    // or we only update the top metrics seamlessly as done above.
+  } catch (err) {
+    console.error('Polling error', err);
+  }
+}, 15000);
 </script>
 
-<%- include('partials/footer', { leaflet: true }) %>
+<%- include('partials/footer', { leaflet: false, chartjs: true }) %>
