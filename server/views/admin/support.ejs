@@ -154,6 +154,7 @@
   }
   .msg-group.user { align-self: flex-start; }
   .msg-group.admin { align-self: flex-end; align-items: flex-end; }
+  .msg-group.bot { align-self: flex-end; align-items: flex-end; }
   
   .msg-bubble {
     padding: 0.75rem 1rem;
@@ -163,6 +164,7 @@
   }
   .msg-group.user .msg-bubble { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; border-bottom-left-radius: 2px; }
   .msg-group.admin .msg-bubble { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border-bottom-right-radius: 2px; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2); }
+  .msg-group.bot .msg-bubble { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-bottom-right-radius: 2px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
   
   .msg-time { font-size: 0.65rem; color: #6b7280; margin-top: 0.3rem; }
   
@@ -319,17 +321,20 @@
   async function fetchTickets() {
     try {
       const res = await fetch('/admin/api/support/tickets');
+      if (!res.ok) throw new Error('Failed to fetch tickets');
       const data = await res.json();
-      tickets = data.tickets;
+      tickets = data.tickets || [];
       
-      document.getElementById('stat-total').innerText = data.stats.total;
-      document.getElementById('stat-open').innerText = data.stats.open;
-      document.getElementById('stat-urgent').innerText = data.stats.urgent;
-      document.getElementById('stat-avg').innerText = data.stats.avgResponse;
+      document.getElementById('stat-total').innerText = data.stats ? data.stats.total : '-';
+      document.getElementById('stat-open').innerText = data.stats ? data.stats.open : '-';
+      document.getElementById('stat-urgent').innerText = data.stats ? data.stats.urgent : '-';
+      document.getElementById('stat-avg').innerText = data.stats ? data.stats.avgResponse : '-';
       
       renderTicketList();
     } catch (err) {
       console.error("Failed to load tickets", err);
+      const list = document.getElementById('ticketList');
+      if (list) list.innerHTML = '<div class="empty-state" style="padding: 2rem; color: #ef4444;">Error loading tickets. Retrying...</div>';
     }
   }
 
@@ -340,7 +345,7 @@
     const priority = document.getElementById('priorityFilter').value;
     
     let filtered = tickets.filter(t => {
-      const matchSearch = t.phone.toLowerCase().includes(search) || t.ticketId.toLowerCase().includes(search);
+      const matchSearch = String(t.phone || '').toLowerCase().includes(search) || String(t.ticketId || '').toLowerCase().includes(search);
       const matchStatus = status === 'all' || t.status === status;
       const matchPriority = priority === 'all' || t.priority === priority;
       return matchSearch && matchStatus && matchPriority;
@@ -432,13 +437,17 @@
       const isAtBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 50;
       
       box.innerHTML = data.ticket.messages.map(m => {
-        const isAdmin = m.sender === 'admin' || (m.sender === 'bot' && m.isBot); // legacy mapping
-        const cls = isAdmin ? 'admin' : 'user';
+        const cls = m.sender || 'user'; // admin, bot, user
         const timeStr = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        let senderLabel = '👤 User';
+        if (m.sender === 'bot') senderLabel = '🤖 AI Assistant';
+        else if (m.sender === 'admin') senderLabel = '👨‍💻 Support Agent';
+        
         return \`
           <div class="msg-group \${cls}">
             <div class="msg-bubble">\${m.text}</div>
-            <div class="msg-time">\${m.sender === 'bot' ? '🤖 Bot' : (isAdmin ? '🛡️ Admin' : '👤 User')} • \${timeStr}</div>
+            <div class="msg-time">\${senderLabel} • \${timeStr}</div>
           </div>
         \`;
       }).join('');

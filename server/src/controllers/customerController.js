@@ -105,6 +105,22 @@ exports.postLogin = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.getForgotPassword = (req, res) => {
+  res.render('customer/forgot-password', { error: null, success: null, phone: '' });
+};
+
+exports.postForgotPassword = async (req, res, next) => {
+  try {
+    const { phone } = req.body || {};
+    // Mock functionality for password reset
+    res.render('customer/forgot-password', { 
+      error: null, 
+      success: 'If an account with that number exists, you will receive an SMS with a password reset link.', 
+      phone 
+    });
+  } catch (err) { next(err); }
+};
+
 exports.getRegister = (req, res) => {
   res.render('customer/register', { error: null, form: { name: '', phone: '' } });
 };
@@ -417,6 +433,13 @@ exports.postSupportChat = async (req, res, next) => {
       tkt = await SupportTicket.create({ phone: req.session.customer.phone, status: 'bot_active' });
     }
     
+    // Reopen closed or resolved tickets
+    if (tkt.status === 'resolved' || tkt.status === 'closed') {
+      tkt.status = 'bot_active';
+      tkt.issueType = 'unknown';
+      tkt.priority = 'normal';
+    }
+
     // Count user messages prior to this one
     const pastUserMsgs = tkt.messages.filter(m => m.sender === 'user').length;
     
@@ -436,8 +459,12 @@ exports.postSupportChat = async (req, res, next) => {
     else if (l.includes('when') || l.includes('status')) intent = "follow_up";
     
     // 2. Escalation Logic
-    if (pastUserMsgs >= 1 || l.includes('urgent') || intent === 'lost_device') {
-      tkt.status = 'human_assigned';
+    let justEscalated = false;
+    if (tkt.status === 'bot_active') {
+      if (pastUserMsgs >= 2 || l.includes('urgent') || intent === 'lost_device') {
+        tkt.status = 'human_assigned';
+        justEscalated = true;
+      }
     }
 
     // 3. Smart Bot Responses
@@ -455,6 +482,10 @@ exports.postSupportChat = async (req, res, next) => {
       botMsg = "📍 Fetching your device location...";
     }
     
+    if (justEscalated && intent !== "lost_device") {
+      botMsg = "I am transferring you to a human support agent who can help you further.";
+    }
+    
     // 4. Update Ticket metadata
     if (intent === 'lost_device') tkt.issueType = 'lost_phone';
     else if (intent === 'technical' && tkt.issueType === 'unknown') tkt.issueType = 'technical';
@@ -469,15 +500,18 @@ exports.postSupportChat = async (req, res, next) => {
     
     // 5. Bot Halt & Reply Logic
     let shouldReply = false;
-    
     if (tkt.status === 'bot_active') {
-      // Bot is active, so it can reply.
-      if (!tkt.botHandled) shouldReply = true;
-      else if (intent) shouldReply = true;
-    } else if (tkt.status === 'human_assigned') {
-      // Only allow the bot to send the final escalation message once
-      if (intent === 'lost_device' && !tkt.botHandled) shouldReply = true;
-      else shouldReply = false;
+      shouldReply = true;
+    } else if (justEscalated) {
+      shouldReply = true;
+    } else if (tkt.status === 'human_assigned' || tkt.status === 'escalated') {
+      // If already assigned to human, remind the user occasionally or just acknowledge
+      // We don't want a recursive loop for every message, so maybe reply only if the last message was also from user, or just reply with a standard hold message
+      const lastMsgIsUser = tkt.messages.length >= 2 && tkt.messages[tkt.messages.length - 2].sender === 'user';
+      if (!lastMsgIsUser) {
+        shouldReply = true;
+        botMsg = "You are currently in queue. A human support agent will be with you shortly. Thank you for your patience.";
+      }
     }
     
     if (shouldReply) {

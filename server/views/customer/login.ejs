@@ -17,15 +17,15 @@
     <form method="POST" action="/customer/login" class="login-form">
       <label>Phone number</label>
       <input name="phone" required autofocus value="<%= phone || '' %>" placeholder="+91 98xxxxxxxx" autocomplete="tel" />
-      <label>Password</label>
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <label>Password</label>
+        <a href="/customer/forgot-password" class="forgot-link" style="font-size: 0.8rem; text-decoration: none; color: #8b5cf6;">Forgot password?</a>
+      </div>
       <input name="password" type="password" required autocomplete="current-password" />
       <button class="btn-primary" type="submit">Sign in</button>
     </form>
     <p class="login-hint">
       New here? <a href="/customer/register" class="forgot-link">Create an account</a>
-    </p>
-    <p class="login-hint">
-      Are you the system administrator? <a href="/login" class="forgot-link">Open Admin Panel</a>
     </p>
   </div>
 </div>
