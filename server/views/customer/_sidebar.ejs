@@ -9,6 +9,19 @@
     </div>
   </div>
   <nav class="sidebar-nav">
+    <% if (devices && devices.length > 0) { %>
+      <div class="device-selector" style="padding: 0.5rem 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <form method="POST" action="/customer/device/select" id="deviceSelectForm">
+          <select name="deviceId" onchange="document.getElementById('deviceSelectForm').submit()" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; outline: none; cursor: pointer;">
+            <% devices.forEach(d => { %>
+              <option value="<%= d.deviceId %>" <%= device && d.deviceId === device.deviceId ? 'selected' : '' %>>
+                <%= d.online ? '🟢' : '🔴' %> <%= d.displayName %>
+              </option>
+            <% }) %>
+          </select>
+        </form>
+      </div>
+    <% } %>
     <a href="/customer" class="<%= active === 'dashboard' ? 'active' : '' %>">
       <span class="nav-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>

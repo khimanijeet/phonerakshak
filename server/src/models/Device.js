@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 
 const deviceSchema = new mongoose.Schema({
   deviceId: { type: String, required: true, unique: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
   phoneNumber: { type: String, default: '' },
   emergencyNumber: { type: String, default: '' },
   deviceModel: { type: String, default: '' },
+  deviceName: { type: String, default: '' },
   city: { type: String, default: 'Others' },
   fcmToken: { type: String, default: null },
   recoveryCode: { type: String, unique: true, sparse: true },

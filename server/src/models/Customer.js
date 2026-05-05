@@ -9,7 +9,9 @@ const trustedContactSchema = new mongoose.Schema({
 const customerSchema = new mongoose.Schema({
   phone: { type: String, required: true, unique: true },
   name: { type: String, default: '' },
-  passwordHash: { type: String, required: true },
+  firebaseUid: { type: String, required: true, unique: true, sparse: true },
+  plan: { type: String, default: 'free' },
+  deviceLimit: { type: Number, default: 1 },
   isPremium: { type: Boolean, default: false },
   trustedContacts: [trustedContactSchema],
   settings: {

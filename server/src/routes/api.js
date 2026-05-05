@@ -42,7 +42,8 @@ const uploadAudio = multer({
 });
 
 // Open route for registration/refresh (returns JWT)
-router.post('/devices', apiController.upsertDevice);
+router.post('/auth/firebase-login', apiController.firebaseLogin);
+router.post('/device/register', verifyToken, apiController.upsertDevice);
 router.post('/device/register-fcm', verifyToken, apiController.registerFcm);
 
 // Face Recovery Setup & Verification
@@ -57,6 +58,7 @@ router.get('/devices/:id/commands', verifyToken, apiController.getCommands);
 router.post('/devices/:id/commands/:cid/ack', verifyToken, apiController.ackCommand);
 router.get('/devices/:id/geofence', verifyToken, apiController.getGeofence);
 router.post('/intruders', verifyToken, upload.single('photo'), apiController.addIntruder);
+router.post('/support/chat', verifyToken, apiController.postSupportChat);
 router.post('/audio', verifyToken, uploadAudio.single('audio'), apiController.addAudio);
 
 router.get('/intruders/:filename', (req, res) => {

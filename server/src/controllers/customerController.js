@@ -25,7 +25,7 @@ function timeAgo(ts) {
   return Math.floor(hr / 24) + ' day ago';
 }
 
-async function buildCustomerContext(customerPhone) {
+async function buildCustomerContext(customerPhone, activeDeviceId = null) {
   const customer = await Customer.findOne({ phone: customerPhone }).lean();
   const isPremium = !!customer?.isPremium;
   
@@ -33,10 +33,18 @@ async function buildCustomerContext(customerPhone) {
   const devices = devicesDb.map(d => ({
     ...d,
     online: isOnline(d),
-    lastSeenLabel: timeAgo(d.lastSeen)
+    lastSeenLabel: timeAgo(d.lastSeen),
+    displayName: d.deviceName || d.deviceModel || 'Unknown Device'
   }));
   
-  const device = devices[0] || null;
+  let device = null;
+  if (devices.length > 0) {
+    if (activeDeviceId) {
+      device = devices.find(d => d.deviceId === activeDeviceId) || devices[0];
+    } else {
+      device = devices[0];
+    }
+  }
   
   let context = {
     devices, device, latest: null, alerts: [], photos: [], commands: [],
@@ -215,7 +223,7 @@ exports.getLogout = (req, res) => {
 exports.getDashboard = async (req, res, next) => {
   try {
     const c = await Customer.findOne({ phone: req.session.customer.phone });
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.render('customer/dashboard', {
       user: c || req.session.customer,
       active: 'dashboard',
@@ -230,7 +238,7 @@ exports.getDashboard = async (req, res, next) => {
 exports.getSecurity = async (req, res, next) => {
   try {
     const c = await Customer.findOne({ phone: req.session.customer.phone });
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.render('customer/security', {
       user: c || req.session.customer,
       active: 'security',
@@ -245,7 +253,7 @@ exports.getSecurity = async (req, res, next) => {
 exports.getActivity = async (req, res, next) => {
   try {
     const c = await Customer.findOne({ phone: req.session.customer.phone });
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.render('customer/activity', {
       user: c || req.session.customer,
       active: 'activity',
@@ -260,7 +268,7 @@ exports.getActivity = async (req, res, next) => {
 exports.getSettings = async (req, res, next) => {
   try {
     const c = await Customer.findOne({ phone: req.session.customer.phone });
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.render('customer/settings', {
       user: c || req.session.customer,
       active: 'settings',
@@ -293,7 +301,7 @@ exports.postUpdateSettings = async (req, res, next) => {
 
 exports.getPoll = async (req, res, next) => {
   try {
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.json({ latest: ctx.latest, activityLogs: ctx.activityLogs.slice(0, 10), alerts: ctx.alerts });
   } catch (err) { next(err); }
 };
@@ -306,7 +314,14 @@ exports.postCommand = async (req, res, next) => {
       req.session.notice = { type: 'error', text: 'Unsupported command.' };
       return res.redirect('/customer');
     }
-    const device = await Device.findOne({ phoneNumber: req.session.customer.phone }).sort({ lastSeen: -1 });
+    let device;
+    if (req.session.activeDeviceId) {
+      device = await Device.findOne({ phoneNumber: req.session.customer.phone, deviceId: req.session.activeDeviceId });
+    }
+    if (!device) {
+      device = await Device.findOne({ phoneNumber: req.session.customer.phone }).sort({ lastSeen: -1 });
+    }
+    
     if (!device) {
       req.session.notice = { type: 'error', text: 'No device linked yet. Install the PhoneRakshak app and use the same phone number.' };
       return res.redirect('/customer');
@@ -342,8 +357,41 @@ exports.postMode = async (req, res, next) => {
     // For now we just create a security log or alert
     await Alert.create({ deviceId: device.deviceId, type: 'mode_change', message: `Protection mode set to ${mode.toUpperCase()} by owner`, timestamp: Date.now() });
     
-    req.session.notice = { type: 'success', text: `Protection mode set to ${mode.toUpperCase()}.` };
+    req.session.notice = { type: 'success', text: `Protection mode updated to ${mode.toUpperCase()}.` };
     res.redirect('/customer');
+  } catch (err) { next(err); }
+};
+
+exports.postSelectDevice = async (req, res, next) => {
+  try {
+    const { deviceId } = req.body;
+    if (!deviceId) return res.redirect('back');
+    
+    const device = await Device.findOne({ phoneNumber: req.session.customer.phone, deviceId });
+    if (device) {
+      req.session.activeDeviceId = device.deviceId;
+    }
+    res.redirect('back');
+  } catch (err) { next(err); }
+};
+
+exports.postRenameDevice = async (req, res, next) => {
+  try {
+    const { deviceId, deviceName } = req.body;
+    if (!deviceId) return res.status(400).json({ error: 'Device ID required' });
+    
+    let sanitizedName = deviceName ? String(deviceName).trim().substring(0, 30) : '';
+    
+    const device = await Device.findOne({ phoneNumber: req.session.customer.phone, deviceId });
+    if (!device) {
+      return res.status(404).json({ error: 'Device not found' });
+    }
+    
+    device.deviceName = sanitizedName;
+    await device.save();
+    
+    req.session.notice = { type: 'success', text: 'Device renamed successfully' };
+    res.redirect('back');
   } catch (err) { next(err); }
 };
 
@@ -352,7 +400,7 @@ exports.getContacts = async (req, res, next) => {
     const c = await Customer.findOne({ phone: req.session.customer.phone }).lean();
     const contacts = c.trustedContacts || [];
     const notifications = []; // Mock notifications
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     const baseUrl = (req.protocol + '://' + req.get('host')).replace(/\/$/, '');
     res.render('customer/contacts', {
       user: c || req.session.customer,
@@ -401,14 +449,14 @@ exports.postDeleteContact = async (req, res, next) => {
 
 exports.getAlerts = async (req, res, next) => {
   try {
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.render('customer/alerts', { user: req.session.customer, active: 'alerts', ctx, timeAgo });
   } catch (err) { next(err); }
 };
 
 exports.getPhotos = async (req, res, next) => {
   try {
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     const photos = ctx.device ? await Intruder.find({ deviceId: ctx.device.deviceId }).sort({ timestamp: -1 }).limit(60).lean() : [];
     res.render('customer/photos', { user: req.session.customer, active: 'photos', ctx, photos, timeAgo });
   } catch (err) { next(err); }
@@ -421,23 +469,7 @@ exports.getAccount = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.postChangePassword = async (req, res, next) => {
-  try {
-    const { currentPassword, newPassword, confirmPassword } = req.body || {};
-    const c = await Customer.findOne({ phone: req.session.customer.phone });
-    const render = (error, notice) => res.render('customer/account', { user: req.session.customer, active: 'account', customer: c, error, notice });
-    
-    if (!c) return res.redirect('/customer/login');
-    if (!currentPassword || !newPassword || !confirmPassword) return render('All fields are required.', null);
-    if (!bcrypt.compareSync(currentPassword, c.passwordHash)) return render('Current password is incorrect.', null);
-    if (newPassword.length < 6) return render('New password must be at least 6 characters.', null);
-    if (newPassword !== confirmPassword) return render('New password and confirmation do not match.', null);
-    
-    c.passwordHash = bcrypt.hashSync(newPassword, 10);
-    await c.save();
-    return render(null, 'Password updated successfully.');
-  } catch (err) { next(err); }
-};
+
 
 exports.postProfile = async (req, res, next) => {
   try {
@@ -457,7 +489,7 @@ exports.getSupport = async (req, res, next) => {
     if (!tkt) {
       tkt = await SupportTicket.create({ phone: c.phone });
     }
-    const ctx = await buildCustomerContext(req.session.customer.phone);
+    const ctx = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     res.render('customer/support', { 
       user: c || req.session.customer, 
       active: 'support', 
@@ -491,7 +523,7 @@ exports.postSupportChat = async (req, res, next) => {
     tkt.messages.push({ text, isBot: false, sender: 'user', type: 'text', timestamp: Date.now() });
     
     // Fetch customer context for the AI prompt
-    const customerContext = await buildCustomerContext(req.session.customer.phone);
+    const customerContext = await buildCustomerContext(req.session.customer.phone, req.session.activeDeviceId);
     
     // Check if we need to fall back to static hold message if already human_assigned
     let shouldReply = false;
@@ -565,4 +597,6 @@ exports.getSupportHistory = async (req, res, next) => {
     res.json({ ticket: tkt });
   } catch (err) { next(err); }
 };
+
+
 

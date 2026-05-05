@@ -16,20 +16,14 @@ exports.verifyToken = (req, res, next) => {
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.status(403).json({ error: 'Invalid or expired token' });
     
-    // Attach deviceId to request
-    req.deviceId = decoded.deviceId;
-    
-    // Ensure the deviceId in the body/params matches the token for security
-    const requestedDeviceId = req.body.deviceId || req.params.id || req.body.id;
-    if (requestedDeviceId && requestedDeviceId !== req.deviceId) {
-      return res.status(403).json({ error: 'Token does not match requested deviceId' });
-    }
+    // Attach userId to request
+    req.userId = decoded.userId;
     
     next();
   });
 };
 
-exports.generateToken = (deviceId) => {
+exports.generateToken = (userId) => {
   // Token expires in 7 days for better security
-  return jwt.sign({ deviceId }, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 };

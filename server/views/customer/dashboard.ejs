@@ -58,6 +58,39 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
       </div>
+      
+      <% if (ctx.device) { %>
+      <div class="mobile-card device-info-card" style="padding: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="device-details">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">
+              <%= ctx.device.displayName %>
+            </h3>
+            <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-muted);">
+              <%= ctx.device.deviceModel || 'Unknown Model' %>
+            </p>
+          </div>
+          <button onclick="document.getElementById('renameModal').style.display='block'" class="btn-clear" style="padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.85rem; color: #fff;">
+            Rename
+          </button>
+        </div>
+      </div>
+      
+      <!-- Rename Modal -->
+      <div id="renameModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <h3 style="margin-top: 0; color: #fff;">Rename Device</h3>
+          <form action="/customer/device/rename" method="POST">
+            <input type="hidden" name="deviceId" value="<%= ctx.device.deviceId %>">
+            <input type="text" name="deviceName" value="<%= ctx.device.deviceName %>" placeholder="e.g. My Phone" maxlength="30" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; margin-bottom: 15px;" required>
+            <div style="display: flex; gap: 10px;">
+              <button type="submit" style="flex: 1; padding: 10px; background: var(--color-primary); color: #fff; border: none; border-radius: 6px; cursor: pointer;">Save</button>
+              <button type="button" onclick="document.getElementById('renameModal').style.display='none'" style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); color: #fff; border: none; border-radius: 6px; cursor: pointer;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <% } %>
 
       <div class="quick-actions-grid">
         <form action="/customer/command" method="POST" style="display: contents;">

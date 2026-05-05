@@ -8,31 +8,71 @@ const Report = require('../models/Report');
 const AudioRecording = require('../models/AudioRecording');
 const logger = require('../utils/logger');
 const { generateToken } = require('../middlewares/auth');
-const { sendAndroidPushAlert } = require('../utils/firebase');
+const { sendAndroidPushAlert, admin } = require('../utils/firebase');
+const Customer = require('../models/Customer');
+
+exports.firebaseLogin = async (req, res, next) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) return res.status(400).json({ error: 'idToken is required' });
+
+    // Verify token with Firebase Admin
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { uid: firebaseUid, phone_number: phone } = decodedToken;
+
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number not found in Firebase token' });
+    }
+
+    // Lookup or Create Customer
+    let customer = await Customer.findOne({ $or: [{ firebaseUid }, { phone }] });
+    if (!customer) {
+      customer = await Customer.create({
+        phone,
+        firebaseUid,
+        plan: 'free',
+        deviceLimit: 1
+      });
+      logger.info(`New customer created via Firebase Login: ${phone}`);
+    } else {
+      // Update firebaseUid if missing (legacy linking)
+      if (!customer.firebaseUid) {
+        customer.firebaseUid = firebaseUid;
+        await customer.save();
+      }
+    }
+
+    const token = generateToken(customer._id);
+    res.json({ success: true, token, user: { _id: customer._id, phone: customer.phone, plan: customer.plan } });
+  } catch (err) {
+    logger.error(`Firebase Login Error: ${err.message}`);
+    res.status(401).json({ error: 'Invalid Firebase Token' });
+  }
+};
 
 exports.upsertDevice = async (req, res, next) => {
   try {
-    const { deviceId, phoneNumber, emergencyNumber, deviceModel, city, fcmToken } = req.body || {};
+    const { deviceId, deviceModel, fcmToken } = req.body || {};
+    const userId = req.userId;
+    
     if (!deviceId) return res.status(400).json({ error: 'deviceId required' });
+    if (!userId) return res.status(401).json({ error: 'Unauthorized: userId missing from token' });
     
     let device = await Device.findOne({ deviceId });
     if (device) {
-      device.phoneNumber = phoneNumber || device.phoneNumber;
-      device.emergencyNumber = emergencyNumber || device.emergencyNumber;
+      device.userId = userId;
       device.deviceModel = deviceModel || device.deviceModel;
-      device.city = city || device.city;
       if (fcmToken) device.fcmToken = fcmToken;
       device.lastSeen = Date.now();
       await device.save();
     } else {
-      device = await Device.create({ deviceId, phoneNumber, emergencyNumber, deviceModel, city, fcmToken, registeredAt: Date.now(), lastSeen: Date.now() });
+      device = await Device.create({ deviceId, userId, deviceModel, fcmToken, registeredAt: Date.now(), lastSeen: Date.now() });
     }
     
     const io = req.app.get('io');
     if (io) io.emit('device_updated', device);
     
-    const token = generateToken(device.deviceId);
-    res.json({ ok: true, device, token });
+    res.json({ ok: true, device });
   } catch (err) { next(err); }
 };
 
@@ -357,3 +397,81 @@ exports.getGeofence = async (req, res, next) => {
     res.json(device.geofence || { enabled: false });
   } catch (err) { next(err); }
 };
+const SupportTicket = require('../models/SupportTicket');
+const { generateSupportResponse } = require('../utils/gemini');
+
+exports.postSupportChat = async (req, res, next) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).send('Text required');
+    
+    const c = await Customer.findOne({ phone: c.phone });
+    let tkt = await SupportTicket.findOne({ phone: c.phone });
+    if (!tkt) {
+      tkt = await SupportTicket.create({ phone: c.phone, status: 'bot_active' });
+    }
+    
+    // Reopen closed or resolved tickets
+    if (tkt.status === 'resolved' || tkt.status === 'closed') {
+      tkt.status = 'bot_active';
+      tkt.issueType = 'unknown';
+      tkt.priority = 'normal';
+    }
+
+    // Count user messages prior to this one
+    const pastUserMsgs = tkt.messages.filter(m => m.sender === 'user').length;
+    
+    tkt.messages.push({ text, isBot: false, sender: 'user', type: 'text', timestamp: Date.now() });
+    
+    // Fetch customer context for the AI prompt
+    const customerContext = await buildCustomerContext(c.phone, req.deviceId);
+    
+    // Check if we need to fall back to static hold message if already human_assigned
+    let shouldReply = false;
+    let justEscalated = false;
+    let botMsg = "";
+
+    if (tkt.status === 'bot_active') {
+      shouldReply = true;
+      botMsg = await generateSupportResponse(tkt, customerContext);
+      
+      // Parse for Escalation Keyword
+      if (botMsg.includes('[ESCALATE]')) {
+        botMsg = botMsg.replace(/\[ESCALATE\]/g, '').trim();
+        tkt.status = 'human_assigned';
+        tkt.priority = 'urgent';
+        justEscalated = true;
+      }
+      
+      // Prevent completely empty messages if regex stripped everything
+      if (!botMsg) {
+        botMsg = "I am transferring you to a human support agent who can help you further.";
+      }
+    }
+    
+    if (tkt.status === 'human_assigned' || tkt.status === 'escalated') {
+      const lastMsgIsUser = tkt.messages.length >= 2 && tkt.messages[tkt.messages.length - 2].sender === 'user';
+      if (!lastMsgIsUser && !justEscalated) {
+        shouldReply = true;
+        botMsg = "You are currently in queue. A human support agent will be with you shortly. Thank you for your patience.";
+      }
+    }
+    
+    if (shouldReply) {
+      tkt.messages.push({ text: botMsg, isBot: true, sender: 'bot', type: 'text', timestamp: Date.now() });
+      tkt.botResponseCount = (tkt.botResponseCount || 0) + 1;
+      tkt.botHandled = true;
+    }
+    
+    await tkt.save();
+    
+    // Broadcast via Socket.io
+    const io = req.app.get('io');
+    if (io) {
+      io.to(tkt._id.toString()).emit('new_message', { ticket: tkt });
+    }
+    
+    res.json({ ticket: tkt });
+  } catch (err) { next(err); }
+};
+
