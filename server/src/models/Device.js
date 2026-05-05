@@ -9,6 +9,7 @@ const deviceSchema = new mongoose.Schema({
   fcmToken: { type: String, default: null },
   recoveryCode: { type: String, unique: true, sparse: true },
   faceDescriptor: { type: [Number], default: [] },
+  trackingMode: { type: Number, default: 0, enum: [0, 1, 2] }, // 0: Normal, 1: Suspicious, 2: Lost
   geofence: {
     enabled: { type: Boolean, default: false },
     lat: { type: Number, default: null },

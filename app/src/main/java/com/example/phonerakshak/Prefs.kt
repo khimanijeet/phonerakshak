@@ -104,6 +104,10 @@ class Prefs(context: Context) {
         get() = prefs.getString(KEY_TARGET_DEVICE_ID, null)
         set(value) = prefs.edit().putString(KEY_TARGET_DEVICE_ID, value).apply()
 
+    var trackingMode: Int
+        get() = prefs.getInt(KEY_TRACKING_MODE, 0)
+        set(value) = prefs.edit().putInt(KEY_TRACKING_MODE, value).apply()
+
     fun markCommandExecuted(commandId: String) {
         val current = executedCommandIds.toMutableSet()
         current.add(commandId)
@@ -132,5 +136,6 @@ class Prefs(context: Context) {
         private const val KEY_JWT_TOKEN = "jwt_token"
         private const val KEY_EXECUTED_CMDS = "executed_commands"
         private const val KEY_TARGET_DEVICE_ID = "target_device_id"
+        private const val KEY_TRACKING_MODE = "tracking_mode"
     }
 }

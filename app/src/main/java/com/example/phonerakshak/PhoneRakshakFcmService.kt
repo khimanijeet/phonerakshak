@@ -121,6 +121,23 @@ class PhoneRakshakFcmService : FirebaseMessagingService() {
                 EmergencyHandler.trigger(this, source = "remote")
                 "ok"
             }
+            "take_photo" -> {
+                val intent = Intent(this, InvisibleCaptureActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+                startActivity(intent)
+                "ok"
+            }
+            "start_tracking" -> {
+                prefs.trackingMode = 2 // 2 = Lost mode
+                PhoneRakshakService.start(this)
+                "ok"
+            }
+            "stop_tracking" -> {
+                prefs.trackingMode = 0 // 0 = Normal mode
+                PhoneRakshakService.stop(this)
+                "ok"
+            }
             else -> "unknown_command"
         }
     }

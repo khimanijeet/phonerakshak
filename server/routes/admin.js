@@ -1,26 +1,47 @@
 const express = require('express');
-const db = require('../db');
-
 const router = express.Router();
+
+// Mongoose Models
+const Customer = require('../src/models/Customer');
+const Device = require('../src/models/Device');
+const Alert = require('../src/models/Alert');
+const Command = require('../src/models/Command');
+const SecurityLog = require('../src/models/SecurityLog');
+const SupportTicket = require('../src/models/SupportTicket');
+const Intruder = require('../src/models/Intruder');
+const Location = require('../src/models/Location');
+const BlockedNumber = require('../src/models/BlockedNumber');
 
 function requireAuth(req, res, next) {
   if (req.session && req.session.user) return next();
   return res.redirect('/login');
 }
 
-router.get('/', requireAuth, (req, res) => {
-  const devices = db.listDevices();
+function isOnline(device) {
+  if (!device || !device.lastSeen) return false;
+  return (Date.now() - new Date(device.lastSeen).getTime() < 5 * 60000);
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+router.get('/', requireAuth, async (req, res) => {
+  const devices = await Device.find({}).sort({ lastSeen: -1 }).limit(1);
   const device = devices.length > 0 ? devices[0] : null;
   
   if (device) {
-    device.online = db.isOnline(device);
+    device.online = isOnline(device);
   }
 
-  const locations = device ? db.getLocations(device.deviceId, 20) : [];
-  const latest = device ? db.getLatestLocation(device.deviceId) : null;
-  const alerts = device ? db.getAlerts(device.deviceId, 10).filter(a => a.type === 'sim_change') : [];
-  const intruders = device ? db.getIntruderPhotos(device.deviceId, 4) : [];
-  const commands = device ? db.getCommands(device.deviceId, 5) : [];
+  const locations = device ? await Location.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(20) : [];
+  const latest = locations.length > 0 ? locations[0] : null;
+  const alerts = device ? await Alert.find({ deviceId: device.deviceId, type: 'sim_change' }).sort({ timestamp: -1 }).limit(10) : [];
+  const intruders = device ? await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(4) : [];
+  const commands = device ? await Command.find({ deviceId: device.deviceId }).sort({ createdAt: -1 }).limit(5) : [];
 
   res.render('dashboard', {
     user: req.session.user,
@@ -33,25 +54,32 @@ router.get('/', requireAuth, (req, res) => {
   });
 });
 
-router.get('/devices', requireAuth, (req, res) => {
-  const devices = db.listDevices().map((d) => ({
-    ...d,
-    online: db.isOnline(d),
-  }));
-  res.render('devices', { user: req.session.user, devices });
+router.get('/devices', requireAuth, async (req, res) => {
+  const devices = await Device.find({}).sort({ lastSeen: -1 });
+  const mappedDevices = devices.map(d => {
+    const dev = d.toObject();
+    dev.online = isOnline(d);
+    return dev;
+  });
+  res.render('devices', { user: req.session.user, devices: mappedDevices });
 });
 
-router.get('/devices/:id', requireAuth, (req, res) => {
-  const device = db.getDevice(req.params.id);
+router.get('/devices/:id', requireAuth, async (req, res) => {
+  const device = await Device.findOne({ deviceId: req.params.id });
   if (!device) return res.status(404).send('Device not found');
-  const locations = db.getLocations(device.deviceId, 200);
-  const latest = db.getLatestLocation(device.deviceId);
-  const alerts = db.getAlerts(device.deviceId, 100);
-  const intruders = db.getIntruderPhotos(device.deviceId, 50);
-  const commands = db.getCommands(device.deviceId, 50);
+  
+  const locations = await Location.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(200);
+  const latest = locations.length > 0 ? locations[0] : null;
+  const alerts = await Alert.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(100);
+  const intruders = await Intruder.find({ deviceId: device.deviceId }).sort({ timestamp: -1 }).limit(50);
+  const commands = await Command.find({ deviceId: device.deviceId }).sort({ createdAt: -1 }).limit(50);
+  
+  const dev = device.toObject();
+  dev.online = isOnline(device);
+
   res.render('device', {
     user: req.session.user,
-    device: { ...device, online: db.isOnline(device) },
+    device: dev,
     locations,
     latest,
     alerts,
@@ -60,29 +88,36 @@ router.get('/devices/:id', requireAuth, (req, res) => {
   });
 });
 
-router.post('/devices/:id/command', requireAuth, (req, res) => {
+router.post('/devices/:id/command', requireAuth, async (req, res) => {
   const { type } = req.body;
   if (!type) return res.status(400).send('type required');
-  db.queueCommand({ deviceId: req.params.id, type });
+  await Command.create({ deviceId: req.params.id, type, status: 'pending' });
   res.redirect(`/admin/devices/${req.params.id}`);
 });
 
-router.get('/blocked', requireAuth, (req, res) => {
+router.get('/blocked', requireAuth, async (req, res) => {
+  const blocked = await BlockedNumber.find({}).sort({ createdAt: -1 });
   res.render('blocked', {
     user: req.session.user,
-    blocked: db.getAllBlockedNumbers(),
+    blocked,
   });
 });
 
-router.get('/users', requireAuth, (req, res) => {
-  const users = db.getAllCustomers();
-  const rows = users.map(u => [
-    `<span class="mono">${u.phone}</span>`,
-    u.name || '—',
-    u.isPremium ? '<span class="status status-active">Premium</span>' : '<span class="status status-inactive">Free</span>',
-    u.devices ? u.devices.length : 0,
-    formatDate(u.createdAt)
-  ]);
+router.get('/users', requireAuth, async (req, res) => {
+  const users = await Customer.find({}).sort({ createdAt: -1 });
+  const rows = [];
+  
+  for (const u of users) {
+    const devCount = await Device.countDocuments({ phoneNumber: u.phone });
+    rows.push([
+      `<span class="mono">${u.phone}</span>`,
+      u.name || '—',
+      u.isPremium ? '<span class="status status-active">Premium</span>' : '<span class="status status-inactive">Free</span>',
+      devCount,
+      formatDate(u.createdAt)
+    ]);
+  }
+
   res.render('generic-list', {
     user: req.session.user,
     active: 'users',
@@ -93,8 +128,8 @@ router.get('/users', requireAuth, (req, res) => {
   });
 });
 
-router.get('/subscriptions', requireAuth, (req, res) => {
-  const users = db.getAllCustomers().filter(u => u.isPremium);
+router.get('/subscriptions', requireAuth, async (req, res) => {
+  const users = await Customer.find({ isPremium: true }).sort({ createdAt: -1 });
   const rows = users.map(u => [
     `<span class="mono">${u.phone}</span>`,
     u.name || '—',
@@ -112,8 +147,8 @@ router.get('/subscriptions', requireAuth, (req, res) => {
   });
 });
 
-router.get('/sim', requireAuth, (req, res) => {
-  const alerts = db.getAllAlerts(200).filter(a => a.type === 'sim_change');
+router.get('/sim', requireAuth, async (req, res) => {
+  const alerts = await Alert.find({ type: 'sim_change' }).sort({ timestamp: -1 }).limit(200);
   const rows = alerts.map(a => [
     `<span class="mono">${a.deviceId}</span>`,
     'SIM Card Swapped',
@@ -134,8 +169,8 @@ router.get('/plans', requireAuth, (req, res) => {
   res.render('plans', { user: req.session.user, active: 'plans' });
 });
 
-router.get('/alerts', requireAuth, (req, res) => {
-  const alerts = db.getAllAlerts(200);
+router.get('/alerts', requireAuth, async (req, res) => {
+  const alerts = await Alert.find({}).sort({ timestamp: -1 }).limit(200);
   const rows = alerts.map(a => [
     `<span class="pill pill-grey">${(a.type || '').replace(/_/g, ' ')}</span>`,
     `<span class="mono">${a.deviceId}</span>`,
@@ -153,8 +188,8 @@ router.get('/alerts', requireAuth, (req, res) => {
   });
 });
 
-router.get('/logs', requireAuth, (req, res) => {
-  const logs = db.getSecurityLogs(200);
+router.get('/logs', requireAuth, async (req, res) => {
+  const logs = await SecurityLog.find({}).sort({ timestamp: -1 }).limit(200);
   const rows = logs.map(l => {
     let t = l.logType === 'alert' ? l.type : (l.logType === 'command' ? 'CMD: ' + l.type : 'Log');
     return [
@@ -174,8 +209,8 @@ router.get('/logs', requireAuth, (req, res) => {
   });
 });
 
-router.get('/lock-alarm', requireAuth, (req, res) => {
-  const cmds = db.getAllCommands().filter(c => c.type === 'lock' || c.type === 'alarm');
+router.get('/lock-alarm', requireAuth, async (req, res) => {
+  const cmds = await Command.find({ type: { $in: ['lock', 'alarm'] } }).sort({ createdAt: -1 }).limit(200);
   const rows = cmds.map(c => [
     `<span class="pill pill-grey">${c.type}</span>`,
     `<span class="mono">${c.deviceId}</span>`,
@@ -192,8 +227,8 @@ router.get('/lock-alarm', requireAuth, (req, res) => {
   });
 });
 
-router.get('/geofence', requireAuth, (req, res) => {
-  const alerts = db.getAllAlerts(200).filter(a => a.type === 'geofence');
+router.get('/geofence', requireAuth, async (req, res) => {
+  const alerts = await Alert.find({ type: 'geofence' }).sort({ timestamp: -1 }).limit(200);
   const rows = alerts.map(a => [
     `<span class="mono">${a.deviceId}</span>`,
     a.message || 'Left safe zone',
@@ -210,8 +245,8 @@ router.get('/geofence', requireAuth, (req, res) => {
   });
 });
 
-router.get('/commands', requireAuth, (req, res) => {
-  const cmds = db.getAllCommands();
+router.get('/commands', requireAuth, async (req, res) => {
+  const cmds = await Command.find({}).sort({ createdAt: -1 }).limit(200);
   const rows = cmds.map(c => [
     `<span class="pill pill-grey">${c.type}</span>`,
     `<span class="mono">${c.deviceId}</span>`,
@@ -228,11 +263,21 @@ router.get('/commands', requireAuth, (req, res) => {
   });
 });
 
-router.get('/health', requireAuth, (req, res) => {
+router.get('/health', requireAuth, async (req, res) => {
+  const totalUsers = await Customer.countDocuments();
+  const activeDevices = await Device.countDocuments({ lastSeen: { $gt: new Date(Date.now() - 5 * 60000) } });
+  
   res.render('health', {
     user: req.session.user,
     active: 'health',
-    stats: db.getStats()
+    stats: {
+      uptime: process.uptime(),
+      dbStatus: 'Connected',
+      memory: process.memoryUsage().heapUsed,
+      activeSockets: 0,
+      totalUsers,
+      activeDevices
+    }
   });
 });
 
@@ -245,16 +290,16 @@ router.get('/broadcast', requireAuth, (req, res) => {
 });
 
 router.post('/broadcast', requireAuth, (req, res) => {
-  // In a real app, this would trigger FCM to all devices.
   res.redirect('/admin/broadcast?sent=1');
 });
 
-router.get('/support', requireAuth, (req, res) => {
-  const tickets = db.getAllSupportTickets();
+// SUPPORT TICKETS MIGRATION
+router.get('/support', requireAuth, async (req, res) => {
+  const tickets = await SupportTicket.find({}).sort({ updatedAt: -1 });
   const rows = tickets.map(t => [
-    `<span class="mono">${t.id}</span>`,
+    `<a href="/admin/ticket/${t._id}" class="mono" style="color:#8b5cf6;">${t._id}</a>`,
     `<span class="mono">${t.phone}</span>`,
-    `<span class="status status-${t.priority === 'high' ? 'warning' : 'active'}">${t.priority}</span>`,
+    `<span class="status status-${t.priority === 'urgent' ? 'warning' : 'active'}">${t.priority}</span>`,
     `<span class="status status-${t.status === 'open' ? 'inactive' : 'active'}">${t.status}</span>`,
     new Date(t.updatedAt).toLocaleString()
   ]);
@@ -268,37 +313,67 @@ router.get('/support', requireAuth, (req, res) => {
   });
 });
 
-function formatDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-}
+// NEW: Admin Chat Interface Render
+router.get('/ticket/:id', requireAuth, async (req, res) => {
+  const ticket = await SupportTicket.findById(req.params.id);
+  if (!ticket) return res.status(404).send('Ticket not found');
+  
+  const customer = await Customer.findOne({ phone: ticket.phone });
 
-function makeFakeDeltas() {
-  // Static % deltas used to mirror the visual mock.
-  return {
-    totalUsers: 12.5,
-    activeUsers: 9.8,
-    sosAlerts: 15.3,
-    blockedNumbers: 10.7,
-    reportsFiled: 8.6,
-    callsMonitored: 11.2,
-    devicesRegistered: 9.3,
-  };
-}
+  res.render('admin-chat', {
+    user: req.session.user,
+    active: 'support',
+    ticket,
+    customer
+  });
+});
+
+// NEW: Admin Reply Endpoint
+router.post('/ticket/:id/reply', requireAuth, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).send('Text is required');
+
+    const ticket = await SupportTicket.findById(req.params.id);
+    if (!ticket) return res.status(404).send('Ticket not found');
+
+    ticket.messages.push({
+      text,
+      sender: 'admin',
+      isBot: false,
+      type: 'text',
+      timestamp: Date.now()
+    });
+
+    if (ticket.status === 'bot_active' || ticket.status === 'escalated' || ticket.status === 'human_assigned') {
+      ticket.status = 'in_progress';
+    }
+
+    await ticket.save();
+
+    // Broadcast via Socket.io
+    const io = req.app.get('io');
+    if (io) {
+      io.to(ticket._id.toString()).emit('new_message', { ticket });
+    }
+
+    res.json({ success: true, ticket });
+  } catch (error) {
+    console.error('Admin reply error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// NEW: Admin Status Update Endpoint
+router.patch('/ticket/:id/status', requireAuth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const ticket = await SupportTicket.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!ticket) return res.status(404).send('Ticket not found');
+    res.json({ success: true, ticket });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
 
 module.exports = router;

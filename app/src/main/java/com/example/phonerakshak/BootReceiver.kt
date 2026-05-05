@@ -14,8 +14,12 @@ class BootReceiver : BroadcastReceiver() {
         ) {
             val prefs = Prefs(context)
             if (prefs.isConfigured()) {
-                Log.i(TAG, "Boot received — starting PhoneRakshakService")
-                PhoneRakshakService.start(context)
+                Log.i(TAG, "Boot received — scheduling SyncWorker")
+                SyncWorker.schedule(context)
+                if (prefs.trackingMode > 0) {
+                    Log.i(TAG, "Tracking mode active, starting PhoneRakshakService")
+                    PhoneRakshakService.start(context)
+                }
             } else {
                 Log.i(TAG, "Boot received but app not configured; skipping start")
             }

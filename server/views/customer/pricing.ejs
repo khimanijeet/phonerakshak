@@ -1,0 +1,161 @@
+<%- include('_layout-head', { title: 'Pricing & Plans - PhoneRakshak' }) %>
+<style>
+  .pricing-header { text-align: center; margin: 32px 0 24px; }
+  .pricing-title { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .pricing-sub { font-size: 15px; color: #94a3b8; }
+  .pricing-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding-bottom: 32px; }
+  
+  .plan-card { 
+    background: rgba(20, 25, 40, 0.4); 
+    border: 1px solid rgba(255,255,255,0.06); 
+    border-radius: 20px; 
+    padding: 24px; 
+    position: relative; 
+    overflow: hidden; 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .plan-card.active { 
+    border: 1px solid rgba(99, 102, 241, 0.5); 
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15); 
+  }
+  .plan-card.premium { 
+    background: linear-gradient(180deg, rgba(99,102,241,0.1) 0%, rgba(20,25,40,0.4) 100%); 
+    border-color: rgba(99, 102, 241, 0.4); 
+  }
+  .plan-badge { 
+    position: absolute; top: 0; right: 0; 
+    background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+    color: #fff; font-size: 11px; font-weight: 700; 
+    padding: 6px 16px; border-bottom-left-radius: 16px; 
+    letter-spacing: 0.5px; text-transform: uppercase; 
+  }
+  .plan-name { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .plan-price { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: baseline; }
+  .plan-price span { font-size: 14px; font-weight: 500; color: #94a3b8; margin-left: 4px; }
+  
+  .feature-list { list-style: none; padding: 0; margin: 0 0 24px; }
+  .feature-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 14px; color: #cbd5e1; }
+  .feature-icon { 
+    width: 20px; height: 20px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    margin-right: 12px; flex-shrink: 0; 
+  }
+  .feature-icon.yes { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .feature-icon.no { background: rgba(255,255,255,0.05); color: #64748b; }
+  
+  .btn-select { 
+    width: 100%; padding: 14px; border-radius: 12px; 
+    font-size: 15px; font-weight: 600; text-align: center; 
+    border: none; cursor: pointer; transition: all 0.2s; 
+  }
+  .btn-select.primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+  .btn-select.secondary { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+  .btn-select:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-select:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  
+  .current-plan-tag { display: inline-block; background: rgba(34,197,94,0.15); color: #22c55e; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px; }
+</style>
+<body class="mobile-theme">
+  <div class="mobile-container">
+    <header class="mobile-header" style="justify-content: flex-start; gap: 16px;">
+      <a href="/customer" class="icon-btn" style="text-decoration: none; color: inherit;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </a>
+      <div class="header-text-group">
+        <div class="brand-name">Plans & Upgrades</div>
+      </div>
+    </header>
+
+    <main class="mobile-content">
+      <% if (notice) { %>
+        <div class="alert <%= notice.type === 'error' ? 'error' : 'success' %>"><%= notice.text %></div>
+      <% } %>
+
+      <div class="pricing-header">
+        <div class="pricing-title">Secure Your Device</div>
+        <div class="pricing-sub">Choose the perfect protection plan for you.</div>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Basic Plan -->
+        <div class="plan-card <%= ctx.plan === 'basic' ? 'active' : '' %>">
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">₹49<span>/mo</span></div>
+          <% if (ctx.plan === 'basic') { %><div class="current-plan-tag">Current Plan</div><% } %>
+          <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Remote Lock & Alarm</li>
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Live Location Tracking</li>
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> SIM Change Alerts</li>
+            <li class="feature-item"><div class="feature-icon no"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div> No Intruder Selfies</li>
+          </ul>
+          <form action="/customer/upgrade" method="POST">
+            <input type="hidden" name="plan" value="basic" />
+            <button type="submit" class="btn-select <%= ctx.plan === 'basic' ? 'secondary' : 'primary' %>" <%= ctx.plan === 'basic' ? 'disabled' : '' %>>
+              <%= ctx.plan === 'basic' ? 'Active' : 'Upgrade to Basic' %>
+            </button>
+          </form>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="plan-card premium <%= ctx.plan === 'premium' ? 'active' : '' %>">
+          <div class="plan-badge">Most Popular</div>
+          <div class="plan-name">Premium</div>
+          <div class="plan-price">₹149<span>/mo</span></div>
+          <% if (ctx.plan === 'premium') { %><div class="current-plan-tag">Current Plan</div><% } %>
+          <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Everything in Basic</li>
+            <li class="feature-item" style="color: #fff; font-weight: 500;"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Intruder Photo Capture</li>
+            <li class="feature-item" style="color: #fff; font-weight: 500;"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Safe Zone (Geofencing)</li>
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Activity Reports</li>
+          </ul>
+          <form action="/customer/upgrade" method="POST">
+            <input type="hidden" name="plan" value="premium" />
+            <button type="submit" class="btn-select <%= ctx.plan === 'premium' ? 'secondary' : 'primary' %>" <%= ctx.plan === 'premium' ? 'disabled' : '' %>>
+              <%= ctx.plan === 'premium' ? 'Active' : 'Upgrade to Premium' %>
+            </button>
+          </form>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="plan-card <%= ctx.plan === 'pro' ? 'active' : '' %>">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">₹299<span>/mo</span></div>
+          <% if (ctx.plan === 'pro') { %><div class="current-plan-tag">Current Plan</div><% } %>
+          <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Everything in Premium</li>
+            <li class="feature-item" style="color: #fff; font-weight: 500;"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Emergency SOS Mode</li>
+            <li class="feature-item" style="color: #fff; font-weight: 500;"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Priority 24/7 Support</li>
+          </ul>
+          <form action="/customer/upgrade" method="POST">
+            <input type="hidden" name="plan" value="pro" />
+            <button type="submit" class="btn-select <%= ctx.plan === 'pro' ? 'secondary' : 'primary' %>" <%= ctx.plan === 'pro' ? 'disabled' : '' %>>
+              <%= ctx.plan === 'pro' ? 'Active' : 'Upgrade to Pro' %>
+            </button>
+          </form>
+        </div>
+        
+        <!-- Free Plan -->
+        <div class="plan-card" style="opacity: 0.8;">
+          <div class="plan-name">Free</div>
+          <div class="plan-price">₹0<span>/mo</span></div>
+          <% if (ctx.plan === 'free') { %><div class="current-plan-tag">Current Plan</div><% } %>
+          <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon yes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div> Basic Dashboard</li>
+            <li class="feature-item"><div class="feature-icon no"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div> No Live Tracking</li>
+            <li class="feature-item"><div class="feature-icon no"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div> No Remote Lock</li>
+          </ul>
+          <% if (ctx.plan !== 'free') { %>
+            <form action="/customer/upgrade" method="POST">
+              <input type="hidden" name="plan" value="free" />
+              <button type="submit" class="btn-select secondary" style="color: #ef4444; border-color: rgba(239,68,68,0.3);">Downgrade to Free</button>
+            </form>
+          <% } %>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

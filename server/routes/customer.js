@@ -35,12 +35,13 @@ function buildCustomerContext(customer) {
     lastSeenLabel: timeAgo(d.lastSeen),
   }));
   const device = devices[0] || null;
-  const isPremium = !!customer.isPremium; // Added premium check
+  const plan = customer.plan || 'free';
+  const planFeatures = db.PLAN_FEATURES[plan] || db.PLAN_FEATURES['free'];
   
   let context = {
     devices, device, latest: null, alerts: [], photos: [], commands: [],
     simAlerts: [], protection: null, modeHistory: [], activityLogs: [],
-    isPremium
+    plan, planFeatures
   };
   if (device) {
     context.latest = db.getLatestLocation(device.deviceId);
@@ -243,6 +244,20 @@ router.post('/command', requireCustomer, (req, res) => {
     req.session.notice = { type: 'error', text: 'Unsupported command.' };
     return res.redirect('/customer');
   }
+
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const plan = dbCustomer.plan || 'free';
+  const features = db.PLAN_FEATURES[plan] || db.PLAN_FEATURES['free'];
+  
+  if ((type === 'lock' || type === 'unlock') && !features.remoteLock) {
+     req.session.notice = { type: 'error', text: 'Remote Lock requires Basic Plan or higher. Please upgrade.' };
+     return res.redirect('/customer/pricing');
+  }
+  if (type === 'emergency' && plan !== 'premium' && plan !== 'pro') {
+     req.session.notice = { type: 'error', text: 'Emergency Mode requires Premium Plan or higher. Please upgrade.' };
+     return res.redirect('/customer/pricing');
+  }
+
   const device = db.getCustomerPrimaryDevice(req.session.customer.phone);
   if (!device) {
     req.session.notice = {
@@ -373,7 +388,14 @@ router.get('/alerts', requireCustomer, (req, res) => {
 });
 
 router.get('/photos', requireCustomer, (req, res) => {
-  const ctx = buildCustomerContext(req.session.customer);
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const ctx = buildCustomerContext(dbCustomer || req.session.customer);
+  
+  if (!ctx.planFeatures.intruderSelfie) {
+    req.session.notice = { type: 'error', text: 'Intruder Photos require Premium Plan or higher. Please upgrade.' };
+    return res.redirect('/customer/pricing');
+  }
+
   const allPhotos = ctx.device
     ? db.getIntruderPhotos(ctx.device.deviceId, 60)
     : [];
@@ -434,6 +456,36 @@ router.post('/account/profile', requireCustomer, (req, res) => {
   });
 });
 
+// ---------- Pricing & Plans ----------
+router.get('/pricing', requireCustomer, (req, res) => {
+  const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
+  const c = dbCustomer || req.session.customer;
+  const ctx = buildCustomerContext(c);
+  res.render('customer/pricing', {
+    user: c,
+    active: 'pricing',
+    ctx,
+    notice: req.session.notice || null,
+    timeAgo,
+  });
+  if (req.session.notice) delete req.session.notice;
+});
+
+router.post('/upgrade', requireCustomer, (req, res) => {
+  const { plan } = req.body || {};
+  const allowedPlans = ['free', 'basic', 'premium', 'pro'];
+  if (!allowedPlans.includes(plan)) {
+    req.session.notice = { type: 'error', text: 'Invalid plan selected.' };
+    return res.redirect('/customer/pricing');
+  }
+
+  const phone = req.session.customer.phone;
+  db.updateCustomer(phone, { plan });
+  
+  req.session.notice = { type: 'success', text: `Successfully upgraded to ${plan.toUpperCase()} plan.` };
+  res.redirect('/customer');
+});
+
 // ---------- Support ----------
 router.get('/support', requireCustomer, (req, res) => {
   const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
@@ -492,7 +544,8 @@ router.post('/api/support/chat', requireCustomer, (req, res) => {
 
 router.post('/api/support/escalate', requireCustomer, (req, res) => {
   const dbCustomer = db.getCustomerByPhone(req.session.customer.phone);
-  const isPremium = !!(dbCustomer && dbCustomer.isPremium);
+  const plan = dbCustomer ? (dbCustomer.plan || 'free') : 'free';
+  const isPremium = plan === 'premium' || plan === 'pro';
   
   let tkt = db.getSupportTicket(req.session.customer.phone);
   if (!tkt || tkt.status === 'escalated') {

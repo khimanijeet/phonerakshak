@@ -1,0 +1,6 @@
+[2026-05-05T18:35:08.113Z] WARN: FIREBASE_SERVICE_ACCOUNT_JSON or PATH not set. FCM pushes will be simulated.
+[2026-05-05T18:35:08.426Z] INFO: PhoneRakshak admin running on http://0.0.0.0:5000
+[2026-05-05T18:35:08.426Z] INFO: Login: admin / admin123
+[2026-05-05T19:00:34.960Z] WARN: FIREBASE_SERVICE_ACCOUNT_JSON or PATH not set. FCM pushes will be simulated.
+[2026-05-05T19:00:35.255Z] INFO: PhoneRakshak admin running on http://0.0.0.0:5000
+[2026-05-05T19:00:35.257Z] INFO: Login: admin / admin123

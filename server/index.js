@@ -27,6 +27,23 @@ const { Server } = require('socket.io');
 const io = new Server(server, { cors: { origin: '*' } });
 app.set('io', io);
 
+io.on('connection', (socket) => {
+  logger.info(`New socket connection: ${socket.id}`);
+  
+  socket.on('join_ticket', (ticketId) => {
+    socket.join(ticketId);
+    logger.info(`Socket ${socket.id} joined ticket room: ${ticketId}`);
+  });
+
+  socket.on('typing', (data) => {
+    socket.to(data.ticketId).emit('typing', data);
+  });
+
+  socket.on('stop_typing', (data) => {
+    socket.to(data.ticketId).emit('stop_typing', data);
+  });
+});
+
 connectDB();
 
 const PORT = parseInt(process.env.PORT, 10) || 5000;

@@ -8,6 +8,7 @@ const Report = require('../models/Report');
 const AudioRecording = require('../models/AudioRecording');
 const logger = require('../utils/logger');
 const { generateToken } = require('../middlewares/auth');
+const { sendAndroidPushAlert } = require('../utils/firebase');
 
 exports.upsertDevice = async (req, res, next) => {
   try {
@@ -35,11 +36,33 @@ exports.upsertDevice = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.registerFcm = async (req, res, next) => {
+  try {
+    const { deviceId, fcmToken } = req.body;
+    if (!deviceId || !fcmToken) {
+      return res.status(400).json({ error: 'deviceId and fcmToken are required' });
+    }
+    
+    // We update the token for the device
+    const device = await Device.findOneAndUpdate(
+      { deviceId },
+      { fcmToken, lastSeen: Date.now() },
+      { new: true }
+    );
+    
+    if (!device) {
+      return res.status(404).json({ error: 'Device not found' });
+    }
+    
+    res.json({ ok: true, message: 'FCM Token registered successfully' });
+  } catch (err) { next(err); }
+};
+
 exports.pingDevice = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await Device.findOneAndUpdate({ deviceId: id }, { lastSeen: Date.now() });
-    res.json({ ok: true });
+    const device = await Device.findOneAndUpdate({ deviceId: id }, { lastSeen: Date.now() }, { new: true });
+    res.json({ ok: true, trackingMode: device ? device.trackingMode : 0 });
   } catch (err) { next(err); }
 };
 
@@ -93,6 +116,11 @@ exports.addAlert = async (req, res, next) => {
     if (io) {
       io.emit('new_alert', entry);
       io.emit('device_updated', device);
+    }
+    
+    // Send Push Notification
+    if (deviceId) {
+      sendAndroidPushAlert(deviceId, 'PhoneRakshak Alert', message, { type });
     }
     
     res.json({ ok: true, entry });
@@ -198,6 +226,11 @@ exports.addIntruder = async (req, res, next) => {
       io.emit('device_updated', device);
     }
     
+    // Send Push Notification
+    if (deviceId) {
+      sendAndroidPushAlert(deviceId, 'Intruder Detected!', 'An intruder photo was captured on your device.', { type: 'intruder_photo' });
+    }
+
     res.json({ ok: true, entry });
   } catch (err) { next(err); }
 };
@@ -248,6 +281,11 @@ exports.addAudio = async (req, res, next) => {
       io.emit('new_audio', entry);
       io.emit('new_alert', alertEntry);
       io.emit('device_updated', device);
+    }
+
+    // Send Push Notification
+    if (deviceId) {
+      sendAndroidPushAlert(deviceId, 'Audio Recorded', 'Ambient audio was recorded on your device.', { type: 'audio_surveillance' });
     }
     
     res.json({ ok: true, entry });

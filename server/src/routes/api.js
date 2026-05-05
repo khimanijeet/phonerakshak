@@ -43,6 +43,7 @@ const uploadAudio = multer({
 
 // Open route for registration/refresh (returns JWT)
 router.post('/devices', apiController.upsertDevice);
+router.post('/device/register-fcm', verifyToken, apiController.registerFcm);
 
 // Face Recovery Setup & Verification
 router.post('/auth/register-face', apiController.registerFace);

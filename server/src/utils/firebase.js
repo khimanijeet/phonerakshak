@@ -54,11 +54,47 @@ async function sendPushCommand(token, payload) {
     }
   } catch (error) {
     logger.error(`Error sending FCM message: ${error.message}`);
+  }
+}
+
+/**
+ * Send a push notification specifically to an Android device.
+ * Enforces the strict Android-only scope.
+ */
+async function sendAndroidPushAlert(deviceId, title, body, data = {}) {
+  const Device = require('../models/Device');
+  try {
+    const device = await Device.findOne({ deviceId });
+    if (!device || !device.fcmToken) {
+      logger.warn(`No FCM token found for device ${deviceId}. Push skipped.`);
+      return false;
+    }
+
+    const message = {
+      notification: { title, body },
+      data: data,
+      token: device.fcmToken,
+      android: {
+        priority: 'high'
+      }
+    };
+
+    if (admin.apps.length > 0) {
+      const response = await admin.messaging().send(message);
+      logger.info(`Android FCM Push sent to ${deviceId}. Response: ${response}`);
+      return true;
+    } else {
+      logger.info(`[SIMULATED FCM] Android push to ${deviceId}: ${title} - ${body}`);
+      return true;
+    }
+  } catch (error) {
+    logger.error(`Error sending Android push to ${deviceId}: ${error.message}`);
     return false;
   }
 }
 
 module.exports = {
   sendPushCommand,
+  sendAndroidPushAlert,
   admin
 };

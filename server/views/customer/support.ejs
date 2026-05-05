@@ -390,12 +390,44 @@
     </footer>
   </div>
 
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     const chatArea = document.getElementById('chatArea');
     const msgInput = document.getElementById('msgInput');
     const sendBtn = document.getElementById('sendBtn');
     const typingIndicator = document.getElementById('typingIndicator');
     
+    // Socket.io initialization
+    const socket = io();
+    let currentTicketId = null;
+    let typingTimeout = null;
+
+    socket.on('new_message', (data) => {
+      if (data.ticket && data.ticket.messages) {
+        const msgs = data.ticket.messages;
+        const lastMsg = msgs[msgs.length - 1];
+        if (lastMsg && (lastMsg.isBot || lastMsg.sender !== 'user')) {
+          typingIndicator.style.display = 'none';
+          const botEl = createMessageElement(lastMsg);
+          chatArea.insertBefore(botEl, typingIndicator);
+          scrollToBottom();
+        }
+      }
+    });
+
+    socket.on('typing', (data) => {
+      if (data.userType !== 'user') {
+        typingIndicator.style.display = 'flex';
+        scrollToBottom();
+      }
+    });
+
+    socket.on('stop_typing', (data) => {
+      if (data.userType !== 'user') {
+        typingIndicator.style.display = 'none';
+      }
+    });
+
     function prefill(text) {
       msgInput.value = text;
       msgInput.focus();
@@ -451,6 +483,11 @@
         
         loader.style.display = 'none';
         
+        if (data.ticket) {
+          currentTicketId = data.ticket._id;
+          socket.emit('join_ticket', currentTicketId);
+        }
+
         if (data.ticket && data.ticket.messages && data.ticket.messages.length > 0) {
           data.ticket.messages.forEach(m => {
             const el = createMessageElement(m);
@@ -507,6 +544,11 @@
         console.log("API response:", data);
         
         if (data.ticket && data.ticket.messages) {
+           if (!currentTicketId) {
+             currentTicketId = data.ticket._id;
+             socket.emit('join_ticket', currentTicketId);
+           }
+           
            const msgs = data.ticket.messages;
            
            // Replace optimistic user message with confirmed one
@@ -524,23 +566,11 @@
              userEl = confirmedUserEl; // update reference
            }
 
-           const lastMsg = msgs[msgs.length - 1];
-           const isBotReply = lastMsg && (lastMsg.isBot || lastMsg.sender === 'bot' || lastMsg.sender === 'admin');
+           // Note: Bot reply is handled by socket 'new_message' event
+           // so we don't render it here anymore unless socket failed.
+           // However, to ensure it shows if socket is slow, we can leave the old logic as a fallback
+           // but we shouldn't double render. The socket is faster.
            
-           if (isBotReply && (!confirmedMsg || lastMsg._id !== confirmedMsg._id)) {
-             // Simulate typing delay (500-1000ms)
-             const delay = Math.floor(Math.random() * 500) + 500;
-             setTimeout(() => {
-               typingIndicator.style.display = 'none';
-               const botEl = createMessageElement(lastMsg);
-               chatArea.insertBefore(botEl, typingIndicator);
-               scrollToBottom();
-             }, delay);
-           } else {
-             typingIndicator.style.display = 'none';
-           }
-        } else {
-          typingIndicator.style.display = 'none';
         }
       } catch (err) {
         console.error(err);
@@ -558,8 +588,21 @@
       }
     }
 
+    msgInput.addEventListener('input', () => {
+      if (currentTicketId) {
+        socket.emit('typing', { ticketId: currentTicketId, userType: 'user' });
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          socket.emit('stop_typing', { ticketId: currentTicketId, userType: 'user' });
+        }, 1500);
+      }
+    });
+
     msgInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
+      if (e.key === 'Enter') {
+        if (currentTicketId) socket.emit('stop_typing', { ticketId: currentTicketId, userType: 'user' });
+        sendMessage();
+      }
     });
     
     sendBtn.addEventListener('click', () => sendMessage());

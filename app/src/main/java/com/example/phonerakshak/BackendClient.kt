@@ -131,6 +131,22 @@ class BackendClient(private val prefs: Prefs) {
         }
     }
 
+    fun syncLocations(deviceId: String, locations: org.json.JSONArray): Boolean {
+        if (locations.length() == 0) return true
+        return try {
+            val body = JSONObject().apply {
+                put("deviceId", deviceId)
+                put("locations", locations)
+            }.toString().toRequestBody(jsonMedia)
+
+            executeWithAuthRetry { buildRequest("$baseUrl/api/locations/bulk", "POST", body) }.use { resp ->
+                resp.isSuccessful
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     fun postAlert(deviceId: String, type: String, message: String, meta: JSONObject? = null): Boolean {
         return try {
             val body = JSONObject().apply {
@@ -240,7 +256,16 @@ class BackendClient(private val prefs: Prefs) {
                 if (batteryLevel != -1) put("batteryLevel", batteryLevel)
             }.toString().toRequestBody(jsonMedia)
             executeWithAuthRetry { buildRequest("$baseUrl/api/devices/$deviceId/ping", "POST", body) }.use { resp ->
-                resp.isSuccessful
+                if (resp.isSuccessful) {
+                    val bodyStr = resp.body?.string()
+                    if (bodyStr != null) {
+                        val obj = JSONObject(bodyStr)
+                        if (obj.has("trackingMode")) {
+                            prefs.trackingMode = obj.getInt("trackingMode")
+                        }
+                    }
+                    true
+                } else false
             }
         } catch (e: Exception) {
             false

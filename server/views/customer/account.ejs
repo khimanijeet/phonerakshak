@@ -1,5 +1,6 @@
 <% 
-  const isPremium = customer && customer.isPremium;
+  const plan = customer && customer.plan ? customer.plan : 'free';
+  const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
 %>
 <%- include('_layout-head', { title: 'Account - PhoneRakshak' }) %>
 <style>
@@ -64,19 +65,19 @@
           <div style="width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
               <div class="settings-label">Subscription</div>
-              <% if (isPremium) { %>
-                <span class="pf-status text-green" style="background: rgba(34,197,94,0.15); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">PREMIUM ACTIVE</span>
+              <% if (plan !== 'free') { %>
+                <span class="pf-status text-green" style="background: rgba(34,197,94,0.15); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;"><%= planName.toUpperCase() %> ACTIVE</span>
               <% } else { %>
                 <span class="pf-status text-red" style="background: rgba(239,68,68,0.15); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">FREE PLAN</span>
               <% } %>
             </div>
             
-            <% if (isPremium) { %>
-              <div class="settings-sub" style="margin-bottom: 12px;">Your premium plan is active and auto-renews.</div>
-              <button class="btn-primary-small" style="background: transparent; border: 1px solid #6366f1; color: #818cf8;">Manage Plan</button>
+            <% if (plan !== 'free') { %>
+              <div class="settings-sub" style="margin-bottom: 12px;">Your <%= planName %> plan is active and auto-renews.</div>
+              <a href="/customer/pricing" class="btn-primary-small" style="text-decoration:none; display:inline-block; background: transparent; border: 1px solid #6366f1; color: #818cf8;">Manage Plan</a>
             <% } else { %>
               <div class="settings-sub" style="margin-bottom: 12px;">Upgrade to Premium for advanced protection features and priority support.</div>
-              <button class="btn-primary-small" style="width: 100%; text-align: center; padding: 10px;">Upgrade Now</button>
+              <a href="/customer/pricing" class="btn-primary-small" style="text-decoration:none; display:inline-block; width: 100%; text-align: center; padding: 10px; box-sizing: border-box;">Upgrade Now</a>
             <% } %>
           </div>
         </div>

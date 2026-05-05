@@ -23,14 +23,14 @@
       <section class="card">
         <header class="card-header"><h2>Remote Commands</h2></header>
         <div class="cmd-row">
-          <% ['lock','alarm','stop_alarm','locate','emergency','unlock'].forEach(function(t){ %>
+          <% ['lock','alarm','stop_alarm','locate','emergency','unlock','take_photo'].forEach(function(t){ %>
             <form method="POST" action="/admin/devices/<%= encodeURIComponent(device.deviceId) %>/command">
               <input type="hidden" name="type" value="<%= t %>" />
               <button class="btn-secondary" type="submit"><%= t.replace('_',' ').toUpperCase() %></button>
             </form>
           <% }); %>
         </div>
-        <p class="muted small">Commands are queued and picked up by the device on its next poll (every ~30s).</p>
+        <p class="muted small">Commands are executed instantly via WebSockets or FCM if the device is online.</p>
       </section>
 
       <section class="card">

@@ -47,8 +47,39 @@ class SetupActivity : AppCompatActivity() {
             }
         }
 
-        requestStartupPermissions()
-        updateStatus()
+        if (needsPermissions()) {
+            showPermissionDisclosureDialog()
+        } else {
+            updateStatus()
+        }
+    }
+
+    private fun needsPermissions(): Boolean {
+        val perms = listOf(
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CAMERA
+        )
+        for (p in perms) {
+            if (ActivityCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) return true
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) return true
+        return false
+    }
+
+    private fun showPermissionDisclosureDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Permissions Required")
+            .setMessage("PhoneRakshak collects location data to enable tracking your device even when the app is closed or not in use. It also requires Camera and SMS permissions to detect intruders and notify your emergency contacts.\n\nBy continuing, you agree to our Privacy Policy.")
+            .setPositiveButton("I Agree") { _, _ -> requestStartupPermissions() }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .setCancelable(false)
+            .show()
     }
 
     override fun onResume() {
@@ -83,8 +114,15 @@ class SetupActivity : AppCompatActivity() {
 
         SimUtils.currentFingerprint(this)?.let { prefs.simFingerprint = it }
 
-        // (Re)start the foreground service so receivers + poller pick up new config.
-        PhoneRakshakService.start(this)
+        // Schedule fallback 15-minute sync worker
+        SyncWorker.schedule(this)
+
+        // (Re)start the foreground service ONLY if tracking mode requires it
+        if (prefs.trackingMode > 0) {
+            PhoneRakshakService.start(this)
+        } else {
+            PhoneRakshakService.stop(this)
+        }
 
         if (prefs.hasBackend()) {
             val client = BackendClient(prefs)

@@ -113,28 +113,31 @@ exports.sendCommand = async (req, res, next) => {
     // Create command in DB as queued for polling fallback
     let command = await Command.create({ deviceId: req.params.id, type, status: 'queued', queuedAt: Date.now() });
     
-    // Attempt instant delivery via FCM
     const device = await Device.findOne({ deviceId: req.params.id });
+
+    if (type === 'start_tracking') {
+      device.trackingMode = 2; // Lost mode
+      await device.save();
+    } else if (type === 'stop_tracking') {
+      device.trackingMode = 0; // Normal mode
+      await device.save();
+    }
+    
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('command_status_change', command);
+    }
+    
+    // Attempt fallback delivery via FCM
     if (device && device.fcmToken) {
       const payload = {
         commandId: command._id.toString(),
         type: type,
         timestamp: Date.now().toString()
       };
-      
-      const success = await sendPushCommand(device.fcmToken, payload);
-      if (success) {
-        command.status = 'processing';
-        command.processingAt = Date.now();
-        await command.save();
-      } else {
-        // If FCM definitively fails (e.g., unregistered token), we might want to clear it
-        // but for now, we leave the command as 'queued' so polling picks it up.
-      }
+      const { sendPushCommand } = require('../utils/firebase');
+      await sendPushCommand(device.fcmToken, payload);
     }
-    
-    const io = req.app.get('io');
-    if (io) io.emit('command_status_change', command);
     
     res.redirect(`/admin/devices/${req.params.id}`);
   } catch (err) { next(err); }

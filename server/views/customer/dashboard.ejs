@@ -1,5 +1,6 @@
 <% 
-  const isPremium = ctx && ctx.isPremium;
+  const isPremium = ctx && (ctx.plan === 'premium' || ctx.plan === 'pro');
+  const planName = ctx && ctx.plan ? ctx.plan.charAt(0).toUpperCase() + ctx.plan.slice(1) : 'Free';
 %>
 <%- include('_layout-head', { title: 'PhoneRakshak', leaflet: true }) %>
 <body class="mobile-theme">
@@ -13,8 +14,8 @@
         <div class="header-text-group">
           <div class="brand-name">
             PhoneRakshak
-            <% if (isPremium) { %>
-              <span class="premium-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg> Premium</span>
+            <% if (ctx && ctx.plan !== 'free') { %>
+              <span class="premium-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg> <%= planName %></span>
             <% } %>
           </div>
           <div class="brand-tagline">Your Device. Our Protection.</div>
@@ -93,7 +94,7 @@
         </form>
 
         <form action="/customer/command" method="POST" style="display: contents;">
-          <input type="hidden" name="type" value="emergency">
+          <input type="hidden" name="type" value="take_photo">
           <button type="submit" class="qa-item btn-clear">
             <div class="qa-icon-box">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-red"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
@@ -104,20 +105,20 @@
         </form>
       </div>
 
-      <% if (isPremium) { %>
+      <% if (ctx && ctx.plan !== 'free') { %>
       <div class="mobile-card premium-banner-active">
         <div class="pba-icon">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>
         </div>
         <div class="pba-content">
           <div class="pba-top">
-            <div class="pba-title">Premium Plan Active</div>
+            <div class="pba-title"><%= planName %> Plan Active</div>
             <div class="pba-status-badge">Active</div>
           </div>
-          <div class="pba-date">Valid until 12 May 2026</div>
+          <div class="pba-date">Advanced protection enabled</div>
           <div class="pba-bottom">
-            <div class="pba-desc">Auto-renews on 12 May 2026</div>
-            <button class="btn-manage-plan"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg> Manage Plan <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <div class="pba-desc">Enjoy your features</div>
+            <a href="/customer/pricing" class="btn-manage-plan" style="text-decoration:none; display:inline-flex; align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-right:4px;"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg> Manage Plan <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg></a>
           </div>
         </div>
       </div>
@@ -253,7 +254,7 @@
           <div class="pub-title">Premium Protection</div>
           <div class="pub-desc">Get advanced protection features and priority support.</div>
         </div>
-        <button class="btn-upgrade">Upgrade Now</button>
+        <a href="/customer/pricing" class="btn-upgrade" style="text-decoration:none; display:block; text-align:center; margin-top:16px;">Upgrade Now</a>
       </div>
       <% } %>
       
