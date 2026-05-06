@@ -9,7 +9,8 @@ const trustedContactSchema = new mongoose.Schema({
 const customerSchema = new mongoose.Schema({
   phone: { type: String, required: true, unique: true },
   name: { type: String, default: '' },
-  firebaseUid: { type: String, required: true, unique: true, sparse: true },
+  passwordHash: { type: String },
+  firebaseUid: { type: String, unique: true, sparse: true },
   plan: { type: String, default: 'free' },
   deviceLimit: { type: Number, default: 1 },
   status: { type: String, enum: ['active', 'blocked'], default: 'active' },

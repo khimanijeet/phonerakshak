@@ -1,4 +1,9 @@
 require('dotenv').config();
+
+if (process.env.NODE_ENV !== 'production') {
+  throw new Error("Server is restricted to production only");
+}
+
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
@@ -21,10 +26,40 @@ const customerRoutes = require('./src/routes/customer');
 
 // Initialize Express and Connect to DB
 const app = express();
+
+const cors = require('cors');
+app.use(cors({
+  origin: function (origin, callback) {
+    const allowedOrigin = 'https://phonerakshak-api.onrender.com';
+    // Allow requests with no origin (like mobile apps) or the allowed origin
+    if (!origin || origin === allowedOrigin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+// Block localhost access middleware
+app.use((req, res, next) => {
+  const ip = req.ip || req.connection?.remoteAddress || '';
+  const host = req.hostname || req.get('host') || '';
+  
+  if (
+    ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1' ||
+    host.includes('localhost') || host.includes('127.0.0.1') || host.includes('::1')
+  ) {
+    return res.status(403).send('Forbidden: Local access is blocked in production mode.');
+  }
+  next();
+});
+
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
-const io = new Server(server, { cors: { origin: '*' } });
+const io = new Server(server, { cors: { origin: 'https://phonerakshak-api.onrender.com', credentials: true } });
 app.set('io', io);
 
 io.on('connection', (socket) => {

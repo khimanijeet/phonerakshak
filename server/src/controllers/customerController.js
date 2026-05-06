@@ -104,9 +104,9 @@ exports.postLogin = async (req, res, next) => {
   try {
     const { phone, password } = req.body || {};
     const c = await Customer.findOne({ phone });
-    if (!c || !bcrypt.compareSync(password || '', c.passwordHash)) {
+    if (!c || !c.passwordHash || !bcrypt.compareSync(password || '', c.passwordHash)) {
       return res.status(401).render('customer/login', {
-        error: 'Invalid phone number or password.',
+        error: 'Invalid phone number or password. If you registered via the app, you must reset your password first.',
         phone: phone || '',
       });
     }
