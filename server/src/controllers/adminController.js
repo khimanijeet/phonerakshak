@@ -109,11 +109,21 @@ exports.sendCommand = async (req, res, next) => {
   try {
     const { type } = req.body;
     if (!type) return res.status(400).send('type required');
+
+    const allowedTypes = ['lock', 'alarm', 'locate', 'take_photo', 'start_tracking', 'stop_tracking', 'start_audio'];
+    if (!allowedTypes.includes(type)) return res.status(400).send('Invalid command type');
+
+    const device = await Device.findOne({ deviceId: req.params.id });
+    if (!device) return res.status(404).send('Device not found');
+
+    const Customer = require('../models/Customer');
+    const user = await Customer.findById(device.userId);
+    if (!user || user.status === 'blocked') {
+      return res.status(403).send('Cannot send command. User is invalid or suspended.');
+    }
     
     // Create command in DB as queued for polling fallback
     let command = await Command.create({ deviceId: req.params.id, type, status: 'queued', queuedAt: Date.now() });
-    
-    const device = await Device.findOne({ deviceId: req.params.id });
 
     if (type === 'start_tracking') {
       device.trackingMode = 2; // Lost mode
@@ -471,5 +481,89 @@ exports.patchApiTicketStatus = async (req, res, next) => {
     tkt.status = status;
     await tkt.save();
     res.json({ success: true, ticket: tkt });
+  } catch (err) { next(err); }
+};
+exports.postWipeDevice = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { password, confirmation } = req.body;
+    
+    // 1. Double confirmation check
+    if (confirmation !== 'WIPE') {
+      return res.status(400).json({ error: 'Invalid confirmation string. Must be exactly \"WIPE\".' });
+    }
+    
+    // 2. Admin password validation
+    const adminPass = process.env.ADMIN_PASSWORD || 'admin123';
+    if (password !== adminPass) {
+      return res.status(401).json({ error: 'Invalid Admin Password.' });
+    }
+    
+    // 3. Command Authorization Layer
+    const device = await Device.findOne({ deviceId: id });
+    if (!device) return res.status(404).json({ error: 'Device not found' });
+    
+    const Customer = require('../models/Customer');
+    const user = await Customer.findById(device.userId);
+    if (!user || user.status === 'blocked') {
+      return res.status(403).json({ error: 'Cannot wipe. User is blocked or invalid.' });
+    }
+    
+    // Prevent duplicate commands
+    const existingWipe = await Command.findOne({ deviceId: id, type: 'wipe', status: { $in: ['queued', 'processing'] } });
+    if (existingWipe) {
+      return res.status(429).json({ error: 'A wipe command is already pending for this device.' });
+    }
+    
+    // 4. Audit Logging
+    const SecurityLog = require('../models/SecurityLog');
+    await SecurityLog.create({
+      event: 'WIPE_TRIGGERED',
+      deviceId: id,
+      ipAddress: req.ip || req.connection.remoteAddress,
+      details: 'Admin authorized remote wipe command',
+      timestamp: Date.now()
+    });
+    
+    // 5. Enforce 5-second delay before creating command and pushing
+    setTimeout(async () => {
+      const commandId = 'wipe_' + Date.now();
+      await Command.create({
+        id: commandId,
+        deviceId: id,
+        type: 'wipe',
+        status: 'queued'
+      });
+      
+      const { sendAndroidPushAlert } = require('../utils/firebase');
+      if (device.fcmToken) {
+        sendAndroidPushAlert(device.fcmToken, 'COMMAND', 'wipe', { cid: commandId });
+      }
+      
+      const io = req.app.get('io');
+      if (io) io.emit('command_queued', { deviceId: id, type: 'wipe' });
+    }, 5000);
+    
+    res.json({ ok: true, message: 'Wipe authorized and initiated.' });
+  } catch (err) { next(err); }
+};
+exports.toggleUserStatus = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const user = await Customer.findById(req.params.id);
+    if (!user) return res.status(404).send('User not found');
+    user.status = user.status === 'blocked' ? 'active' : 'blocked';
+    await user.save();
+    
+    // Log it
+    const SecurityLog = require('../models/SecurityLog');
+    await SecurityLog.create({
+      event: 'USER_STATUS_CHANGED',
+      ipAddress: req.ip || req.connection.remoteAddress,
+      details: `Admin changed user ${user._id} status to ${user.status}`,
+      timestamp: Date.now()
+    });
+    
+    res.redirect('/admin/users');
   } catch (err) { next(err); }
 };

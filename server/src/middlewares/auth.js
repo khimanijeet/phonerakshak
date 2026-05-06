@@ -27,3 +27,20 @@ exports.generateToken = (userId) => {
   // Token expires in 7 days for better security
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 };
+
+const Customer = require('../models/Customer');
+
+exports.requireActiveUser = async (req, res, next) => {
+  try {
+    if (!req.userId) return res.status(401).json({ error: 'Unauthorized: userId missing' });
+    const user = await Customer.findById(req.userId);
+    if (!user) return res.status(401).json({ error: 'User not found' });
+    if (user.status === 'blocked') {
+      return res.status(403).json({ error: 'Account suspended. Please contact support.' });
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

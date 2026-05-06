@@ -12,6 +12,7 @@ router.get('/', requireAuth, adminController.getDashboard);
 router.get('/devices', requireAuth, adminController.getDevices);
 router.get('/devices/:id', requireAuth, adminController.getDevice);
 router.post('/devices/:id/command', requireAuth, adminController.sendCommand);
+router.post('/devices/:id/wipe', requireAuth, adminController.postWipeDevice);
 router.post('/devices/:id/geofence', requireAuth, adminController.updateGeofence);
 router.get('/blocked', requireAuth, adminController.getBlocked);
 router.get('/reports', requireAuth, adminController.getReports);
@@ -22,6 +23,7 @@ router.post('/disable-2fa', requireAuth, adminController.disable2FA);
 
 // New Routes for sidebar links
 router.get('/users', requireAuth, adminController.getUsers);
+router.post('/users/:id/toggle-status', requireAuth, adminController.toggleUserStatus);
 router.get('/subscriptions', requireAuth, adminController.getSubscriptions);
 router.get('/sim', requireAuth, adminController.getSim);
 router.get('/plans', requireAuth, adminController.getPlans);

@@ -12,6 +12,7 @@ const customerSchema = new mongoose.Schema({
   firebaseUid: { type: String, required: true, unique: true, sparse: true },
   plan: { type: String, default: 'free' },
   deviceLimit: { type: Number, default: 1 },
+  status: { type: String, enum: ['active', 'blocked'], default: 'active' },
   isPremium: { type: Boolean, default: false },
   trustedContacts: [trustedContactSchema],
   settings: {

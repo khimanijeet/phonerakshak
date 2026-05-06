@@ -598,5 +598,15 @@ exports.getSupportHistory = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-
-
+exports.postChangePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body || {};
+    const c = await Customer.findOne({ phone: req.session.customer.phone });
+    if (!bcrypt.compareSync(currentPassword || '', c.passwordHash)) {
+      return res.render('customer/account', { user: req.session.customer, active: 'account', customer: c, error: 'Incorrect current password.', notice: null });
+    }
+    c.passwordHash = bcrypt.hashSync(newPassword, 10);
+    await c.save();
+    res.render('customer/account', { user: req.session.customer, active: 'account', customer: c, error: null, notice: 'Password updated successfully.' });
+  } catch (err) { next(err); }
+};

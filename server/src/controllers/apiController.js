@@ -31,10 +31,15 @@ exports.firebaseLogin = async (req, res, next) => {
         phone,
         firebaseUid,
         plan: 'free',
-        deviceLimit: 1
+        deviceLimit: 1,
+        status: 'active'
       });
       logger.info(`New customer created via Firebase Login: ${phone}`);
     } else {
+      if (customer.status === 'blocked') {
+        return res.status(403).json({ error: 'Account suspended. Please contact support.' });
+      }
+      
       // Update firebaseUid if missing (legacy linking)
       if (!customer.firebaseUid) {
         customer.firebaseUid = firebaseUid;
@@ -195,25 +200,28 @@ exports.getCommands = async (req, res, next) => {
 
 exports.ackCommand = async (req, res, next) => {
   try {
-    const { id, cid } = req.params;
-    const { result } = req.body;
+    const { commandId, status } = req.body;
+    const userId = req.userId; // From verifyToken middleware
     
-    // Find by the command _id or by the custom id field if passed as cid
-    const command = await Command.findOne({ _id: cid, deviceId: id }).catch(() => Command.findOne({ id: cid, deviceId: id }));
+    if (!commandId || !status) return res.status(400).json({ error: 'commandId and status are required' });
+    if (!['executed', 'failed'].includes(status)) return res.status(400).json({ error: 'Invalid status' });
     
-    if (command) {
-      command.status = 'executed';
-      command.ackedAt = Date.now();
-      command.result = result;
-      await command.save();
-      
-      const io = req.app.get('io');
-      if (io) io.emit('command_status_change', command);
-      
-      res.json({ ok: true });
-    } else {
-      res.json({ ok: false });
-    }
+    // Find command
+    const command = await Command.findById(commandId);
+    if (!command) return res.status(404).json({ error: 'Command not found' });
+    
+    // Verify device ownership
+    const device = await Device.findOne({ deviceId: command.deviceId, userId });
+    if (!device) return res.status(403).json({ error: 'Unauthorized device' });
+    
+    command.status = status;
+    command.executedAt = Date.now();
+    await command.save();
+    
+    const io = req.app.get('io');
+    if (io) io.emit('command_status_change', command);
+    
+    res.json({ ok: true, command });
   } catch (err) { next(err); }
 };
 

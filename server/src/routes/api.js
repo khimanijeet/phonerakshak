@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const apiController = require('../controllers/apiController');
-const { verifyToken } = require('../middlewares/auth');
+const { verifyToken, requireActiveUser } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -43,23 +43,23 @@ const uploadAudio = multer({
 
 // Open route for registration/refresh (returns JWT)
 router.post('/auth/firebase-login', apiController.firebaseLogin);
-router.post('/device/register', verifyToken, apiController.upsertDevice);
-router.post('/device/register-fcm', verifyToken, apiController.registerFcm);
+router.post('/device/register', verifyToken, requireActiveUser, apiController.upsertDevice);
+router.post('/device/register-fcm', verifyToken, requireActiveUser, apiController.registerFcm);
 
 // Face Recovery Setup & Verification
 router.post('/auth/register-face', apiController.registerFace);
 router.post('/auth/verify-face', apiController.verifyFace);
 
 // Protected routes
-router.post('/devices/:id/ping', verifyToken, apiController.pingDevice);
-router.post('/locations', verifyToken, apiController.addLocation);
-router.post('/alerts', verifyToken, apiController.addAlert);
-router.get('/devices/:id/commands', verifyToken, apiController.getCommands);
-router.post('/devices/:id/commands/:cid/ack', verifyToken, apiController.ackCommand);
-router.get('/devices/:id/geofence', verifyToken, apiController.getGeofence);
-router.post('/intruders', verifyToken, upload.single('photo'), apiController.addIntruder);
-router.post('/support/chat', verifyToken, apiController.postSupportChat);
-router.post('/audio', verifyToken, uploadAudio.single('audio'), apiController.addAudio);
+router.post('/devices/:id/ping', verifyToken, requireActiveUser, apiController.pingDevice);
+router.post('/locations', verifyToken, requireActiveUser, apiController.addLocation);
+router.post('/alerts', verifyToken, requireActiveUser, apiController.addAlert);
+router.get('/devices/:id/commands', verifyToken, requireActiveUser, apiController.getCommands);
+router.post('/device/ack', verifyToken, requireActiveUser, apiController.ackCommand);
+router.get('/devices/:id/geofence', verifyToken, requireActiveUser, apiController.getGeofence);
+router.post('/intruders', verifyToken, requireActiveUser, upload.single('photo'), apiController.addIntruder);
+router.post('/support/chat', verifyToken, requireActiveUser, apiController.postSupportChat);
+router.post('/audio', verifyToken, requireActiveUser, uploadAudio.single('audio'), apiController.addAudio);
 
 router.get('/intruders/:filename', (req, res) => {
   const file = path.join(INTRUDERS_DIR, req.params.filename);
@@ -74,3 +74,4 @@ router.get('/audio/:filename', (req, res) => {
 });
 
 module.exports = router;
+

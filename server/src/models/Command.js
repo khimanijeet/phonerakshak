@@ -8,7 +8,7 @@ const commandSchema = new mongoose.Schema({
   status: { type: String, enum: ['queued', 'processing', 'executed', 'failed'], default: 'queued' },
   queuedAt: { type: Date, default: Date.now },
   processingAt: { type: Date, default: null },
-  ackedAt: { type: Date, default: null },
+  executedAt: { type: Date, default: null },
   result: { type: mongoose.Schema.Types.Mixed, default: null }
 }, { timestamps: true });
 
