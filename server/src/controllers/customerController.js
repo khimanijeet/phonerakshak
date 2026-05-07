@@ -156,6 +156,7 @@ exports.postLogin = async (req, res, next) => {
       return res.status(401).render('customer/login', {
         error: 'Invalid phone number or password. If you registered via the app, you must reset your password first.',
         phone: phone || '',
+        firebaseConfig: getFirebaseConfig()
       });
     }
     req.session.customer = { phone: c.phone, name: c.name };
@@ -240,16 +241,19 @@ exports.postRegister = async (req, res, next) => {
     if (np.length < 7) {
       return res.status(400).render('customer/register', {
         error: 'Please enter a valid phone number.', form: { name, phone },
+        firebaseConfig: getFirebaseConfig()
       });
     }
     if (!password || password.length < 6) {
       return res.status(400).render('customer/register', {
         error: 'Password must be at least 6 characters.', form: { name, phone },
+        firebaseConfig: getFirebaseConfig()
       });
     }
     if (password !== confirmPassword) {
       return res.status(400).render('customer/register', {
         error: 'Passwords do not match.', form: { name, phone },
+        firebaseConfig: getFirebaseConfig()
       });
     }
     
@@ -257,6 +261,7 @@ exports.postRegister = async (req, res, next) => {
     if (existing) {
       return res.status(409).render('customer/register', {
         error: 'An account with this phone number already exists.', form: { name, phone },
+        firebaseConfig: getFirebaseConfig()
       });
     }
     
