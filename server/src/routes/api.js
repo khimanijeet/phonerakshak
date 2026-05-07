@@ -43,7 +43,6 @@ const uploadAudio = multer({
 
 // Open route for registration/refresh (returns JWT)
 router.post('/auth/firebase-login', apiController.firebaseLogin);
-router.post('/devices', apiController.openRegister);
 router.post('/device/register', verifyToken, requireActiveUser, apiController.upsertDevice);
 router.post('/device/register-fcm', verifyToken, requireActiveUser, apiController.registerFcm);
 
