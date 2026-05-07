@@ -8,7 +8,7 @@ const { requireCustomer } = customerController;
 
 
 router.get('/login', customerController.getLogin);
-router.post('/login', customerController.postLogin);
+router.post('/login', customerController.postLoginFirebase);
 router.get('/forgot-password', customerController.getForgotPassword);
 router.post('/reset-password-firebase', customerController.postResetPasswordFirebase);
 router.get('/register', customerController.getRegister);

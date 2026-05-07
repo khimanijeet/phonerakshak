@@ -233,6 +233,46 @@ exports.getRegister = (req, res) => {
   });
 };
 
+exports.postLoginFirebase = async (req, res, next) => {
+  try {
+    const { idToken } = req.body || {};
+    if (!idToken) return res.status(400).send('Token required');
+
+    const admin = require('firebase-admin');
+    let decodedToken;
+    
+    if (admin.apps.length > 0) {
+      decodedToken = await admin.auth().verifyIdToken(idToken);
+    } else {
+      // Fallback for dev if firebase-admin isn't init
+      if (idToken.startsWith('mock-token-')) {
+        decodedToken = { phone_number: idToken.split('mock-token-')[1] };
+      } else {
+        return res.status(500).send('Auth service unavailable');
+      }
+    }
+
+    const { phone_number } = decodedToken;
+    if (!phone_number) return res.status(400).send('Invalid token data');
+
+    const cleanedPhone = phone_number.replace(/\D/g, '');
+    let c = await Customer.findOne({ phone: cleanedPhone });
+    
+    if (!c) {
+      // Auto-register if user doesn't exist but verified via OTP
+      c = new Customer({
+        phone: cleanedPhone,
+        name: 'New User',
+        plan: 'free'
+      });
+      await c.save();
+    }
+
+    req.session.customer = { phone: c.phone, name: c.name };
+    res.redirect('/customer');
+  } catch (err) { next(err); }
+};
+
 exports.postRegister = async (req, res, next) => {
   try {
     const { name, phone, password, confirmPassword } = req.body || {};
