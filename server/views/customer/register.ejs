@@ -61,8 +61,12 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
+<script id="firebase-config" type="application/json">
+  <%- JSON.stringify(firebaseConfig) %>
+</script>
+
 <script>
-  const firebaseConfig = <%- JSON.stringify(firebaseConfig) %>;
+  const firebaseConfig = JSON.parse(document.getElementById('firebase-config').textContent);
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
