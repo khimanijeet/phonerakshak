@@ -58,7 +58,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
 <script>
-  const firebaseConfig = <%- JSON.stringify(firebaseConfig || {}) %>;
+  const firebaseConfig = <%- JSON.stringify(typeof firebaseConfig !== 'undefined' ? firebaseConfig : {}) %>;
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }

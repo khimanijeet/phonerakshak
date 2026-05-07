@@ -141,7 +141,11 @@ exports.requirePlan = (requiredPlan) => {
 
 exports.getLogin = (req, res) => {
   if (req.session && req.session.customer) return res.redirect('/customer');
-  res.render('customer/login', { error: null, phone: '' });
+  res.render('customer/login', { 
+    error: null, 
+    phone: '',
+    firebaseConfig: getFirebaseConfig() 
+  });
 };
 
 exports.postLogin = async (req, res, next) => {
@@ -160,7 +164,12 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.getForgotPassword = (req, res) => {
-  res.render('customer/forgot-password', { error: null, success: null, phone: '' });
+  res.render('customer/forgot-password', { 
+    error: null, 
+    success: null, 
+    phone: '',
+    firebaseConfig: getFirebaseConfig()
+  });
 };
 
 exports.postResetPasswordFirebase = async (req, res, next) => {
@@ -216,7 +225,11 @@ exports.postResetPasswordFirebase = async (req, res, next) => {
 };
 
 exports.getRegister = (req, res) => {
-  res.render('customer/register', { error: null, form: { name: '', phone: '' } });
+  res.render('customer/register', { 
+    error: null, 
+    form: { name: '', phone: '' },
+    firebaseConfig: getFirebaseConfig()
+  });
 };
 
 exports.postRegister = async (req, res, next) => {
