@@ -1,13 +1,8 @@
 require('dotenv').config();
 
-if (process.env.NODE_ENV === 'production') {
-  logger.info("Running in production mode.");
-} else {
-  logger.warn("Running in development mode. Security restrictions may be relaxed.");
-}
-
 const express = require('express');
 const path = require('path');
+const logger = require('./src/utils/logger');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
@@ -19,12 +14,17 @@ const rateLimit = require('express-rate-limit');
 
 const connectDB = require('./src/config/db');
 const SecurityLog = require('./src/models/SecurityLog');
-const logger = require('./src/utils/logger');
 const errorHandler = require('./src/middlewares/errorHandler');
 
 const apiRoutes = require('./src/routes/api');
 const adminRoutes = require('./src/routes/admin');
 const customerRoutes = require('./src/routes/customer');
+
+if (process.env.NODE_ENV === 'production') {
+  logger.info("Running in production mode.");
+} else {
+  logger.warn("Running in development mode. Security restrictions may be relaxed.");
+}
 
 // Initialize Express and Connect to DB
 const app = express();
