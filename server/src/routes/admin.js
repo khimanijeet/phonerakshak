@@ -48,8 +48,7 @@ router.patch('/api/support/ticket/:id/status', requireAuth, adminController.patc
 // Subscription Admin Endpoints
 router.get('/api/admin/subscriptions/stats', requireAuth, adminController.getSubscriptionStats);
 router.get('/api/admin/subscriptions/users', requireAuth, adminController.getSubscriptionUsers);
-router.post('/subscriptions/:id/upgrade', requireAuth, adminController.postSubscriptionUpgrade);
-router.post('/subscriptions/:id/downgrade', requireAuth, adminController.postSubscriptionDowngrade);
+router.post('/subscriptions/:id/change-plan', requireAuth, adminController.postSubscriptionChangePlan);
 router.post('/subscriptions/:id/suspend', requireAuth, adminController.postSubscriptionSuspend);
 router.post('/subscriptions/:id/reactivate', requireAuth, adminController.postSubscriptionReactivate);
 

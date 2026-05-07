@@ -165,9 +165,9 @@ async function loadUsers() {
           <div class="dropdown" style="display:inline-block; position:relative;">
             <button class="action-btn" onclick="this.nextElementSibling.classList.toggle('show')">Change Plan ▾</button>
             <div class="dropdown-content" style="display:none; position:absolute; right:0; background:#1f2937; border:1px solid #374151; z-index:10; border-radius:4px; overflow:hidden; min-width:120px;">
-              ${u.plan !== 'premium' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'upgrade', 'premium')">Upgrade to Premium</button>` : ''}
-              ${u.plan !== 'plus' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'upgrade', 'plus')">Change to Plus</button>` : ''}
-              ${u.plan !== 'free' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#f87171; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'downgrade', 'free')">Downgrade to Free</button>` : ''}
+              ${u.plan !== 'premium' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'change-plan', 'premium')">Upgrade to Premium</button>` : ''}
+              ${u.plan !== 'plus' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'change-plan', 'plus')">Change to Plus</button>` : ''}
+              ${u.plan !== 'free' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#f87171; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'change-plan', 'free')">Downgrade to Free</button>` : ''}
             </div>
           </div>
         </td>
@@ -197,7 +197,7 @@ async function performAction(id, action, newPlan) {
   if (!confirm(`Are you sure you want to ${action} this user?`)) return;
   
   try {
-    const url = `/admin/subscriptions/${id}/${action}`;
+    const url = action === 'change-plan' ? `/admin/subscriptions/${id}/change-plan` : `/admin/subscriptions/${id}/${action}`;
     const opts = { method: 'POST', headers: { 'Content-Type': 'application/json' } };
     if (newPlan) opts.body = JSON.stringify({ newPlan });
     

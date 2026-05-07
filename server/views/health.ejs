@@ -32,6 +32,10 @@
               <tr><td>Alerts Processed</td><td><%= stats.sosAlerts %></td></tr>
               <tr><td>Calls Monitored</td><td><%= stats.callsMonitored %></td></tr>
               <tr><td>Blocked Numbers</td><td><%= stats.blockedNumbers %></td></tr>
+              <tr style="border-top: 2px solid var(--border);"><td><strong>Free Tier Users</strong></td><td><%= stats.freeUsers %></td></tr>
+              <tr><td><strong>Plus Tier Users</strong></td><td><%= stats.plusUsers %></td></tr>
+              <tr><td><strong>Premium Tier Users</strong></td><td><%= stats.premiumUsers %></td></tr>
+              <tr style="color: var(--green);"><td><strong>Est. Monthly Revenue</strong></td><td>₹<%= stats.monthlyRevenue.toLocaleString('en-IN') %></td></tr>
             </tbody>
           </table>
         </div>

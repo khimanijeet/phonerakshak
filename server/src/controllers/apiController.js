@@ -1,3 +1,4 @@
+const sharp = require('sharp');
 const Device = require('../models/Device');
 const Location = require('../models/Location');
 const Alert = require('../models/Alert');
@@ -240,6 +241,39 @@ exports.addIntruder = async (req, res, next) => {
     const deviceId = req.body.deviceId || (req.file && req.file.filename) ? req.body.deviceId : null;
     if (!deviceId || !req.file) return res.status(400).json({ error: 'deviceId and photo required' });
     
+    // Add Watermark to the photo before uploading/saving
+    try {
+      const fs = require('fs');
+      const latestLoc = await Location.findOne({ deviceId }).sort({ timestamp: -1 });
+      const timestampStr = new Date().toLocaleString();
+      const locStr = latestLoc ? `Loc: ${latestLoc.latitude.toFixed(4)}, ${latestLoc.longitude.toFixed(4)}` : 'Loc: Unknown';
+      const watermarkText = `PhoneRakshak | ${timestampStr} | ${locStr} | ID: ${deviceId.slice(0, 8)}`;
+
+      const metadata = await sharp(req.file.path).metadata();
+      const w = metadata.width;
+      const h = metadata.height;
+
+      const svgText = `
+        <svg width="${w}" height="${h}">
+          <style>
+            .text { fill: white; font-size: ${Math.floor(h * 0.03)}px; font-family: sans-serif; font-weight: bold; }
+            .shadow { fill: black; font-size: ${Math.floor(h * 0.03)}px; font-family: sans-serif; font-weight: bold; opacity: 0.5; }
+          </style>
+          <text x="12" y="${h - 10}" class="shadow">${watermarkText}</text>
+          <text x="10" y="${h - 12}" class="text">${watermarkText}</text>
+        </svg>
+      `;
+
+      const buffer = await sharp(req.file.path)
+        .composite([{ input: Buffer.from(svgText), top: 0, left: 0 }])
+        .toBuffer();
+
+      fs.writeFileSync(req.file.path, buffer);
+      logger.info(`Watermark added to intruder photo for device ${deviceId}`);
+    } catch (wmErr) {
+      logger.error('Failed to add watermark: ' + wmErr.message);
+    }
+
     let fileUrl = req.file.filename;
     const { admin } = require('../utils/firebase');
     

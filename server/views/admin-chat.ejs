@@ -125,11 +125,15 @@
             <div><%= customer ? customer.name : 'Unknown' %></div>
           </div>
           <div>
-            <div class="msg-meta">Premium Status</div>
+            <div class="msg-meta">Subscription Plan</div>
             <div>
-              <span class="status status-<%= customer && customer.isPremium ? 'active' : 'inactive' %>">
-                <%= customer && customer.isPremium ? 'Premium' : 'Free' %>
-              </span>
+              <% if (customer) { %>
+                <span class="badge badge-<%= customer.plan %>">
+                  <%= customer.plan.toUpperCase() %>
+                </span>
+              <% } else { %>
+                <span class="status status-inactive">Unknown</span>
+              <% } %>
             </div>
           </div>
           <div>

@@ -11,26 +11,26 @@
       <div class="stat-grid-4">
         <div class="glass-card stat-card-new">
           <div class="stat-header">
-            <div class="stat-label">Total Users</div>
-            <div class="stat-icon-new icon-purple-glow">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <div class="stat-label">Monthly Revenue</div>
+            <div class="stat-icon-new icon-green-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
           </div>
-          <div class="stat-value-new"><%= stats ? stats.totalUsers : 0 %></div>
+          <div class="stat-value-new">₹<%= stats ? stats.monthlyRevenue.toLocaleString('en-IN') : 0 %></div>
           <div class="stat-trend trend-up">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-            2.1% <span class="muted">this week</span>
+            8.4% <span class="muted">this week</span>
           </div>
         </div>
 
         <div class="glass-card stat-card-new">
           <div class="stat-header">
-            <div class="stat-label">Active Devices</div>
-            <div class="stat-icon-new icon-blue-glow">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            <div class="stat-label">Premium Users</div>
+            <div class="stat-icon-new icon-purple-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
             </div>
           </div>
-          <div class="stat-value-new"><%= stats ? stats.activeUsers : 0 %></div>
+          <div class="stat-value-new"><%= stats ? stats.premiumUsers : 0 %></div>
           <div class="stat-trend trend-up">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
             4.2% <span class="muted">this week</span>
@@ -54,15 +54,15 @@
 
         <div class="glass-card stat-card-new">
           <div class="stat-header">
-            <div class="stat-label">Commands Executed</div>
-            <div class="stat-icon-new icon-green-glow">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <div class="stat-label">Active Devices</div>
+            <div class="stat-icon-new icon-blue-glow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
             </div>
           </div>
-          <div class="stat-value-new" id="metric-commands"><%= commands ? commands.length : 0 %></div>
+          <div class="stat-value-new"><%= stats ? stats.activeUsers : 0 %></div>
           <div class="stat-trend trend-up">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-            3.8% <span class="muted">this week</span>
+            2.1% <span class="muted">this week</span>
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
 require('dotenv').config();
 
-if (process.env.NODE_ENV !== 'production') {
-  throw new Error("Server is restricted to production only");
+if (process.env.NODE_ENV === 'production') {
+  logger.info("Running in production mode.");
+} else {
+  logger.warn("Running in development mode. Security restrictions may be relaxed.");
 }
 
 const express = require('express');
@@ -42,8 +44,10 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
-// Block localhost access middleware
+// Block localhost access middleware (Only in production)
 app.use((req, res, next) => {
+  if (process.env.NODE_ENV !== 'production') return next();
+  
   const ip = req.ip || req.connection?.remoteAddress || '';
   const host = req.hostname || req.get('host') || '';
   

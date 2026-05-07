@@ -26,13 +26,19 @@ const isOnline = (device, windowMs = 5 * 60 * 1000) => {
 
 exports.getDashboard = async (req, res, next) => {
   try {
-    const devices = await Device.find().sort({ lastSeen: -1 }).lean();
-    const totalCustomers = await Customer.countDocuments();
+    const freeUsers = await Customer.countDocuments({ plan: 'free' });
+    const plusUsers = await Customer.countDocuments({ plan: 'plus' });
+    const premiumUsers = await Customer.countDocuments({ plan: 'premium' });
+    const monthlyRevenue = (plusUsers * 99) + (premiumUsers * 199);
     
     let stats = {
       totalUsers: totalCustomers,
       activeUsers: devices.filter(d => isOnline(d)).length,
-      devicesRegistered: devices.length
+      devicesRegistered: devices.length,
+      freeUsers,
+      plusUsers,
+      premiumUsers,
+      monthlyRevenue
     };
     
     const alerts = await Alert.find().sort({ timestamp: -1 }).limit(50).lean();
@@ -393,12 +399,26 @@ exports.getCommands = async (req, res, next) => {
 
 exports.getHealth = async (req, res, next) => {
   try {
+    const Customer = require('../models/Customer');
+    const Device = require('../models/Device');
+    const Alert = require('../models/Alert');
+    const BlockedNumber = require('../models/BlockedNumber');
+
+    const freeUsers = await Customer.countDocuments({ plan: 'free' });
+    const plusUsers = await Customer.countDocuments({ plan: 'plus' });
+    const premiumUsers = await Customer.countDocuments({ plan: 'premium' });
+    const monthlyRevenue = (plusUsers * 99) + (premiumUsers * 199);
+
     const stats = {
       totalUsers: await Customer.countDocuments(),
       devicesRegistered: await Device.countDocuments(),
       sosAlerts: await Alert.countDocuments(),
       callsMonitored: (await Device.aggregate([{ $group: { _id: null, total: { $sum: "$callsMonitored" } } }]))[0]?.total || 0,
-      blockedNumbers: await BlockedNumber.countDocuments()
+      blockedNumbers: await BlockedNumber.countDocuments(),
+      freeUsers,
+      plusUsers,
+      premiumUsers,
+      monthlyRevenue
     };
     res.render('health', { user: req.session.user, active: 'health', stats });
   } catch (err) { next(err); }
@@ -648,7 +668,7 @@ exports.getSubscriptionUsers = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.postSubscriptionUpgrade = async (req, res, next) => {
+exports.postSubscriptionChangePlan = async (req, res, next) => {
   try {
     const Customer = require('../models/Customer');
     const SecurityLog = require('../models/SecurityLog');
@@ -657,49 +677,16 @@ exports.postSubscriptionUpgrade = async (req, res, next) => {
     const customer = await Customer.findById(req.params.id);
     if (!customer) return res.status(404).send('Customer not found');
     
+    const oldPlan = customer.plan;
     customer.plan = newPlan;
     customer.subscriptionStatus = 'active';
     customer.subscriptionUpdatedAt = new Date();
     await customer.save();
     
     await SecurityLog.create({
-      type: 'ADMIN_SUBSCRIPTION_UPGRADE',
+      type: 'ADMIN_SUBSCRIPTION_CHANGE',
       ip: req.ip,
-      message: `Admin upgraded user ${customer.phone} to ${newPlan}`,
-      timestamp: Date.now()
-    });
-    
-    const admin = require('firebase-admin');
-    if (admin.apps.length > 0 && customer.firebaseUid) {
-      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
-        plan: newPlan,
-        status: 'active',
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-    }
-    
-    res.json({ success: true, customer });
-  } catch (err) { next(err); }
-};
-
-exports.postSubscriptionDowngrade = async (req, res, next) => {
-  try {
-    const Customer = require('../models/Customer');
-    const SecurityLog = require('../models/SecurityLog');
-    const { newPlan } = req.body;
-    
-    const customer = await Customer.findById(req.params.id);
-    if (!customer) return res.status(404).send('Customer not found');
-    
-    customer.plan = newPlan;
-    customer.subscriptionStatus = 'active';
-    customer.subscriptionUpdatedAt = new Date();
-    await customer.save();
-    
-    await SecurityLog.create({
-      type: 'ADMIN_SUBSCRIPTION_DOWNGRADE',
-      ip: req.ip,
-      message: `Admin downgraded user ${customer.phone} to ${newPlan}`,
+      message: `Admin changed user ${customer.phone} plan from ${oldPlan} to ${newPlan}`,
       timestamp: Date.now()
     });
     

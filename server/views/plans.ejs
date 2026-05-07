@@ -3,45 +3,134 @@
 <div class="app-shell">
   <%- include('partials/sidebar', { active: 'plans' }) %>
   <main class="app-main">
-    <%- include('partials/topbar', { pageTitle: 'Plans Overview' }) %>
+    <%- include('partials/topbar', { pageTitle: 'Subscription Plans', subtitle: 'Manage your platform\'s subscription tiers and pricing.' }) %>
     <div class="content">
-      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <section class="card">
-          <div class="card-header">
-            <h2>Free Tier</h2>
-            <span class="status status-active">Active</span>
-          </div>
-          <div class="card-body" style="padding: 1rem;">
-            <p>Basic tracking and remote alarms.</p>
-            <h3 style="margin-top: 1rem; color: var(--primary);">0 / month</h3>
-            <ul style="margin-top: 1rem; line-height: 1.8;">
-              <li>✔ Location Tracking</li>
-              <li>✔ Remote Alarm</li>
-              <li>✖ Geo-fencing</li>
-              <li>✖ Live Camera Access</li>
-            </ul>
-          </div>
-        </section>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
         
-        <section class="card" style="border: 1px solid var(--primary);">
+        <!-- FREE PLAN -->
+        <section class="card plan-card">
           <div class="card-header">
-            <h2>Premium Tier</h2>
-            <span class="status status-warning">Popular</span>
+            <div class="plan-badge badge-free">ENTRY LEVEL</div>
+            <h2>Free Plan</h2>
           </div>
-          <div class="card-body" style="padding: 1rem;">
-            <p>Full suite of security and tracking features.</p>
-            <h3 style="margin-top: 1rem; color: var(--primary);">$4.99 / month</h3>
-            <ul style="margin-top: 1rem; line-height: 1.8;">
-              <li>✔ Location Tracking</li>
-              <li>✔ Remote Alarm</li>
-              <li>✔ Geo-fencing</li>
-              <li>✔ Live Camera Access</li>
-              <li>✔ Priority Support</li>
+          <div class="card-body">
+            <div class="plan-price">
+              <span class="currency">₹</span>
+              <span class="amount">0</span>
+              <span class="period">/ month</span>
+            </div>
+            <p class="plan-description">Basic protection for a single device.</p>
+            <ul class="plan-features">
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> 1 Device Limit</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Real-time Location Tracking</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Remote Alarm / Siren</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Remote Device Lock</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Basic Support</li>
+              <li class="disabled"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Geo-fencing</li>
+              <li class="disabled"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Intruder Selfie</li>
             </ul>
           </div>
         </section>
+
+        <!-- PLUS PLAN -->
+        <section class="card plan-card featured" style="border: 1px solid #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);">
+          <div class="card-header">
+            <div class="plan-badge badge-plus">MOST POPULAR</div>
+            <h2>Plus Plan</h2>
+          </div>
+          <div class="card-body">
+            <div class="plan-price">
+              <span class="currency">₹</span>
+              <span class="amount">99</span>
+              <span class="period">/ month</span>
+            </div>
+            <p class="plan-description">Enhanced security for power users.</p>
+            <ul class="plan-features">
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 3 Devices</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Real-time Location Tracking</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Geo-fencing (Safe Zones)</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Battery & Offline Alerts</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Remote Alarm & Device Lock</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Standard Email Support</li>
+              <li class="disabled"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Fake Shutdown Protection</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- PREMIUM PLAN -->
+        <section class="card plan-card" style="border: 1px solid #a855f7; box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);">
+          <div class="card-header">
+            <div class="plan-badge badge-premium">ULTIMATE PROTECTION</div>
+            <h2>Premium Plan</h2>
+          </div>
+          <div class="card-body">
+            <div class="plan-price">
+              <span class="currency">₹</span>
+              <span class="amount">199</span>
+              <span class="period">/ month</span>
+            </div>
+            <p class="plan-description">Full suite of professional security tools.</p>
+            <ul class="plan-features">
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Devices</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Real-time Location Tracking</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Geo-fencing & Smart Alerts</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Fake Shutdown Protection</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Intruder Selfie Capture</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Live Camera & Audio Access</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Priority Human Support</li>
+            </ul>
+          </div>
+        </section>
+
       </div>
     </div>
   </main>
 </div>
+
+<style>
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.plan-card:hover {
+  transform: translateY(-5px);
+}
+.plan-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+.badge-free { background: #374151; color: #9ca3af; }
+.badge-plus { background: #1e3a8a; color: #60a5fa; }
+.badge-premium { background: #4c1d95; color: #c084fc; }
+
+.plan-price {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: baseline;
+}
+.plan-price .currency { font-size: 1.5rem; font-weight: 400; color: #9ca3af; }
+.plan-price .amount { font-size: 3rem; font-weight: 800; color: #fff; margin: 0 4px; }
+.plan-price .period { font-size: 1rem; color: #6b7280; }
+
+.plan-description { color: #9ca3af; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+.plan-features { list-style: none; padding: 0; margin: 0; }
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: #d1d5db;
+}
+.plan-features li.disabled { color: #4b5563; }
+.plan-features li svg { flex-shrink: 0; }
+</style>
+
 <%- include('partials/footer') %>
