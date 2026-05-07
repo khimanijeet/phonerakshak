@@ -163,7 +163,7 @@ class PhoneRakshakService : Service() {
         val openIntent = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, DashboardActivity::class.java),
+            Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 

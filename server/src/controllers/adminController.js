@@ -27,8 +27,10 @@ const isOnline = (device, windowMs = 5 * 60 * 1000) => {
 exports.getDashboard = async (req, res, next) => {
   try {
     const devices = await Device.find().sort({ lastSeen: -1 }).lean();
+    const totalCustomers = await Customer.countDocuments();
+    
     let stats = {
-      totalUsers: devices.length,
+      totalUsers: totalCustomers,
       activeUsers: devices.filter(d => isOnline(d)).length,
       devicesRegistered: devices.length
     };
@@ -258,28 +260,51 @@ exports.disable2FA = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await Customer.find().sort({ createdAt: -1 }).lean();
-    const rows = users.map(u => [
-      `<span class="mono">${u.phone}</span>`,
-      u.name || '—',
-      u.isPremium ? '<span class="status status-active">Premium</span>' : '<span class="status status-inactive">Free</span>',
-      u.devices ? u.devices.length : 0,
-      formatDate(u.createdAt)
-    ]);
-    res.render('generic-list', { user: req.session.user, active: 'users', pageTitle: 'Users', count: users.length, columns: ['Phone', 'Name', 'Tier', 'Devices', 'Joined'], rows });
+    const allDevices = await Device.find().lean();
+    
+    // First, map real customers
+    let rows = users.map(u => {
+      const uIdStr = u._id ? u._id.toString() : '';
+      const userDevicesCount = allDevices.filter(d => 
+        (d.userId && d.userId.toString() === uIdStr) || 
+        (d.phoneNumber && d.phoneNumber === u.phone)
+      ).length;
+      
+      return [
+        `<span class="mono">${u.phone}</span>`,
+        u.name || '—',
+        u.plan === 'premium' ? '<span class="status status-active">Premium</span>' : u.plan === 'plus' ? '<span class="status status-active" style="background-color: #3b82f633; color: #60a5fa;">Plus</span>' : '<span class="status status-inactive">Free</span>',
+        userDevicesCount,
+        formatDate(u.createdAt)
+      ];
+    });
+
+    // Next, find devices that are NOT linked to any customer
+    const orphanDevices = allDevices.filter(d => {
+      if (d.userId) {
+        return !users.some(u => u._id.toString() === d.userId.toString());
+      }
+      return true; // No userId means orphan
+    });
+
+    // Add orphans as "Anonymous" users
+    orphanDevices.forEach(d => {
+      rows.push([
+        `<span class="mono text-muted">Orphan Device: ${d.deviceId.substring(0,8)}...</span>`,
+        `<span class="text-muted">Unregistered (${d.deviceModel || 'Unknown'})</span>`,
+        '<span class="status status-inactive">None</span>',
+        '1',
+        formatDate(d.registeredAt || Date.now())
+      ]);
+    });
+
+    res.render('generic-list', { user: req.session.user, active: 'users', pageTitle: 'Users & Devices', count: rows.length, columns: ['Phone / ID', 'Name / Model', 'Tier', 'Devices', 'Joined'], rows });
   } catch (err) { next(err); }
 };
 
 exports.getSubscriptions = async (req, res, next) => {
   try {
-    const users = await Customer.find({ isPremium: true }).sort({ createdAt: -1 }).lean();
-    const rows = users.map(u => [
-      `<span class="mono">${u.phone}</span>`,
-      u.name || '—',
-      '<span class="status status-active">Active</span>',
-      'Auto-renews',
-      formatDate(u.createdAt)
-    ]);
-    res.render('generic-list', { user: req.session.user, active: 'subscriptions', pageTitle: 'Subscriptions', count: users.length, columns: ['Phone', 'Name', 'Status', 'Billing', 'Subscribed On'], rows });
+    res.render('admin/subscriptions', { user: req.session.user, active: 'subscriptions', pageTitle: 'Subscription Management' });
   } catch (err) { next(err); }
 };
 
@@ -565,5 +590,192 @@ exports.toggleUserStatus = async (req, res, next) => {
     });
     
     res.redirect('/admin/users');
+  } catch (err) { next(err); }
+};
+
+// --- SUBSCRIPTION ADMIN API ---
+
+exports.getSubscriptionStats = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const freeUsers = await Customer.countDocuments({ plan: 'free' });
+    const plusUsers = await Customer.countDocuments({ plan: 'plus' });
+    const premiumUsers = await Customer.countDocuments({ plan: 'premium' });
+    
+    const monthlyRevenue = (plusUsers * 99) + (premiumUsers * 199);
+    
+    res.json({
+      freeUsers,
+      plusUsers,
+      premiumUsers,
+      monthlyRevenue,
+      activeSubscriptions: plusUsers + premiumUsers
+    });
+  } catch (err) { next(err); }
+};
+
+exports.getSubscriptionUsers = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const Device = require('../models/Device');
+    
+    const filter = {};
+    if (req.query.plan) filter.plan = req.query.plan;
+    if (req.query.status) filter.subscriptionStatus = req.query.status;
+    
+    const users = await Customer.find(filter).sort({ createdAt: -1 }).lean();
+    const allDevices = await Device.find().lean();
+    
+    const list = users.map(u => {
+      const uIdStr = u._id ? u._id.toString() : '';
+      const deviceCount = allDevices.filter(d => 
+        (d.userId && d.userId.toString() === uIdStr) || 
+        (d.phoneNumber && d.phoneNumber === u.phone)
+      ).length;
+      
+      return {
+        _id: u._id,
+        name: u.name || 'Unknown',
+        phone: u.phone,
+        plan: u.plan,
+        subscriptionStatus: u.subscriptionStatus || 'active',
+        deviceCount,
+        updatedAt: u.subscriptionUpdatedAt || u.createdAt
+      };
+    });
+    
+    res.json({ users: list });
+  } catch (err) { next(err); }
+};
+
+exports.postSubscriptionUpgrade = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const SecurityLog = require('../models/SecurityLog');
+    const { newPlan } = req.body;
+    
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) return res.status(404).send('Customer not found');
+    
+    customer.plan = newPlan;
+    customer.subscriptionStatus = 'active';
+    customer.subscriptionUpdatedAt = new Date();
+    await customer.save();
+    
+    await SecurityLog.create({
+      type: 'ADMIN_SUBSCRIPTION_UPGRADE',
+      ip: req.ip,
+      message: `Admin upgraded user ${customer.phone} to ${newPlan}`,
+      timestamp: Date.now()
+    });
+    
+    const admin = require('firebase-admin');
+    if (admin.apps.length > 0 && customer.firebaseUid) {
+      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
+        plan: newPlan,
+        status: 'active',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+    
+    res.json({ success: true, customer });
+  } catch (err) { next(err); }
+};
+
+exports.postSubscriptionDowngrade = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const SecurityLog = require('../models/SecurityLog');
+    const { newPlan } = req.body;
+    
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) return res.status(404).send('Customer not found');
+    
+    customer.plan = newPlan;
+    customer.subscriptionStatus = 'active';
+    customer.subscriptionUpdatedAt = new Date();
+    await customer.save();
+    
+    await SecurityLog.create({
+      type: 'ADMIN_SUBSCRIPTION_DOWNGRADE',
+      ip: req.ip,
+      message: `Admin downgraded user ${customer.phone} to ${newPlan}`,
+      timestamp: Date.now()
+    });
+    
+    const admin = require('firebase-admin');
+    if (admin.apps.length > 0 && customer.firebaseUid) {
+      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
+        plan: newPlan,
+        status: 'active',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+    
+    res.json({ success: true, customer });
+  } catch (err) { next(err); }
+};
+
+exports.postSubscriptionSuspend = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const SecurityLog = require('../models/SecurityLog');
+    
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) return res.status(404).send('Customer not found');
+    
+    customer.subscriptionStatus = 'suspended';
+    customer.subscriptionUpdatedAt = new Date();
+    await customer.save();
+    
+    await SecurityLog.create({
+      type: 'ADMIN_SUBSCRIPTION_SUSPEND',
+      ip: req.ip,
+      message: `Admin suspended subscription for user ${customer.phone}`,
+      timestamp: Date.now()
+    });
+    
+    const admin = require('firebase-admin');
+    if (admin.apps.length > 0 && customer.firebaseUid) {
+      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
+        plan: customer.plan,
+        status: 'suspended',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+    
+    res.json({ success: true, customer });
+  } catch (err) { next(err); }
+};
+
+exports.postSubscriptionReactivate = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const SecurityLog = require('../models/SecurityLog');
+    
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) return res.status(404).send('Customer not found');
+    
+    customer.subscriptionStatus = 'active';
+    customer.subscriptionUpdatedAt = new Date();
+    await customer.save();
+    
+    await SecurityLog.create({
+      type: 'ADMIN_SUBSCRIPTION_REACTIVATE',
+      ip: req.ip,
+      message: `Admin reactivated subscription for user ${customer.phone}`,
+      timestamp: Date.now()
+    });
+    
+    const admin = require('firebase-admin');
+    if (admin.apps.length > 0 && customer.firebaseUid) {
+      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
+        plan: customer.plan,
+        status: 'active',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+    
+    res.json({ success: true, customer });
   } catch (err) { next(err); }
 };

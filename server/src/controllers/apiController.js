@@ -71,6 +71,16 @@ exports.upsertDevice = async (req, res, next) => {
       device.lastSeen = Date.now();
       await device.save();
     } else {
+      const Customer = require('../models/Customer');
+      const customer = await Customer.findById(userId);
+      if (customer) {
+        const plan = customer.plan || 'free';
+        const deviceLimits = { free: 1, plus: 3, premium: Infinity };
+        const currentCount = await Device.countDocuments({ userId });
+        if (currentCount >= deviceLimits[plan]) {
+          return res.status(403).json({ error: `Device limit reached for ${plan} plan.` });
+        }
+      }
       device = await Device.create({ deviceId, userId, deviceModel, fcmToken, registeredAt: Date.now(), lastSeen: Date.now() });
     }
     
@@ -483,3 +493,113 @@ exports.postSupportChat = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+// --- SUBSCRIPTION ENDPOINTS ---
+
+exports.getCurrentSubscription = async (req, res, next) => {
+  try {
+    const Customer = require('../models/Customer');
+    const customer = await Customer.findById(req.userId);
+    if (!customer) return res.status(404).json({ error: 'Customer not found' });
+    
+    res.json({
+      plan: customer.plan || 'free',
+      status: customer.subscriptionStatus || 'active',
+      deviceLimit: customer.deviceLimit,
+      updatedAt: customer.subscriptionUpdatedAt
+    });
+  } catch (err) { next(err); }
+};
+
+exports.upgradeSubscription = async (req, res, next) => {
+  try {
+    const admin = require('firebase-admin');
+    const Customer = require('../models/Customer');
+    const logger = require('../utils/logger');
+    
+    const authHeader = req.headers.authorization || '';
+    const tokenStr = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : req.body.idToken;
+    
+    if (!tokenStr) return res.status(401).json({ error: 'Missing authentication token' });
+    
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(tokenStr);
+    } catch (e) {
+      return res.status(401).json({ error: 'Invalid or expired Firebase token' });
+    }
+    
+    const phone = decodedToken.phone_number.replace(/\D/g, '');
+    const { newPlan } = req.body;
+    
+    if (!['plus', 'premium'].includes(newPlan)) {
+      return res.status(400).json({ error: 'Invalid plan requested' });
+    }
+    
+    const customer = await Customer.findOne({ phone });
+    if (!customer) return res.status(404).json({ error: 'Account not found' });
+    
+    customer.plan = newPlan;
+    customer.subscriptionStatus = 'active';
+    customer.subscriptionUpdatedAt = new Date();
+    await customer.save();
+    
+    // Sync with Firestore
+    if (admin.apps.length > 0 && customer.firebaseUid) {
+      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
+        plan: newPlan,
+        status: 'active',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+    
+    logger.info(`Customer ${phone} upgraded to ${newPlan}`);
+    res.json({ success: true, plan: newPlan });
+  } catch (err) { next(err); }
+};
+
+exports.downgradeSubscription = async (req, res, next) => {
+  try {
+    const admin = require('firebase-admin');
+    const Customer = require('../models/Customer');
+    const logger = require('../utils/logger');
+    
+    const authHeader = req.headers.authorization || '';
+    const tokenStr = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : req.body.idToken;
+    
+    if (!tokenStr) return res.status(401).json({ error: 'Missing authentication token' });
+    
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(tokenStr);
+    } catch (e) {
+      return res.status(401).json({ error: 'Invalid or expired Firebase token' });
+    }
+    
+    const phone = decodedToken.phone_number.replace(/\D/g, '');
+    const { newPlan } = req.body; // Can be 'free' or 'plus'
+    
+    if (!['free', 'plus'].includes(newPlan)) {
+      return res.status(400).json({ error: 'Invalid plan requested' });
+    }
+    
+    const customer = await Customer.findOne({ phone });
+    if (!customer) return res.status(404).json({ error: 'Account not found' });
+    
+    customer.plan = newPlan;
+    customer.subscriptionStatus = 'active';
+    customer.subscriptionUpdatedAt = new Date();
+    await customer.save();
+    
+    // Sync with Firestore
+    if (admin.apps.length > 0 && customer.firebaseUid) {
+      await admin.firestore().collection('users').doc(customer.firebaseUid).collection('subscription').doc('current').set({
+        plan: newPlan,
+        status: 'active',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+    
+    logger.info(`Customer ${phone} downgraded to ${newPlan}`);
+    res.json({ success: true, plan: newPlan });
+  } catch (err) { next(err); }
+};

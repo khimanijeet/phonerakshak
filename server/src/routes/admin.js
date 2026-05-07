@@ -45,4 +45,12 @@ router.get('/api/support/history', requireAuth, adminController.getApiTicketHist
 router.post('/api/support/chat', requireAuth, adminController.postApiSupportChat);
 router.patch('/api/support/ticket/:id/status', requireAuth, adminController.patchApiTicketStatus);
 
+// Subscription Admin Endpoints
+router.get('/api/admin/subscriptions/stats', requireAuth, adminController.getSubscriptionStats);
+router.get('/api/admin/subscriptions/users', requireAuth, adminController.getSubscriptionUsers);
+router.post('/subscriptions/:id/upgrade', requireAuth, adminController.postSubscriptionUpgrade);
+router.post('/subscriptions/:id/downgrade', requireAuth, adminController.postSubscriptionDowngrade);
+router.post('/subscriptions/:id/suspend', requireAuth, adminController.postSubscriptionSuspend);
+router.post('/subscriptions/:id/reactivate', requireAuth, adminController.postSubscriptionReactivate);
+
 module.exports = router;

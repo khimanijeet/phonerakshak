@@ -43,12 +43,18 @@ const uploadAudio = multer({
 
 // Open route for registration/refresh (returns JWT)
 router.post('/auth/firebase-login', apiController.firebaseLogin);
+router.post('/devices', apiController.openRegister);
 router.post('/device/register', verifyToken, requireActiveUser, apiController.upsertDevice);
 router.post('/device/register-fcm', verifyToken, requireActiveUser, apiController.registerFcm);
 
 // Face Recovery Setup & Verification
 router.post('/auth/register-face', apiController.registerFace);
 router.post('/auth/verify-face', apiController.verifyFace);
+
+// Subscription Routes
+router.get('/subscription/current', verifyToken, requireActiveUser, apiController.getCurrentSubscription);
+router.post('/subscription/upgrade', apiController.upgradeSubscription);
+router.post('/subscription/downgrade', apiController.downgradeSubscription);
 
 // Protected routes
 router.post('/devices/:id/ping', verifyToken, requireActiveUser, apiController.pingDevice);

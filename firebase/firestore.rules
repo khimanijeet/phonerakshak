@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Function to check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Function to check if the user is accessing their own data
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    // Function to check if the user has custom admin claim
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+
+    // Allow admins to read/write everything
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      match /devices/{deviceId} {
+        // Users can read/write their own devices
+        // The Cloud Function will enforce strict updates like lastSeen
+        allow read, write: if isOwner(uid);
+      }
+
+      match /subscription/{subscriptionId} {
+        // Subscriptions should only be readable by owner, writable by Cloud Functions or Admin
+        allow read: if isOwner(uid);
+        allow write: if false; 
+      }
+    }
+  }
+}

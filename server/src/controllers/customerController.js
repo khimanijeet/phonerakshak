@@ -10,6 +10,15 @@ const bcrypt = require('bcryptjs');
 const { sendAndroidPushAlert } = require('../utils/firebase');
 const { generateSupportResponse } = require('../utils/gemini');
 
+const getFirebaseConfig = () => ({
+  apiKey: process.env.FIREBASE_API_KEY || '',
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
+  projectId: process.env.FIREBASE_PROJECT_ID || '',
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || '',
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: process.env.FIREBASE_APP_ID || ''
+});
+
 const isOnline = (device, windowMs = 5 * 60 * 1000) => {
   return device && device.lastSeen && (Date.now() - new Date(device.lastSeen).getTime()) < windowMs;
 };
@@ -27,7 +36,7 @@ function timeAgo(ts) {
 
 async function buildCustomerContext(customerPhone, activeDeviceId = null) {
   const customer = await Customer.findOne({ phone: customerPhone }).lean();
-  const isPremium = !!customer?.isPremium;
+  const plan = customer?.plan || 'free';
   
   const devicesDb = await Device.find({ phoneNumber: customerPhone }).sort({ lastSeen: -1 }).lean();
   const devices = devicesDb.map(d => ({
@@ -49,7 +58,7 @@ async function buildCustomerContext(customerPhone, activeDeviceId = null) {
   let context = {
     devices, device, latest: null, alerts: [], photos: [], commands: [],
     simAlerts: [], protection: null, modeHistory: [], activityLogs: [],
-    isPremium
+    plan
   };
   
   if (device) {
@@ -91,8 +100,43 @@ async function buildCustomerContext(customerPhone, activeDeviceId = null) {
 }
 
 exports.requireCustomer = (req, res, next) => {
-  if (req.session && req.session.customer) return next();
-  return res.redirect('/customer/login');
+  if (!req.session.customer) return res.redirect('/customer/login');
+  next();
+};
+
+exports.requirePlan = (requiredPlan) => {
+  return async (req, res, next) => {
+    try {
+      const Customer = require('../models/Customer');
+      const phone = req.session?.customer?.phone || req.userId;
+      if (!phone) {
+        if (req.session) { req.session.notice = { type: 'error', text: 'Authentication required' }; return res.redirect('/customer'); }
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      let customer;
+      if (phone.toString().length > 20) { // Probably an ID
+        customer = await Customer.findById(phone);
+      } else {
+        customer = await Customer.findOne({ phone });
+      }
+      
+      if (!customer) return res.status(404).json({ error: 'Account not found' });
+      
+      const planValue = { free: 0, plus: 1, premium: 2 };
+      const currentPlan = customer.plan || 'free';
+      
+      if (planValue[currentPlan] < planValue[requiredPlan]) {
+        if (req.session && req.session.customer) {
+          req.session.notice = { type: 'error', text: `This feature requires the ${requiredPlan.toUpperCase()} plan.` };
+          return res.redirect('back');
+        } else {
+          return res.status(403).json({ error: `Feature requires ${requiredPlan} plan. Current plan: ${currentPlan}` });
+        }
+      }
+      next();
+    } catch (err) { next(err); }
+  };
 };
 
 exports.getLogin = (req, res) => {
@@ -309,10 +353,19 @@ exports.getPoll = async (req, res, next) => {
 exports.postCommand = async (req, res, next) => {
   try {
     const { type } = req.body || {};
-    const allowed = ['lock', 'unlock', 'alarm', 'stop_alarm', 'locate', 'emergency'];
-    if (!allowed.includes(type)) {
-      req.session.notice = { type: 'error', text: 'Unsupported command.' };
-      return res.redirect('/customer');
+    const Customer = require('../models/Customer');
+    const customer = await Customer.findOne({ phone: req.session.customer.phone });
+    const plan = customer.plan || 'free';
+    
+    const planFeatures = {
+      free: ['locate', 'alarm', 'stop_alarm', 'lock', 'unlock', 'emergency'],
+      plus: ['locate', 'alarm', 'stop_alarm', 'lock', 'unlock', 'emergency', 'geofence', 'alerts'],
+      premium: ['locate', 'alarm', 'stop_alarm', 'lock', 'unlock', 'emergency', 'geofence', 'alerts', 'camera', 'audio', 'intruder']
+    };
+    
+    if (!planFeatures[plan] || !planFeatures[plan].includes(type)) {
+      req.session.notice = { type: 'error', text: `The '${type}' feature requires an upgrade to a higher plan.` };
+      return res.redirect('back');
     }
     let device;
     if (req.session.activeDeviceId) {
@@ -581,7 +634,7 @@ exports.postSupportEscalate = async (req, res, next) => {
     if (!tkt) return res.status(404).send('Not found');
     
     tkt.status = 'escalated';
-    tkt.priority = c.isPremium ? 'high' : 'normal';
+    tkt.priority = c.plan === 'premium' ? 'high' : c.plan === 'plus' ? 'medium' : 'normal';
     await tkt.save();
     
     res.json({ ticket: tkt });

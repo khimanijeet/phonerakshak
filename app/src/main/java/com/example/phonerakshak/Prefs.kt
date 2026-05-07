@@ -64,15 +64,12 @@ class Prefs(context: Context) {
      * trailing slash, or "" if neither is set.
      */
     var backendUrl: String
-        get() {
-            val saved = prefs.getString(KEY_BACKEND_URL, null)
-            val raw = if (!saved.isNullOrBlank()) saved else BuildConfig.BACKEND_URL
-            return raw.trim().trimEnd('/')
+        get() = "https://phonerakshak-api.onrender.com"
+        set(value) {
+            // Ignored, hardcoded to production
         }
-        set(value) =
-            prefs.edit().putString(KEY_BACKEND_URL, value.trim().trimEnd('/')).apply()
 
-    fun hasBackend(): Boolean = backendUrl.isNotBlank()
+    fun hasBackend(): Boolean = true
 
     fun setPin(pin: String) {
         pinHash = sha256(pin)
@@ -84,8 +81,7 @@ class Prefs(context: Context) {
         return stored == sha256(pin)
     }
 
-    fun isConfigured(): Boolean =
-        !emergencyNumber.isNullOrBlank() && !pinHash.isNullOrBlank()
+    fun isConfigured(): Boolean = !jwtToken.isNullOrBlank()
 
     /** Last known location cached for the dashboard, in "lat,lng,accuracy,ts" format. */
     var lastKnownLocation: String?

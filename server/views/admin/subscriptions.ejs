@@ -1,0 +1,221 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidebar', { active: 'subscriptions' }) %>
+
+<main class="main-content">
+  <div class="content-header">
+    <div>
+      <h1 class="page-title">Subscription Management</h1>
+      <p class="page-subtitle">Monitor and manage user plans and revenue</p>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid" style="margin-bottom: 2rem;">
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <div class="stat-card-title">Total Active Subscriptions</div>
+        <div class="stat-card-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+      </div>
+      <div class="stat-card-value" id="statActive">0</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <div class="stat-card-title">Plus Users</div>
+        <div class="stat-card-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+      </div>
+      <div class="stat-card-value" id="statPlus">0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <div class="stat-card-title">Premium Users</div>
+        <div class="stat-card-icon" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+      </div>
+      <div class="stat-card-value" id="statPremium" style="color: #a855f7; text-shadow: 0 0 10px rgba(168, 85, 247, 0.4);">0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <div class="stat-card-title">Est. Monthly Revenue</div>
+        <div class="stat-card-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+      </div>
+      <div class="stat-card-value" id="statRevenue">₹0</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 class="card-title">User Subscriptions</h2>
+      <div style="display: flex; gap: 1rem;">
+        <select id="filterPlan" class="form-input" style="width: auto;" onchange="loadUsers()">
+          <option value="">All Plans</option>
+          <option value="free">Free</option>
+          <option value="plus">Plus</option>
+          <option value="premium">Premium</option>
+        </select>
+        <select id="filterStatus" class="form-input" style="width: auto;" onchange="loadUsers()">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+          <option value="expired">Expired</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Phone</th>
+            <th>Name</th>
+            <th>Active Plan</th>
+            <th>Devices</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <tr><td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<style>
+.badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+.badge-free { background: #374151; color: #9ca3af; }
+.badge-plus { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.badge-premium { 
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2)); 
+  color: #e879f9; 
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+}
+.badge-status-active { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.badge-status-suspended { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.badge-status-expired { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
+.action-btn { 
+  background: none; border: none; color: #9ca3af; cursor: pointer; 
+  padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 4px;
+}
+.action-btn:hover { background: #374151; color: #fff; }
+.action-upgrade { color: #60a5fa; }
+.action-suspend { color: #f87171; }
+</style>
+
+<script>
+async function loadStats() {
+  try {
+    const res = await fetch('/admin/api/admin/subscriptions/stats');
+    if (!res.ok) return;
+    const data = await res.json();
+    document.getElementById('statActive').innerText = data.activeSubscriptions;
+    document.getElementById('statPlus').innerText = data.plusUsers;
+    document.getElementById('statPremium').innerText = data.premiumUsers;
+    document.getElementById('statRevenue').innerText = '₹' + data.monthlyRevenue.toLocaleString('en-IN');
+  } catch (err) { console.error(err); }
+}
+
+async function loadUsers() {
+  const plan = document.getElementById('filterPlan').value;
+  const status = document.getElementById('filterStatus').value;
+  const tbody = document.getElementById('usersTableBody');
+  
+  try {
+    let url = '/admin/api/admin/subscriptions/users?';
+    if (plan) url += `plan=${plan}&`;
+    if (status) url += `status=${status}&`;
+    
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const data = await res.json();
+    
+    if (data.users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #9ca3af;">No users found</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = data.users.map(u => `
+      <tr>
+        <td class="mono">${u.phone}</td>
+        <td>${u.name}</td>
+        <td>
+          <span class="badge badge-${u.plan}">
+            ${u.plan === 'premium' ? '★ ' : ''}${u.plan.toUpperCase()}
+          </span>
+        </td>
+        <td>${u.deviceCount}</td>
+        <td><span class="badge badge-status-${u.subscriptionStatus}">${u.subscriptionStatus.toUpperCase()}</span></td>
+        <td>
+          ${u.subscriptionStatus === 'active' ? 
+            `<button class="action-btn action-suspend" onclick="performAction('${u._id}', 'suspend')">Suspend</button>` :
+            `<button class="action-btn action-upgrade" onclick="performAction('${u._id}', 'reactivate')">Reactivate</button>`
+          }
+          <div class="dropdown" style="display:inline-block; position:relative;">
+            <button class="action-btn" onclick="this.nextElementSibling.classList.toggle('show')">Change Plan ▾</button>
+            <div class="dropdown-content" style="display:none; position:absolute; right:0; background:#1f2937; border:1px solid #374151; z-index:10; border-radius:4px; overflow:hidden; min-width:120px;">
+              ${u.plan !== 'premium' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'upgrade', 'premium')">Upgrade to Premium</button>` : ''}
+              ${u.plan !== 'plus' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#fff; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'upgrade', 'plus')">Change to Plus</button>` : ''}
+              ${u.plan !== 'free' ? `<button style="display:block; width:100%; padding:8px 12px; background:none; border:none; color:#f87171; text-align:left; cursor:pointer;" onclick="performAction('${u._id}', 'downgrade', 'free')">Downgrade to Free</button>` : ''}
+            </div>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+    
+  } catch (err) { console.error(err); }
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('.action-btn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+        openDropdown.style.display = 'none';
+      }
+    }
+  } else if (event.target.matches('.action-btn') && event.target.innerText.includes('Change Plan')) {
+    const content = event.target.nextElementSibling;
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+async function performAction(id, action, newPlan) {
+  if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+  
+  try {
+    const url = `/admin/subscriptions/${id}/${action}`;
+    const opts = { method: 'POST', headers: { 'Content-Type': 'application/json' } };
+    if (newPlan) opts.body = JSON.stringify({ newPlan });
+    
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    if (data.success) {
+      loadStats();
+      loadUsers();
+    } else {
+      alert(data.error || 'Action failed');
+    }
+  } catch (err) { alert('Error performing action'); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadStats();
+  loadUsers();
+});
+</script>
+
+<%- include('../partials/footer') %>

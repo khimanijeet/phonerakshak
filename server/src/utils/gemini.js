@@ -63,7 +63,7 @@ SAFETY RULES:
 CONTEXT:
 Ticket Priority: ${ticket.priority || 'normal'}
 Issue Type: ${ticket.issueType || 'general'}
-Premium User: ${customerContext.isPremium ? 'Yes' : 'No'}
+Premium User: ${['plus', 'premium'].includes(customerContext.plan) ? 'Yes (' + customerContext.plan + ')' : 'No'}
 Device Status: ${customerContext.devices && customerContext.devices.length > 0 ? (customerContext.devices[0].online ? 'Online' : 'Offline') : 'No Linked Device'}
 
 CONVERSATION HISTORY:
