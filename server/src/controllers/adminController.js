@@ -26,6 +26,8 @@ const isOnline = (device, windowMs = 5 * 60 * 1000) => {
 
 exports.getDashboard = async (req, res, next) => {
   try {
+    const devices = await Device.find().sort({ lastSeen: -1 }).lean();
+    const totalCustomers = await Customer.countDocuments();
     const freeUsers = await Customer.countDocuments({ plan: 'free' });
     const plusUsers = await Customer.countDocuments({ plan: 'plus' });
     const premiumUsers = await Customer.countDocuments({ plan: 'premium' });
