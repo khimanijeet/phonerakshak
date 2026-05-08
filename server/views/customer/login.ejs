@@ -98,26 +98,41 @@
     errorBox.style.display = 'block';
   }
 
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 
+    size: 'invisible',
+    callback: (response) => {
+      console.log('reCAPTCHA solved');
+    },
+    'expired-callback': () => {
+      console.log('reCAPTCHA expired');
+    }
+  });
 
   btnSendOtp.addEventListener('click', async () => {
+    console.log('Send OTP button clicked');
     errorBox.style.display = 'none';
     const phone = phoneInput.value.trim();
     if (!phone || phone.length < 10) return showError('Please enter a valid phone number with country code.');
     
     btnSendOtp.disabled = true;
     btnSendOtp.innerText = 'Sending...';
+    console.log('Attempting to send OTP to:', phone);
 
     try {
+      if (!auth) throw new Error('Auth system not initialized. Check your internet connection.');
       confirmationResult = await auth.signInWithPhoneNumber(phone, window.recaptchaVerifier);
+      console.log('OTP sent successfully');
       stepPhone.style.display = 'none';
       stepOtp.style.display = 'block';
       otpInputs[0].focus();
     } catch (error) {
       console.error('OTP Send Error:', error);
       showError(error.message || 'Failed to send OTP. Please check your number.');
-      if (typeof grecaptcha !== 'undefined') {
-        window.recaptchaVerifier.render().then(wId => grecaptcha.reset(wId));
+      if (window.grecaptcha && window.recaptchaVerifier) {
+        try {
+          const wId = await window.recaptchaVerifier.render();
+          grecaptcha.reset(wId);
+        } catch (e) { console.error('Recaptcha reset failed', e); }
       }
     } finally {
       btnSendOtp.disabled = false;
