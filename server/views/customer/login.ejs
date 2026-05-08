@@ -118,6 +118,19 @@
     btnSendOtp.innerText = 'Sending...';
     console.log('Attempting to send OTP to:', phone);
 
+    // Developer Bypass for testing without billing
+    if (phone === '+916353858573') {
+      console.log('Developer bypass triggered');
+      setTimeout(() => {
+        stepPhone.style.display = 'none';
+        stepOtp.style.display = 'block';
+        otpInputs[0].focus();
+        btnSendOtp.disabled = false;
+        btnSendOtp.innerText = 'Send OTP';
+      }, 1000);
+      return;
+    }
+
     try {
       if (!auth) throw new Error('Auth system not initialized. Check your internet connection.');
       confirmationResult = await auth.signInWithPhoneNumber(phone, window.recaptchaVerifier);
@@ -164,8 +177,13 @@
     btnVerifyOtp.innerText = 'Verifying...';
 
     try {
-      const result = await confirmationResult.confirm(code);
-      const idToken = await result.user.getIdToken();
+      let idToken;
+      if (otpInputs.map(i => i.value).join('') === '123456' && phoneInput.value.trim() === '+916353858573') {
+        idToken = 'mock-token-+916353858573';
+      } else {
+        const result = await confirmationResult.confirm(code);
+        idToken = await result.user.getIdToken();
+      }
       
       document.getElementById('idToken').value = idToken;
       document.getElementById('backend-form').submit();
