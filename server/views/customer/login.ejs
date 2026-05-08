@@ -62,12 +62,26 @@
 </script>
 
 <script>
-  const firebaseConfig = JSON.parse(document.getElementById('firebase-config').textContent);
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  const auth = firebase.auth();
+  let auth;
   let confirmationResult = null;
+
+  try {
+    const configEl = document.getElementById('firebase-config');
+    if (!configEl) throw new Error('Firebase configuration missing');
+    
+    const firebaseConfig = JSON.parse(configEl.textContent);
+    if (!firebaseConfig.apiKey) throw new Error('Firebase API Key missing in configuration');
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    auth = firebase.auth();
+    console.log('Firebase initialized successfully');
+  } catch (err) {
+    console.error('Firebase Init Error:', err);
+    document.getElementById('js-error').innerText = 'Critical: Auth system failed to load. Please contact admin.';
+    document.getElementById('js-error').style.display = 'block';
+  }
 
   const stepPhone = document.getElementById('step-phone');
   const stepOtp = document.getElementById('step-otp');
@@ -100,9 +114,11 @@
       stepOtp.style.display = 'block';
       otpInputs[0].focus();
     } catch (error) {
-      console.error(error);
-      showError(error.message || 'Failed to send OTP.');
-      window.recaptchaVerifier.render().then(wId => grecaptcha.reset(wId));
+      console.error('OTP Send Error:', error);
+      showError(error.message || 'Failed to send OTP. Please check your number.');
+      if (typeof grecaptcha !== 'undefined') {
+        window.recaptchaVerifier.render().then(wId => grecaptcha.reset(wId));
+      }
     } finally {
       btnSendOtp.disabled = false;
       btnSendOtp.innerText = 'Send OTP';
