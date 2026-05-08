@@ -129,7 +129,7 @@
 
     // Developer Bypass (Matches 6353858573 with or without +91)
     if (cleanPhone === '916353858573' || cleanPhone === '6353858573') {
-      setTimeout(() => {
+      setTimeout(function() {
         stepPhone.style.display = 'none';
         stepOtp.style.display = 'block';
         otpInputs[0].focus();
