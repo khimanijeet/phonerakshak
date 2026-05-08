@@ -47,7 +47,8 @@
 
     <form method="POST" action="/customer/register" id="backend-form" style="display:none;">
       <input type="hidden" name="idToken" id="idToken" />
-      <input type="hidden" name="name" id="hidden-name" />
+      <input type="hidden" name="name" id="name-field" />
+      <input type="hidden" name="phone" id="phone-field" />
     </form>
 
     <div id="recaptcha-container"></div>
@@ -90,7 +91,7 @@
   const stepPhone = document.getElementById('step-phone');
   const stepOtp = document.getElementById('step-otp');
   const btnSendOtp = document.getElementById('btn-send-otp');
-  const btnVerifyOtp = document.getElementById('btn-verify-otp');
+  const btnVerify = document.getElementById('btn-verify-otp');
   const phoneInput = document.getElementById('phone');
   const nameInput = document.getElementById('name');
   const errorBox = document.getElementById('js-error');
@@ -117,24 +118,24 @@
     console.log('Send OTP button clicked');
     errorBox.style.display = 'none';
     const phone = phoneInput.value.trim();
+    const cleanPhone = phone.replace(/\D/g, '');
     const name = nameInput.value.trim();
     
     if (!name) return showError('Please enter your name.');
-    if (!phone || phone.length < 10) return showError('Please enter a valid phone number.');
+    if (!phone || cleanPhone.length < 10) return showError('Please enter a valid phone number (e.g. +91...).');
     
     btnSendOtp.disabled = true;
     btnSendOtp.innerText = 'Sending...';
-    console.log('Attempting to send OTP to:', phone);
 
-    // Developer Bypass
-    if (phone === '+916353858573') {
+    // Developer Bypass (Matches 6353858573 with or without +91)
+    if (cleanPhone === '916353858573' || cleanPhone === '6353858573') {
       setTimeout(() => {
         stepPhone.style.display = 'none';
         stepOtp.style.display = 'block';
         otpInputs[0].focus();
         btnSendOtp.disabled = false;
         btnSendOtp.innerText = 'Send OTP';
-      }, 1000);
+      }, 800);
       return;
     }
 
@@ -175,17 +176,17 @@
     });
   });
 
-  btnVerifyOtp.addEventListener('click', async () => {
-    errorBox.style.display = 'none';
+  btnVerify.addEventListener('click', async () => {
     const code = otpInputs.map(i => i.value).join('');
-    if (code.length !== 6) return showError('Please enter a valid 6-digit code.');
-
-    btnVerifyOtp.disabled = true;
-    btnVerifyOtp.innerText = 'Verifying...';
+    if (code.length < 6) return;
+    
+    btnVerify.disabled = true;
+    btnVerify.innerText = 'Verifying...';
 
     try {
       let idToken;
-      if (otpInputs.map(i => i.value).join('') === '123456' && phoneInput.value.trim() === '+916353858573') {
+      const phone = phoneInput.value.trim();
+      if (code === '123456' && phone === '+916353858573') {
         idToken = 'mock-token-+916353858573';
       } else {
         const result = await confirmationResult.confirm(code);
@@ -193,16 +194,14 @@
       }
       
       document.getElementById('idToken').value = idToken;
-      document.getElementById('hidden-name').value = nameInput.value;
+      document.getElementById('name-field').value = nameInput.value.trim();
+      document.getElementById('phone-field').value = phone;
       document.getElementById('backend-form').submit();
     } catch (error) {
-      console.error(error);
-      showError('Invalid code or expired.');
-      otpInputs.forEach(i => i.value = '');
-      otpInputs[0].focus();
-    } finally {
-      btnVerifyOtp.disabled = false;
-      btnVerifyOtp.innerText = 'Verify & Create Account';
+      console.error('Verification Error:', error);
+      showError(error.message || 'Invalid code. Please try again.');
+      btnVerify.disabled = false;
+      btnVerify.innerText = 'Verify & Sign Up';
     }
   });
 </script>

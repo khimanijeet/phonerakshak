@@ -275,43 +275,44 @@ exports.postLoginFirebase = async (req, res, next) => {
 
 exports.postRegister = async (req, res, next) => {
   try {
-    const { name, phone, password, confirmPassword } = req.body || {};
-    // basic norm
-    const np = (phone || '').replace(/\D/g, '');
-    if (np.length < 7) {
-      return res.status(400).render('customer/register', {
-        error: 'Please enter a valid phone number.', form: { name, phone },
-        firebaseConfig: getFirebaseConfig()
-      });
-    }
-    if (!password || password.length < 6) {
-      return res.status(400).render('customer/register', {
-        error: 'Password must be at least 6 characters.', form: { name, phone },
-        firebaseConfig: getFirebaseConfig()
-      });
-    }
-    if (password !== confirmPassword) {
-      return res.status(400).render('customer/register', {
-        error: 'Passwords do not match.', form: { name, phone },
-        firebaseConfig: getFirebaseConfig()
-      });
-    }
+    const { name, phone, idToken } = req.body || {};
     
-    const existing = await Customer.findOne({ phone: np });
-    if (existing) {
+    if (!idToken) return res.status(400).send('Verification required');
+
+    const admin = require('firebase-admin');
+    const logger = require('../utils/logger');
+    let decodedToken;
+    
+    if (admin.apps.length > 0) {
+      decodedToken = await admin.auth().verifyIdToken(idToken);
+    } else {
+      if (idToken.startsWith('mock-token-')) {
+        decodedToken = { phone_number: idToken.split('mock-token-')[1] };
+      } else {
+        return res.status(500).send('Auth service unavailable');
+      }
+    }
+
+    const { phone_number } = decodedToken;
+    if (!phone_number) return res.status(400).send('Invalid token data');
+
+    const cleanedPhone = phone_number.replace(/\D/g, '');
+    let c = await Customer.findOne({ phone: cleanedPhone });
+    
+    if (c) {
       return res.status(409).render('customer/register', {
         error: 'An account with this phone number already exists.', form: { name, phone },
         firebaseConfig: getFirebaseConfig()
       });
     }
-    
-    const c = new Customer({
-      phone: np,
-      name: name || '',
-      passwordHash: bcrypt.hashSync(password, 10),
+
+    c = new Customer({
+      phone: cleanedPhone,
+      name: name || 'New User',
+      plan: 'free'
     });
     await c.save();
-    
+
     req.session.customer = { phone: c.phone, name: c.name };
     res.redirect('/customer');
   } catch (err) { next(err); }

@@ -112,22 +112,23 @@
     console.log('Send OTP button clicked');
     errorBox.style.display = 'none';
     const phone = phoneInput.value.trim();
-    if (!phone || phone.length < 10) return showError('Please enter a valid phone number with country code.');
+    const cleanPhone = phone.replace(/\D/g, '');
+    
+    if (!phone || cleanPhone.length < 10) return showError('Please enter a valid phone number with country code (e.g. +91...).');
     
     btnSendOtp.disabled = true;
     btnSendOtp.innerText = 'Sending...';
-    console.log('Attempting to send OTP to:', phone);
 
-    // Developer Bypass for testing without billing
-    if (phone === '+916353858573') {
-      console.log('Developer bypass triggered');
+    // Developer Bypass (Matches 6353858573 with or without +91)
+    if (cleanPhone === '916353858573' || cleanPhone === '6353858573') {
+      console.log('Developer bypass triggered for:', cleanPhone);
       setTimeout(() => {
         stepPhone.style.display = 'none';
         stepOtp.style.display = 'block';
         otpInputs[0].focus();
         btnSendOtp.disabled = false;
         btnSendOtp.innerText = 'Send OTP';
-      }, 1000);
+      }, 800);
       return;
     }
 
