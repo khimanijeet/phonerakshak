@@ -440,16 +440,59 @@ exports.postCommand = async (req, res, next) => {
     }
     
     // Create command
-    await Command.create({ deviceId: device.deviceId, type, status: 'queued', queuedAt: Date.now() });
+    const cmd = await Command.create({ 
+      deviceId: device.deviceId, 
+      type, 
+      status: 'queued', 
+      queuedAt: Date.now(),
+      payload: req.body.payload || {} 
+    });
+
+    // Sync to Firestore for the new Realtime Customer Portal worker
+    const { syncToFirestore, admin } = require('../utils/firebase');
+    if (admin.apps.length > 0) {
+      await syncToFirestore(customer._id, device.deviceId, {
+        type: type,
+        status: 'pending',
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        expiresAt: Date.now() + (5 * 60 * 1000), // 5 min expiry
+        initiatedBy: 'ejs_portal'
+      }, 'command');
+    }
     
-    const labels = { lock: 'Lock Device', unlock: 'Unlock Device', alarm: 'Play Alarm', stop_alarm: 'Stop Alarm', locate: 'Locate Device', emergency: 'Emergency Mode' };
+    const labels = { 
+      lock: 'Lock Device', 
+      unlock: 'Unlock Device', 
+      alarm: 'Play Alarm', 
+      stop_alarm: 'Stop Alarm', 
+      locate: 'Locate Device', 
+      emergency: 'Emergency Mode',
+      take_photo: 'Take Photo',
+      camera: 'Live Camera',
+      audio: 'Record Audio'
+    };
     
-    // Attempt instant delivery via FCM to the app (existing functionality stub)
-    // Send Push Notification to Web App Users
-    sendAndroidPushAlert(device.deviceId, 'Command Executed', `Your ${labels[type]} command was sent successfully.`, { type: 'command_executed', commandType: type });
+    // Attempt instant delivery via FCM to the app
+    const pushData = {
+      commandId: cmd._id.toString(),
+      type: type,
+      timestamp: Date.now().toString(),
+      ... (req.body.payload || {})
+    };
+
+    if (device.fcmToken) {
+      const { sendPushCommand } = require('../utils/firebase');
+      await sendPushCommand(device.fcmToken, pushData);
+    }
     
-    req.session.notice = { type: 'success', text: `${labels[type]} command sent — your phone will pick it up on next check-in.` };
-    res.redirect('/customer');
+    sendAndroidPushAlert(device.deviceId, 'Security Command', `Command ${labels[type] || type} sent to your device.`, { type: 'command_status', commandId: cmd._id.toString() });
+    
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      return res.json({ success: true, message: `${labels[type] || type} command sent successfully.` });
+    }
+
+    req.session.notice = { type: 'success', text: `${labels[type] || type} command sent successfully.` };
+    res.redirect('back');
   } catch (err) { next(err); }
 };
 

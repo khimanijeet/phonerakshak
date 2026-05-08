@@ -9,7 +9,7 @@ const Report = require('../models/Report');
 const AudioRecording = require('../models/AudioRecording');
 const logger = require('../utils/logger');
 const { generateToken } = require('../middlewares/auth');
-const { sendAndroidPushAlert, admin } = require('../utils/firebase');
+const { sendAndroidPushAlert, admin, syncToFirestore } = require('../utils/firebase');
 const Customer = require('../models/Customer');
 
 exports.firebaseLogin = async (req, res, next) => {
@@ -88,6 +88,13 @@ exports.upsertDevice = async (req, res, next) => {
     const io = req.app.get('io');
     if (io) io.emit('device_updated', device);
     
+    // Sync to Firestore
+    syncToFirestore(userId, deviceId, {
+      deviceModel: device.deviceModel,
+      fcmToken: device.fcmToken,
+      online: true
+    }, 'device');
+
     res.json({ ok: true, device });
   } catch (err) { next(err); }
 };
@@ -143,6 +150,16 @@ exports.addLocation = async (req, res, next) => {
       io.emit('device_updated', device);
     }
     
+    // Sync to Firestore
+    if (device && device.userId) {
+      syncToFirestore(device.userId, deviceId, {
+        lat: entry.latitude,
+        lng: entry.longitude,
+        accuracy: entry.accuracy,
+        trigger: entry.trigger
+      }, 'location');
+    }
+
     res.json({ ok: true, entry });
   } catch (err) { next(err); }
 };
@@ -174,6 +191,15 @@ exports.addAlert = async (req, res, next) => {
       io.emit('device_updated', device);
     }
     
+    // Sync to Firestore
+    if (device && device.userId) {
+      syncToFirestore(device.userId, deviceId, {
+        type: entry.type,
+        message: entry.message,
+        meta: entry.meta
+      }, 'alert');
+    }
+
     // Send Push Notification
     if (deviceId) {
       sendAndroidPushAlert(deviceId, 'PhoneRakshak Alert', message, { type });

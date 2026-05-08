@@ -30,7 +30,23 @@
       </button>
     </header>
 
-    <main class="mobile-content">
+      <main class="mobile-content">
+        <% if (locals.notice) { %>
+          <script>
+            Toastify({
+              text: "<%= notice.text %>",
+              duration: 4000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              style: {
+                background: "<%= notice.type === 'success' ? '#10b981' : '#ef4444' %>",
+                borderRadius: "10px",
+                fontSize: "14px"
+              }
+            }).showToast();
+          </script>
+        <% } %>
       
       <% 
         const isSecure = ctx.protection ? ctx.protection.mode === 'normal' : true; 
@@ -93,49 +109,37 @@
       <% } %>
 
       <div class="quick-actions-grid">
-        <form action="/customer/command" method="POST" style="display: contents;">
-          <input type="hidden" name="type" value="locate">
-          <button type="submit" class="qa-item btn-clear">
-            <div class="qa-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-purple"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
-            </div>
-            <div class="qa-title">Location</div>
-            <div class="qa-sub text-green">Live</div>
-          </button>
-        </form>
+        <button type="button" onclick="sendCommand('locate', this)" class="qa-item btn-clear">
+          <div class="qa-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-purple"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+          </div>
+          <div class="qa-title">Location</div>
+          <div class="qa-sub text-green">Live</div>
+        </button>
 
-        <form action="/customer/command" method="POST" style="display: contents;">
-          <input type="hidden" name="type" value="alarm">
-          <button type="submit" class="qa-item btn-clear">
-            <div class="qa-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-orange"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-            </div>
-            <div class="qa-title">Play Alarm</div>
-            <div class="qa-sub text-green">Sound</div>
-          </button>
-        </form>
+        <button type="button" onclick="sendCommand('alarm', this)" class="qa-item btn-clear">
+          <div class="qa-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-orange"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+          </div>
+          <div class="qa-title">Play Alarm</div>
+          <div class="qa-sub text-green">Sound</div>
+        </button>
 
-        <form action="/customer/command" method="POST" style="display: contents;">
-          <input type="hidden" name="type" value="lock">
-          <button type="submit" class="qa-item btn-clear">
-            <div class="qa-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-blue"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-            </div>
-            <div class="qa-title">Lock Device</div>
-            <div class="qa-sub text-green">Secure</div>
-          </button>
-        </form>
+        <button type="button" onclick="sendCommand('lock', this)" class="qa-item btn-clear">
+          <div class="qa-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-blue"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="qa-title">Lock Device</div>
+          <div class="qa-sub text-green">Secure</div>
+        </button>
 
-        <form action="/customer/command" method="POST" style="display: contents;">
-          <input type="hidden" name="type" value="take_photo">
-          <button type="submit" class="qa-item btn-clear">
-            <div class="qa-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-red"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-            </div>
-            <div class="qa-title">Take Photo</div>
-            <div class="qa-sub text-green">Intruder</div>
-          </button>
-        </form>
+        <button type="button" onclick="sendCommand('take_photo', this)" class="qa-item btn-clear">
+          <div class="qa-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="qa-icon icon-red"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+          </div>
+          <div class="qa-title">Take Photo</div>
+          <div class="qa-sub text-green">Intruder</div>
+        </button>
       </div>
 
       <% if (ctx && ctx.plan !== 'free') { %>
@@ -294,19 +298,22 @@
     </main>
 
     <nav class="mobile-nav">
-      <a href="/customer" class="nav-item active">
-        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-        <span>Home</span>
-      </a>
-      <a href="/customer/security" class="nav-item">
-        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <span>Security</span>
-      </a>
-      <a href="/customer/activity" class="nav-item">
-        <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <span>Activity</span>
-      </a>
-      <a href="/customer/settings" class="nav-item">
+        <a href="/customer" class="nav-item active">
+          <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+          <span>Home</span>
+        </a>
+        <a href="/customer/security" class="nav-item">
+          <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <span>Security</span>
+        </a>
+        <a href="/customer/activity" class="nav-item">
+          <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <span>Activity</span>
+          <% if (unreadAlerts > 0) { %>
+            <span class="nav-badge"><%= unreadAlerts %></span>
+          <% } %>
+        </a>
+        <a href="/customer/settings" class="nav-item">
         <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         <span>Settings</span>
       </a>
@@ -339,27 +346,83 @@
   <% } %>
 
   <script>
-    // Real-time polling for customer dashboard
-    setInterval(async () => {
+    async function sendCommand(type, btn) {
+      const title = btn.querySelector('.qa-title');
+      const originalTitle = title.innerText;
+      btn.disabled = true;
+      title.innerText = 'Sending...';
+
       try {
-        const res = await fetch('/customer/api/poll');
+        const res = await fetch('/customer/command', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type })
+        });
+
         if (res.ok) {
-          // If we receive new data, reload the page seamlessly or dynamically update DOM.
-          // For a mobile dashboard with maps, a silent reload handles everything cleanly if there are new alerts.
+          Toastify({
+            text: type.charAt(0).toUpperCase() + type.slice(1) + " command sent successfully!",
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            style: { background: "#10b981", borderRadius: "10px" }
+          }).showToast();
+          title.innerText = originalTitle;
+        } else {
           const data = await res.json();
-          const unread = data.alerts ? data.alerts.filter(a => a.status !== 'read').length : 0;
-          const currentBadge = document.querySelector('.notif-badge-num');
-          const currentUnread = currentBadge ? parseInt(currentBadge.innerText) : 0;
-          
-          if (unread > currentUnread) {
-            // New alert detected! Hard refresh to load new maps and logs
-            window.location.reload();
-          }
+          throw new Error(data.error || 'Failed to send command');
         }
-      } catch(e) {
-        console.error('Polling failed', e);
+      } catch (err) {
+        Toastify({
+          text: err.message,
+          duration: 4000,
+          gravity: "top",
+          position: "center",
+          style: { background: "#ef4444", borderRadius: "10px" }
+        }).showToast();
+        title.innerText = originalTitle;
+      } finally {
+        btn.disabled = false;
       }
-    }, 10000);
+    }
+
+    (function() {
+      // Real-time polling for customer dashboard
+      let lastActivityCount = <%= ctx.activityLogs ? ctx.activityLogs.length : 0 %>;
+      let lastAlertCount = <%= ctx.alerts ? ctx.alerts.length : 0 %>;
+      let lastLocationTime = <%= ctx.latest ? new Date(ctx.latest.timestamp).getTime() : 0 %>;
+
+      setInterval(async () => {
+        try {
+          const res = await fetch('/customer/api/poll');
+          if (res.ok) {
+            const data = await res.json();
+            
+            // Check for new activity or alerts
+            const newActivityCount = data.activityLogs ? data.activityLogs.length : 0;
+            const newAlertCount = data.alerts ? data.alerts.length : 0;
+            const newLocationTime = data.latest ? new Date(data.latest.timestamp).getTime() : 0;
+
+            const currentBadge = document.querySelector('.notif-badge-num');
+            const currentUnread = currentBadge ? parseInt(currentBadge.innerText) : 0;
+            const unread = data.alerts ? data.alerts.filter(a => a.status !== 'read').length : 0;
+
+            if (newActivityCount > lastActivityCount || 
+                newAlertCount > lastAlertCount || 
+                newLocationTime > lastLocationTime ||
+                unread > currentUnread) {
+              window.location.reload();
+            }
+            
+            lastActivityCount = newActivityCount;
+            lastAlertCount = newAlertCount;
+            lastLocationTime = newLocationTime;
+          }
+        } catch (err) {
+          console.warn('Polling failed:', err);
+        }
+      }, 5000);
+    })();
   </script>
 </body>
 </html>

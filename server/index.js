@@ -13,6 +13,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
 const connectDB = require('./src/config/db');
+const { sendAndroidPushAlert, admin, syncToFirestore, initFirestoreWorkers } = require('./src/utils/firebase');
 const SecurityLog = require('./src/models/SecurityLog');
 const errorHandler = require('./src/middlewares/errorHandler');
 
@@ -84,6 +85,7 @@ io.on('connection', (socket) => {
 });
 
 connectDB();
+initFirestoreWorkers();
 
 const PORT = parseInt(process.env.PORT, 10) || 5000;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
